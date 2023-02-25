@@ -1,0 +1,43 @@
+﻿@using EatCalculator.UI.Entities.Products.Models.Store;
+@using EatCalculator.UI.Entities.Products.Components;
+@using EatCalculator.UI.Features.Products;
+@using EatCalculator.UI.Features.Products.CreateProduct.Components;
+@using Fluxor.Blazor.Web.Components;
+
+@inherits FluxorComponent
+
+<div class="index-page inner-main-content w-100 h-100">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudText Typo="Typo.h2">Index page</MudText>
+            <MudText>@ProductsLoadingStateSelector.Value.ToString()</MudText>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudPaper Class="d-flex flex-column align-center h-100"
+                      Elevation="3" Outlined="true">
+                <Condition Evaluation="@(ProductsListSelector.Value.Count() > 0)">
+                    <Match>
+                        <Iterations Items="@ProductsListSelector.Value" Context="product">
+                            <ProductRow @key="product" Product="product">
+                                <DeleteProduct Product="product" />
+                            </ProductRow>
+                        </Iterations>
+                    </Match>
+                    <NotMatch>
+                        <MudPaper Elevation="3" Outlined="true">
+                            <MudText>Здесь пока ничего нет</MudText>
+                            <CreateProduct>
+                                <ActivatorContent>
+                                    <MudIcon Icon="@Icons.Material.Filled.Add"/>
+                                </ActivatorContent>
+                            </CreateProduct>
+                        </MudPaper>
+                    </NotMatch>
+                </Condition>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudButton OnClick="OnTestButtonClick">Test</MudButton>
+        </MudItem>
+    </MudGrid>
+</div>

@@ -1,0 +1,14 @@
+﻿@namespace EatCalculator.UI.Shared.Components
+
+@inherits ComponentBase
+
+@typeparam T
+
+<Condition Evaluation="@_canIterateItems">
+    <Match>
+        @foreach (T item in Items!)
+        {
+            @ChildContent!.Invoke(item)
+        }
+    </Match>
+</Condition>

@@ -1,0 +1,65 @@
+﻿.mud-main-content {
+    margin-left: 56px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    .inner-main-content {
+        width: 100%;
+    }
+}
+
+@media (max-width: 599px) {
+    .mud-main-content {
+        .inner-main-content {
+            padding-left: 8px;
+            padding-right: 16px;
+        }
+    }
+}
+
+@media (min-width: 600px) and (max-width: 959px) {
+    .mud-main-content {
+        .inner-main-content {
+            padding-left: 8px;
+            padding-right: 16px;
+        }
+    }
+}
+
+@media (min-width: 960px) and (max-width: 1279px) {
+    .mud-main-content {
+        .inner-main-content {
+            padding-left: 16px;
+            padding-right: 32px;
+        }
+    }
+}
+
+@media (min-width: 1280px) and (max-width: 1919px) {
+    .mud-main-content {
+        .inner-main-content {
+            padding-left: 16px;
+            padding-right: 32px;
+        }
+    }
+}
+
+@media (min-width: 1920px) and (max-width: 2559px) {
+    .mud-main-content {
+        .inner-main-content {
+            padding-left: 24px;
+            padding-right: 40px;
+        }
+    }
+}
+
+@media (min-width: 2560px) {
+    .mud-main-content {
+        .inner-main-content {
+            padding-left: 24px;
+            padding-right: 40px;
+        }
+    }
+}

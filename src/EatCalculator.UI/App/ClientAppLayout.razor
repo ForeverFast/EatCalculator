@@ -1,0 +1,32 @@
+﻿@using EatCalculator.UI.Shared.Lib.MudBlazor;
+@using Fluxor.Blazor.Web.Components;
+
+@inherits FluxorLayout
+
+<MudThemeProvider IsDarkMode="true" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<div class="client-app-layout d-flex flex-column w-vw-100 h-vh-100">
+    <MudLayout>
+        <MudDrawer Fixed="false" Elevation="1"
+                   Variant="@DrawerVariant.Mini" OpenMiniOnHover="true">
+            <MudNavMenu>
+                <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AllOut">
+                    EatCalculator
+                </MudNavLink>
+
+                <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Store"
+                            Class="mt-2">
+                    Store
+                </MudNavLink>
+
+                <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.LibraryBooks">Library</MudNavLink>
+                <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Group">Community</MudNavLink>
+            </MudNavMenu>
+        </MudDrawer>
+        <MudMainContent Class="h-vh-100">
+            @Body
+        </MudMainContent>
+    </MudLayout>
+</div>

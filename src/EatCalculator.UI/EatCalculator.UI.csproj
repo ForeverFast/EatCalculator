@@ -1,0 +1,67 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;CSS024;</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702;CSS024;</NoWarn>
+  </PropertyGroup>
+
+  <Target Name="ToolRestore" BeforeTargets="PreBuildEvent">
+    <Exec Command="dotnet tool restore" StandardOutputImportance="high" />
+  </Target>
+
+  <Target Name="PreBuild" AfterTargets="ToolRestore">
+    <Exec Command="dotnet webcompiler -r ..\. -c .\webcompilerconfiguration.json" StandardOutputImportance="high" />
+  </Target>
+
+  <ItemGroup>
+    <Content Update="..\**\*.css" Watch="false" />
+    <Content Update="..\**\*.gz" Watch="false" />
+    <Content Update="..\**\*.min.js;" Watch="false" />
+
+    <Watch Include="..\**\*.scss" />
+    <Watch Include="..\**\*.js" Exclude="..\**\*.min.js;" />
+
+    <Watch Remove="..\**\obj\**\*;" />
+    <Watch Remove="..\**\bin\**\*;" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.5.0" />
+    <PackageReference Include="Fluxor.Blazor.Web" Version="5.7.0" />
+    <PackageReference Include="Fluxor.Blazor.Web.ReduxDevTools" Version="5.7.0" />
+    <PackageReference Include="Mapster" Version="7.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.2" />
+    <PackageReference Include="MudBlazor" Version="6.1.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="App\Components\" />
+    <Folder Include="Entities\Days\Components\" />
+    <Folder Include="Entities\Portions\Components\" />
+    <Folder Include="Shared\Lib\Fluxor\Selectors\" />
+    <Folder Include="Widgets\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\css\eat-calc-app.scss" />
+    <None Include="wwwroot\css\eat-calc-mudblazor-overrides.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EatCalculator.Common\EatCalculator.Common.csproj" />
+  </ItemGroup>
+
+</Project>
