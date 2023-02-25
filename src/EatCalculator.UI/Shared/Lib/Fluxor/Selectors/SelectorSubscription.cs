@@ -83,12 +83,6 @@ namespace EatCalculator.UI.Shared.Lib.Fluxor.Selectors
 
         private void OnValueChanged(T newVal)
         {
-            if (StateChanged != null)
-            {
-                var str = StateChanged.Target?.ToString();
-                var str2 = StateChanged.Method?.ToString();
-            }
-
             _lastValue = newVal;
             StateChanged?.Invoke(this, EventArgs.Empty);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));

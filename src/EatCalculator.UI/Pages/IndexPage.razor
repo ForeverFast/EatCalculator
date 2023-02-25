@@ -10,14 +10,13 @@
     <MudGrid>
         <MudItem xs="12">
             <MudText Typo="Typo.h2">Index page</MudText>
-            <MudText>@ProductsLoadingStateSelector.Value.ToString()</MudText>
         </MudItem>
         <MudItem xs="12" md="6">
             <MudPaper Class="d-flex flex-column align-center h-100"
                       Elevation="3" Outlined="true">
-                <Condition Evaluation="@(ProductsListSelector.Value.Count() > 0)">
+                <Condition Evaluation="@(_productsListSelector.Value.Count() > 0)">
                     <Match>
-                        <Iterations Items="@ProductsListSelector.Value" Context="product">
+                        <Iterations Items="@_productsListSelector.Value" Context="product">
                             <ProductRow @key="product" Product="product">
                                 <DeleteProduct Product="product" />
                             </ProductRow>

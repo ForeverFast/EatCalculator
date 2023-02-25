@@ -14,8 +14,8 @@ namespace EatCalculator.UI.Entities.Products.Models.Store
         public ProductStateFacade(IStore store,
                                   IDispatcher dispatcher) : base(store, dispatcher)
         {
-            //ProductStateSelector = _store.SubscribeSelector(ProductStateSelectors.SelectFeatureState);
-            //ProductsListSelector = _store.SubscribeSelector(ProductStateSelectors.SelectProducts);
+            ProductStateSelector = _store.SubscribeSelector(ProductStateSelectors.SelectFeatureState);
+            ProductsListSelector = _store.SubscribeSelector(ProductStateSelectors.SelectProducts);
         }
 
         #endregion
@@ -25,8 +25,7 @@ namespace EatCalculator.UI.Entities.Products.Models.Store
         public override ProductState State => ProductStateSelector.Value;
 
         public ISelectorSubscription<ProductState> ProductStateSelector { get; }
-
-        //public ISelectorSubscription<List<Product>> ProductsListSelector { get; }
+        public ISelectorSubscription<List<Product>> ProductsListSelector { get; }
 
         #endregion
 
@@ -46,7 +45,7 @@ namespace EatCalculator.UI.Entities.Products.Models.Store
         public void Dispose()
         {
             ProductStateSelector?.Dispose();
-            //ProductsListSelector.Dispose(); 
+            ProductsListSelector.Dispose(); 
         }
     }
 }
