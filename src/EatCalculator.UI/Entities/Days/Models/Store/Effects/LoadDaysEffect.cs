@@ -3,13 +3,13 @@ using EatCalculator.UI.Shared.Api.Models;
 using EatCalculator.UI.Shared.Lib.Fluxor.Effects;
 using Microsoft.Extensions.Logging;
 
-namespace EatCalculator.UI.Entities.Products.Models.Store.Effects
+namespace EatCalculator.UI.Entities.Days.Models.Store.Effects
 {
-    internal sealed class LoadProductsEffect : BaseEffect<LoadProductsAction>
+    internal sealed class LoadDaysEffect : BaseEffect<LoadProductsAction>
     {
         #region Ctors
 
-        public LoadProductsEffect(BaseEffectInjects injects,
+        public LoadDaysEffect(BaseEffectInjects injects,
                                   ILogger<BaseEffect<LoadProductsAction>> logger) : base(injects, logger)
         {
         }
@@ -64,7 +64,7 @@ namespace EatCalculator.UI.Entities.Products.Models.Store.Effects
                 _logger.LogError(ex, "");
                 dispatcher.Dispatch(new LoadProductsFailureAction
                 {
-                    ErrorMessage = ex.Message,
+                    ErrorMessage = "",
                 });
             }
         }

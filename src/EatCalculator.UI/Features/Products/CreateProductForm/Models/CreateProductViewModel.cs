@@ -1,4 +1,4 @@
-﻿namespace EatCalculator.UI.Features.Products.CreateProduct.Models
+﻿namespace EatCalculator.UI.Features.Products.CreateProductForm.Models
 {
     internal class CreateProductViewModel
     {

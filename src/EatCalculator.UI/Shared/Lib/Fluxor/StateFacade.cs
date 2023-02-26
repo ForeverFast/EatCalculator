@@ -1,4 +1,6 @@
-﻿namespace EatCalculator.UI.Shared.Lib.Fluxor
+﻿using EatCalculator.UI.Shared.Lib.Fluxor.Selectors;
+
+namespace EatCalculator.UI.Shared.Lib.Fluxor
 {
     internal abstract class StateFacade<T> where T : class
     {
@@ -15,10 +17,14 @@
         {
             _store = store;
             _dispatcher = dispatcher;
+
+            StateSelector = _store.SubscribeSelector(StateSelectorPointer);
         }
 
         #endregion
 
-        public abstract T State { get; }
+        protected abstract ISelector<T> StateSelectorPointer { get; }
+
+        public ISelectorSubscription<T> StateSelector { get; }
     }
 }

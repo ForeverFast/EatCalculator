@@ -1,0 +1,49 @@
+﻿@inherits BaseFluxorComponent
+
+<div class="@ClassName(nameof(CreateProductForm))" @attributes="UserAttributes">
+    <MudForm @ref="_createProductForm" Model="_createProductViewModel"
+             Validation="_createProductViewModelValidator.Validation">
+        <MudText Class="mt-4">Name</MudText>
+        <MudTextField @bind-Value="_createProductViewModel!.Name"
+                      For="@(() => _createProductViewModel!.Name)" Immediate="true"
+                      Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+        <MudText Class="mt-6">Description</MudText>
+        <MudTextField @bind-Value="_createProductViewModel!.Description"
+                      For="@(() => _createProductViewModel!.Description)" Immediate="true"
+                      Variant="Variant.Outlined" Margin="Margin.Dense"
+                      Lines="3" />
+
+        <MudText Class="mt-6">Grams</MudText>
+        <MudTextField @bind-Value="_createProductViewModel!.Grams"
+                      For="@(() => _createProductViewModel!.Grams)" Immediate="true"
+                      Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+        <MudText Class="mt-6">Protein</MudText>
+        <MudTextField @bind-Value="_createProductViewModel!.Protein"
+                      For="@(() => _createProductViewModel!.Protein)" Immediate="true"
+                      Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+        <MudText Class="mt-6">Fat</MudText>
+        <MudTextField @bind-Value="_createProductViewModel!.Fat"
+                      For="@(() => _createProductViewModel!.Fat)" Immediate="true"
+                      Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+        <MudText Class="mt-6">Carbohydrate</MudText>
+        <MudTextField @bind-Value="_createProductViewModel!.Carbohydrate"
+                      For="@(() => _createProductViewModel!.Carbohydrate)" Immediate="true"
+                      Variant="Variant.Outlined" Margin="Margin.Dense" />
+    </MudForm>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary"
+               OnClick="OnSubmit" Class="px-10">
+        <Condition Evaluation="_saving">
+            <Match>
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                <MudText Class="ms-2">Saving...</MudText>
+            </Match>
+            <NotMatch>
+                Save
+            </NotMatch>
+        </Condition>
+    </MudButton>
+</div>

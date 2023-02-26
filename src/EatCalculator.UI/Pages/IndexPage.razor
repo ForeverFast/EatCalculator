@@ -1,7 +1,7 @@
 ﻿@using EatCalculator.UI.Entities.Products.Models.Store;
 @using EatCalculator.UI.Entities.Products.Components;
 @using EatCalculator.UI.Features.Products;
-@using EatCalculator.UI.Features.Products.CreateProduct.Components;
+@using EatCalculator.UI.Features.Products.CreateProductForm.Components;
 @using Fluxor.Blazor.Web.Components;
 
 @inherits FluxorComponent
@@ -14,6 +14,10 @@
         <MudItem xs="12" md="6">
             <MudPaper Class="d-flex flex-column align-center h-100"
                       Elevation="3" Outlined="true">
+                <MudToolBar>
+                    <MudSpacer/>
+                    <MudIconButton Icon="@Icons.Material.Filled.Add"/>
+                </MudToolBar>
                 <Condition Evaluation="@(_productsListSelector.Value.Count() > 0)">
                     <Match>
                         <Iterations Items="@_productsListSelector.Value" Context="product">
@@ -25,11 +29,6 @@
                     <NotMatch>
                         <MudPaper Elevation="3" Outlined="true">
                             <MudText>Здесь пока ничего нет</MudText>
-                            <CreateProduct>
-                                <ActivatorContent>
-                                    <MudIcon Icon="@Icons.Material.Filled.Add"/>
-                                </ActivatorContent>
-                            </CreateProduct>
                         </MudPaper>
                     </NotMatch>
                 </Condition>

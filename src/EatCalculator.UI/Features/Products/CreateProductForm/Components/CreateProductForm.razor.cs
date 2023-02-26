@@ -1,17 +1,16 @@
 ﻿using EatCalculator.UI.Entities.Products.Models.Contracts;
 using EatCalculator.UI.Entities.Products.Models.Store;
-using EatCalculator.UI.Features.Products.CreateProduct.Models;
+using EatCalculator.UI.Entities.Products.Models.Store.Actions;
+using EatCalculator.UI.Features.Products.CreateProductForm.Models;
 using EatCalculator.UI.Shared.Lib.Validation;
 
-namespace EatCalculator.UI.Features.Products.CreateProduct.Components
+namespace EatCalculator.UI.Features.Products.CreateProductForm.Components
 {
-    public partial class CreateProduct
+    public partial class CreateProductForm : BaseFluxorComponent
     {
-        #region Params
-
-        [Parameter] public required RenderFragment ActivatorContent { get; set; }
-
         #region Injects
+
+        [Inject] NavigationManager _navigationManager { get; init; } = null!;
 
         [Inject] ProductStateFacade _productStateFacade { get; init; } = null!;
 
@@ -19,36 +18,30 @@ namespace EatCalculator.UI.Features.Products.CreateProduct.Components
 
         #endregion
 
-        #endregion
-
         #region UI Fields
 
-        private MudDialog? _createProductDialog;
-        private bool _createProductDialogOpened;
-
         private MudForm? _createProductForm;
-        private CreateProductViewModel? _createProductViewModel;
+        private CreateProductViewModel _createProductViewModel = new();
         private bool _saving = false;
+
+        #endregion
+
+        #region State methods
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            SubscribeToAction<CreateProductSuccessAction>(OnCreateProductSuccessAction);
+        }    
 
         #endregion
 
         #region Internal events
 
-        private void OnClick()
-        {
-            _createProductDialogOpened = true;
-            _createProductViewModel = new CreateProductViewModel { };
-        }
-
-        private void OnCancelButtonClick()
-            => Close();
-
-        private void OnDialogBackdropClick()
-            => Close();
-
         private async void OnSubmit()
         {
-            if (_createProductForm == null || _createProductViewModel == null)
+            if (_createProductForm == null)
                 return;
 
             await _createProductForm.Validate();
@@ -68,18 +61,12 @@ namespace EatCalculator.UI.Features.Products.CreateProduct.Components
 
         #endregion
 
-        #region Private methods
+        #region External events
 
-        private void Close()
+        private void OnCreateProductSuccessAction(CreateProductSuccessAction action)
         {
-            _createProductDialogOpened = false;
+            //_navigationManager.NavigateTo()
         }
-
-        #endregion
-
-        #region Config
-
-        private readonly DialogOptions _dialogOptions = new() { FullWidth = true };
 
         #endregion
     }

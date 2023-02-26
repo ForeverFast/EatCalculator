@@ -3,9 +3,23 @@ using EatCalculator.UI.Shared.Components;
 
 namespace EatCalculator.UI.Entities.Products.Models.Store
 {
-    internal static class ProductReducers
+    internal static class ProductStateReducers
     {
-        public static ProductEntityAdapter s_adapter => (ProductEntityAdapter)ProductState.GetAdapter();
+        private static ProductStateEntityAdapter s_adapter => (ProductStateEntityAdapter)ProductState.GetAdapter();
+
+        [ReducerMethod]
+        public static ProductState ReduceLoadProductsAction(ProductState state, LoadProductsSuccessAction action)
+            => s_adapter.RemoveAll<ProductState>(state) with
+            {
+                LoadingState = LoadingState.Loading,
+            };
+
+        [ReducerMethod]
+        public static ProductState ReduceLoadProductsFailureAction(ProductState state, LoadProductsFailureAction action)
+            => state with
+            {
+                LoadingState = LoadingState.Error
+            };
 
         [ReducerMethod]
         public static ProductState ReduceLoadProductsSuccessAction(ProductState state, LoadProductsSuccessAction action)
@@ -14,28 +28,19 @@ namespace EatCalculator.UI.Entities.Products.Models.Store
                 LoadingState = LoadingState.Content
             };
 
+
+
+
         [ReducerMethod]
         public static ProductState ReduceCreateProductSuccessAction(ProductState state, CreateProductSuccessAction action)
-        {
-            ProductState.GetAdapter().Add(action.Product, state);
-
-            return state with { };
-        }
+            => s_adapter.Add<ProductState>(action.Product, state);
 
         [ReducerMethod]
         public static ProductState ReduceUpdateProductSuccessAction(ProductState state, UpdateProductSuccessAction action)
-        {
-            ProductState.GetAdapter().Update(action.Product, state);
-
-            return state with { };
-        }
+            => s_adapter.Update<ProductState>(action.Product, state);
 
         [ReducerMethod]
         public static ProductState ReduceDeleteProductSuccessAction(ProductState state, DeleteProductSuccessAction action)
-        {
-            ProductState.GetAdapter().Remove(action.Id, state);
-
-            return state with { };
-        }
+            => s_adapter.Remove<ProductState>(action.Id, state);
     }
 }

@@ -16,19 +16,8 @@ namespace EatCalculator.UI.Pages
 
         #region Selectors
 
-        public ISelectorSubscription<List<Product>> _productsListSelector => _productStateFacade.ProductsListSelector;
-
-        #endregion
-
-        #region State methods
-
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-
-            if (_productStateFacade.IsNoDataState())
-                _productStateFacade.LoadProducts();
-        }
+        private ISelectorSubscription<List<Product>> _productsListSelector
+            => _productStateFacade.ListSelector;
 
         #endregion
 

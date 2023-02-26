@@ -42,6 +42,10 @@ namespace EatCalculator.UI.Entities.Products.Models.Store.Effects
             catch (Exception ex)
             {
                 _logger.LogError(ex, "");
+                dispatcher.Dispatch(new CreateProductFailureAction
+                {
+                    ErrorMessage = ex.Message,
+                });
             }
         }
     }

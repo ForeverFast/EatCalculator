@@ -1,0 +1,21 @@
+﻿@inherits BaseFluxorComponent
+
+<div class="client-app-loader w-vw-100 h-vh-100">
+     <StateContainer State="_progressState">
+         <Loading> 
+            <MudPaper Class="d-flex flex-column align-center justify-center" Height="100%">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true"
+                                     Class="mt-n16"
+                                     Style="height:150px;width:150px;" />
+                <MudText Typo="Typo.h4"
+                         Class="mt-4">@_progressText</MudText>
+            </MudPaper>
+         </Loading>
+         <Content>
+             @Content
+         </Content>
+         <Error>
+             Bruh
+         </Error>
+     </StateContainer>
+</div>

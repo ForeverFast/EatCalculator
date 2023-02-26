@@ -1,5 +1,5 @@
-﻿using Fluxor;
-using Mapster;
+﻿using Mapster;
+using System.Collections.Immutable;
 
 namespace EatCalculator.UI.Shared.Lib.EntityAdapter
 {
@@ -17,9 +17,17 @@ namespace EatCalculator.UI.Shared.Lib.EntityAdapter
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="state"></param>
-        public void Add(TEntity entity, EntityState<TKey, TEntity> state)
+        public TState Add<TState>(TEntity entity, EntityState<TKey, TEntity> state)
+            where TState : EntityState<TKey, TEntity>
         {
-            state.Entities.TryAdd(SelectId(entity), entity);
+            var entityKey = SelectId(entity);
+
+            return state.Entities.ContainsKey(entityKey)
+                ? (TState)state
+                : (TState)state with
+                {
+                    Entities = state.Entities.Add(entityKey, entity),
+                };
         }
 
         /// <summary>
@@ -27,10 +35,24 @@ namespace EatCalculator.UI.Shared.Lib.EntityAdapter
         /// </summary>
         /// <param name="entities"></param>
         /// <param name="state"></param>
-        public void AddRange(IEnumerable<TEntity> entities, EntityState<TKey, TEntity> state)
+        public TState AddRange<TState>(IEnumerable<TEntity> entities, EntityState<TKey, TEntity> state)
+             where TState : EntityState<TKey, TEntity>
         {
+            var notAddedEntities = new Dictionary<TKey, TEntity>();
+
             foreach (var entity in entities)
-                state.Entities.TryAdd(SelectId(entity), entity);
+            {
+                var entityKey = SelectId(entity);
+                if (state.Entities.ContainsKey(entityKey))
+                    continue;
+
+                notAddedEntities.Add(entityKey, entity);
+            }
+
+            return (TState)state with
+            {
+                Entities = state.Entities.AddRange(notAddedEntities),
+            };
         }
 
         /// <summary>
@@ -40,31 +62,34 @@ namespace EatCalculator.UI.Shared.Lib.EntityAdapter
         /// <param name="state"></param>
         public TState SetAll<TState>(IEnumerable<TEntity> entities, EntityState<TKey, TEntity> state)
             where TState : EntityState<TKey, TEntity>
-            => (TState)(state with
+            => (TState)state with
             {
-                Entities = entities.ToDictionary(x => SelectId(x), x => x),
-            });
+                Entities = entities.ToImmutableDictionary(entity => SelectId(entity), entity => entity),
+            };
 
         /// <summary>
         /// Add or Replace one entity in the collection.
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="state"></param>
-        public void SetOne(TEntity entity, EntityState<TKey, TEntity> state)
-        {
-            state.Entities[SelectId(entity)] = entity;
-        }
+        public TState SetOne<TState>(TEntity entity, EntityState<TKey, TEntity> state)
+            where TState : EntityState<TKey, TEntity>
+            => (TState)state with
+            {
+                Entities = state.Entities.SetItem(SelectId(entity), entity),
+            };
 
         /// <summary>
         /// Add or Replace multiple entities in the collection.
         /// </summary>
         /// <param name="entities"></param>
         /// <param name="state"></param>
-        public void SetMany(IEnumerable<TEntity> entities, EntityState<TKey, TEntity> state)
-        {
-            foreach (var entity in entities)
-                state.Entities[SelectId(entity)] = entity;
-        }
+        public TState SetMany<TState>(IEnumerable<TEntity> entities, EntityState<TKey, TEntity> state)
+            where TState : EntityState<TKey, TEntity>
+            => (TState)state with
+            {
+                Entities = state.Entities.SetItems(entities.ToImmutableDictionary(entity => SelectId(entity), entity => entity)),
+            };
 
 
         /// <summary>
@@ -72,40 +97,48 @@ namespace EatCalculator.UI.Shared.Lib.EntityAdapter
         /// </summary>
         /// <param name="id"></param>
         /// <param name="state"></param>
-        public void Remove(TKey id, EntityState<TKey, TEntity> state)
-        {
-            state.Entities.Remove(id);
-        }
+        public TState Remove<TState>(TKey id, EntityState<TKey, TEntity> state)
+            where TState : EntityState<TKey, TEntity>
+            => (TState)state with
+            {
+                Entities = state.Entities.Remove(id),
+            };
 
         /// <summary>
         /// Remove multiple entities from the collection, by ids.
         /// </summary>
         /// <param name="ids"></param>
         /// <param name="state"></param>
-        public void RemoveRange(IEnumerable<TKey> ids, EntityState<TKey, TEntity> state)
-        {
-            foreach (var id in ids)
-                state.Entities.Remove(id);
-        }
+        public TState RemoveRange<TState>(IEnumerable<TKey> ids, EntityState<TKey, TEntity> state)
+            where TState : EntityState<TKey, TEntity>
+            => (TState)state with
+            {
+                Entities = state.Entities.RemoveRange(ids),
+            };
 
         /// <summary>
         /// Remove multiple entities from the collection, by predicate.
         /// </summary>
         /// <param name="ids"></param>
         /// <param name="state"></param>
-        public void RemoveRange(Predicate<TEntity> predicate, EntityState<TKey, TEntity> state)
-        {
-            foreach (var entity in state.Entities.Where(x => predicate(x.Value)).ToList())
-                state.Entities.Remove(entity.Key);
-        }
+        public TState RemoveRange<TState>(Predicate<TEntity> predicate, EntityState<TKey, TEntity> state)
+             where TState : EntityState<TKey, TEntity>
+             => (TState)state with
+             {
+                 Entities = state.Entities.RemoveRange(state.Entities.Where(x => predicate(x.Value)).Select(x => x.Key)),
+             };
 
         /// <summary>
         /// Clear entity collection.
         /// </summary>
         /// <param name="predicate"></param>
         /// <param name="state"></param>
-        public void RemoveAll(EntityState<TKey, TEntity> state)
-            => state.Entities.Clear();
+        public TState RemoveAll<TState>(EntityState<TKey, TEntity> state)
+             where TState : EntityState<TKey, TEntity>
+            => (TState)state with
+            {
+                Entities = state.Entities.Clear(),
+            };
 
 
 
@@ -114,28 +147,43 @@ namespace EatCalculator.UI.Shared.Lib.EntityAdapter
         /// </summary>
         /// <param name="updatedEntity"></param>
         /// <param name="state"></param>
-        public void Update(TEntity updatedEntity, EntityState<TKey, TEntity> state)
+        public TState Update<TState>(TEntity updatedEntity, EntityState<TKey, TEntity> state)
+             where TState : EntityState<TKey, TEntity>
         {
-            if (!state.Entities.TryGetValue(SelectId(updatedEntity), out var targetEntity))
-                return;
+            var entityKey = SelectId(updatedEntity);
 
-            updatedEntity.Adapt(targetEntity);
+            return !state.Entities.ContainsKey(entityKey)
+                ? (TState)state
+                : (TState)state with
+                {
+                    Entities = state.Entities.SetItem(entityKey, updatedEntity),
+                };
         }
+
 
         /// <summary>
         /// Update multiple entities in the collection. Supports partial updates.
         /// </summary>
         /// <param name="updatedEntities"></param>
         /// <param name="state"></param>
-        public void UpdateRange(IEnumerable<TEntity> updatedEntities, EntityState<TKey, TEntity> state)
+        public TState UpdateRange<TState>(IEnumerable<TEntity> updatedEntities, EntityState<TKey, TEntity> state)
+             where TState : EntityState<TKey, TEntity>
         {
-            foreach (var updatedEntity in updatedEntities)
+            var targetEntities = new Dictionary<TKey, TEntity>();
+
+            foreach (var entity in updatedEntities)
             {
-                if (!state.Entities.TryGetValue(SelectId(updatedEntity), out var targetEntity))
+                var entityKey = SelectId(entity);
+                if (!state.Entities.ContainsKey(entityKey))
                     continue;
 
-                updatedEntity.Adapt(targetEntity);
+                targetEntities.Add(entityKey, entity);
             }
+
+            return (TState)state with
+            {
+                Entities = state.Entities.SetItems(targetEntities),
+            };
         }
 
         /// <summary>
@@ -143,34 +191,23 @@ namespace EatCalculator.UI.Shared.Lib.EntityAdapter
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="state"></param>
-        public void Upsert(TEntity entity, EntityState<TKey, TEntity> state)
-        {
-            if (!state.Entities.TryGetValue(SelectId(entity), out var targetEntity))
-            {
-                state.Entities.TryAdd(SelectId(entity), entity);
-                return;
-            }
-
-            entity.Adapt(targetEntity);
-        }
+        public TState Upsert<TState>(TEntity entity, EntityState<TKey, TEntity> state)
+             where TState : EntityState<TKey, TEntity>
+             => (TState)state with
+             {
+                 Entities = state.Entities.SetItem(SelectId(entity), entity),
+             };
 
         /// <summary>
         /// Add or Update multiple entities in the collection.
         /// </summary>
         /// <param name="entities"></param>
         /// <param name="state"></param>
-        public void UpsertRange(IEnumerable<TEntity> entities, EntityState<TKey, TEntity> state)
-        {
-            foreach (var entity in entities)
+        public TState UpsertRange<TState>(IEnumerable<TEntity> entities, EntityState<TKey, TEntity> state)
+            where TState : EntityState<TKey, TEntity>
+            => (TState)state with
             {
-                if (!state.Entities.TryGetValue(SelectId(entity), out var targetEntity))
-                {
-                    state.Entities.TryAdd(SelectId(entity), entity);
-                    return;
-                }
-
-                entity.Adapt(targetEntity);
-            }
-        }
+                Entities = entities.ToImmutableDictionary(entity => SelectId(entity), entity => entity),
+            };
     }
 }

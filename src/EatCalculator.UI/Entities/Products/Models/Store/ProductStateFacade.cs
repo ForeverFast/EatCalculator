@@ -14,23 +14,24 @@ namespace EatCalculator.UI.Entities.Products.Models.Store
         public ProductStateFacade(IStore store,
                                   IDispatcher dispatcher) : base(store, dispatcher)
         {
-            ProductStateSelector = _store.SubscribeSelector(ProductStateSelectors.SelectFeatureState);
-            ProductsListSelector = _store.SubscribeSelector(ProductStateSelectors.SelectProducts);
+            ListSelector = _store.SubscribeSelector(ProductStateSelectors.SelectProducts);
+            LoadingStateSelector = _store.SubscribeSelector(ProductStateSelectors.SelectProductsLoadingState);
         }
 
         #endregion
 
         #region Selectors
 
-        public override ProductState State => ProductStateSelector.Value;
+        protected override ISelector<ProductState> StateSelectorPointer
+            => ProductStateSelectors.SelectFeatureState;
 
-        public ISelectorSubscription<ProductState> ProductStateSelector { get; }
-        public ISelectorSubscription<List<Product>> ProductsListSelector { get; }
+        public ISelectorSubscription<List<Product>> ListSelector { get; }
+        public ISelectorSubscription<LoadingState> LoadingStateSelector { get; }
 
         #endregion
 
         public bool IsNoDataState()
-            => State.LoadingState.IsNoDataState();
+            => StateSelector.Value.LoadingState.IsNoDataState();
 
         public void LoadProducts()
             => _dispatcher.Dispatch(new LoadProductsAction { });
@@ -38,14 +39,22 @@ namespace EatCalculator.UI.Entities.Products.Models.Store
         public void CreateProduct(CreateProductContract product)
             => _dispatcher.Dispatch(new CreateProductAction { Product = product, });
 
+        public void UpdateProduct(int id, UpdateProductContract product)
+            => _dispatcher.Dispatch(new UpdateProductAction
+            {
+                Id = id,
+                Product = product,
+            });
+
         public void DeleteProduct(int productId)
             => _dispatcher.Dispatch(new DeleteProductAction { Id = productId, });
 
 
+
         public void Dispose()
         {
-            ProductStateSelector?.Dispose();
-            ProductsListSelector.Dispose(); 
+            StateSelector?.Dispose();
+            ListSelector.Dispose();
         }
     }
 }

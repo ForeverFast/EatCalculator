@@ -1,7 +1,7 @@
 ﻿using EatCalculator.UI.Shared.Lib.Validation;
 using FluentValidation;
 
-namespace EatCalculator.UI.Features.Products.CreateProduct.Models
+namespace EatCalculator.UI.Features.Products.CreateProductForm.Models
 {
     internal sealed class CreateProductViewModelValidator : BaseValidator<CreateProductViewModel>
     {

@@ -48,9 +48,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="App\Components\" />
-    <Folder Include="Entities\Days\Components\" />
     <Folder Include="Entities\Portions\Components\" />
+    <Folder Include="Pages\Days\" />
     <Folder Include="Shared\Lib\Fluxor\Selectors\" />
     <Folder Include="Widgets\" />
   </ItemGroup>

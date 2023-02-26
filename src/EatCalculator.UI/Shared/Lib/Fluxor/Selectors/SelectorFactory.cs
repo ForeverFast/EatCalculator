@@ -69,8 +69,12 @@
 
         public static Selector<TFeatureState> CreateFeatureSelector<TFeatureState>()
         {
+            var featureStateFullName = typeof(TFeatureState).FullName;
+            if (string.IsNullOrEmpty(featureStateFullName))
+                throw new ArgumentException($"Miss feature state name.");
+
             // todo: get name from attribute if present
-            return CreateFeatureSelector<TFeatureState>(typeof(TFeatureState).FullName);
+            return CreateFeatureSelector<TFeatureState>(featureStateFullName);
         }
     }
 }

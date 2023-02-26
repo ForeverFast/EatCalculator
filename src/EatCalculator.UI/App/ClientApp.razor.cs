@@ -12,5 +12,22 @@ namespace EatCalculator.UI.App
         [Parameter] public Type LayoutComponent { get; set; } = typeof(ClientAppLayout);
 
         #endregion
+
+        #region Injects
+
+        [Inject] IDispatcher _dispatcher { get; init; } = null!;
+
+        #endregion
+
+        #region State methods
+
+        protected override async Task OnParametersSetAsync()
+        {
+            await base.OnInitializedAsync();
+
+            //_dispatcher.Dispatch(AppStateConfiguration);
+        }
+
+        #endregion
     }
 }
