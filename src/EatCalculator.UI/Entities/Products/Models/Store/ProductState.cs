@@ -6,6 +6,5 @@ namespace EatCalculator.UI.Entities.Products.Models.Store
 {
     internal sealed record ProductState : EntityState<int, Product>
     {
-        public LoadingState LoadingState { get; init; }
     }
 }

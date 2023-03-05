@@ -1,0 +1,65 @@
+﻿@inherits BaseFluxorComponent
+
+<div class="@ClassName(nameof(CreateDayDialog))" @attributes="UserAttributes">
+    <MudIconButton Icon="@Icons.Material.Filled.Add"
+                   Size="Size.Small"
+                   OnClick="OnClick" />
+</div>
+
+<MudDialog @ref="_createDayDialog"
+           @bind-IsVisible="_createDayDialogOpened" Options="_dialogOptions"
+           OnBackdropClick="OnDialogBackdropClick">
+    <TitleContent>
+        <MudPaper Width="100%" Elevation="0"
+                  Class="d-flex flex-row align-center">
+            <MudIcon Icon="@Icons.Material.Filled.Add" />
+            <MudText Typo="Typo.h6"
+                     Class="ms-3">
+                Создать день
+            </MudText>
+        </MudPaper>
+    </TitleContent>
+    <DialogContent>
+        <MudForm @ref="_createDayForm" Model="_createDayViewModel"
+                 Validation="_createDayViewModelValidator.Validation">
+            <Condition Evaluation="_createDayViewModel != null">
+                <Match>
+                    <MudText Class="mt-4">Название</MudText>
+                    <MudTextField @bind-Value="_createDayViewModel!.Title"
+                                  For="@(() => _createDayViewModel!.Title)" Immediate="true"
+                                  Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+                    <MudText Class="mt-6">Описание</MudText>
+                    <MudTextField @bind-Value="_createDayViewModel!.Description"
+                                  For="@(() => _createDayViewModel!.Description)" Immediate="true"
+                                  Variant="Variant.Outlined" Margin="Margin.Dense"
+                                  Lines="3" />
+
+                    <MudText Class="mt-6">Количество приёмов пищи</MudText>
+                    <MudTextField @bind-Value="_createDayViewModel!.MealCount"
+                                  For="@(() => _createDayViewModel!.MealCount)" Immediate="true"
+                                  Variant="Variant.Outlined" Margin="Margin.Dense" />
+                </Match>
+                <NotMatch>
+                    <MudProgressCircular Size="Size.Large" Indeterminate="true" />
+                </NotMatch>
+            </Condition>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="OnSubmit"
+                   Variant="Variant.Filled" Color="Color.Primary"
+                   Class="px-10">
+            <Condition Evaluation="_creating">
+                <Match>
+                    <MudProgressCircular Size="Size.Small" Indeterminate="true"
+                                         Class="ms-n1" />
+                    <MudText Class="ms-2">Создание...</MudText>
+                </Match>
+                <NotMatch>
+                    Создать
+                </NotMatch>
+            </Condition>
+        </MudButton>
+    </DialogActions>
+</MudDialog>

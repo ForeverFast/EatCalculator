@@ -39,24 +39,27 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.5.0" />
+    <PackageReference Include="DALQueryChain" Version="1.0.19" />
+    <PackageReference Include="DALQueryChain.EntityFramework" Version="1.0.19" />
+    <PackageReference Include="FluentValidation" Version="11.5.1" />
     <PackageReference Include="Fluxor.Blazor.Web" Version="5.7.0" />
     <PackageReference Include="Fluxor.Blazor.Web.ReduxDevTools" Version="5.7.0" />
     <PackageReference Include="Mapster" Version="7.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="7.0.3" />
     <PackageReference Include="MudBlazor" Version="6.1.9" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.4" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Entities\Portions\Components\" />
-    <Folder Include="Pages\Days\" />
+    <Folder Include="Shared\Api\LocalDatabase\DesignTimeFiles\" />
     <Folder Include="Shared\Lib\Fluxor\Selectors\" />
     <Folder Include="Widgets\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\css\eat-calc-app.scss" />
-    <None Include="wwwroot\css\eat-calc-mudblazor-overrides.scss" />
   </ItemGroup>
 
   <ItemGroup>

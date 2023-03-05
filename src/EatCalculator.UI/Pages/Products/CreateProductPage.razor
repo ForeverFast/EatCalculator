@@ -1,5 +1,9 @@
-﻿<h3>CreateProductPage</h3>
+﻿@using EatCalculator.UI.Features.Products.CreateProductForm.Components
 
-@code {
+@inherits BasePageComponent
 
-}
+<div class="create-product-page inner-main-content">
+    <MudPaper Width="100%" Elevation="0">
+        <CreateProductForm />
+    </MudPaper>
+</div>

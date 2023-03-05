@@ -1,29 +1,23 @@
-﻿using EatCalculator.UI.Entities.Products.Models.Store;
+﻿using EatCalculator.UI.Entities.Days.Models.Store;
 using EatCalculator.UI.Shared.Api.Models;
 using EatCalculator.UI.Shared.Lib.Fluxor.Selectors;
-using Fluxor.Blazor.Web.Components;
 
 namespace EatCalculator.UI.Pages
 {
     [Route("/")]
-    public partial class IndexPage : FluxorComponent
+    public partial class IndexPage : BasePageComponent
     {
         #region Injects
 
-        [Inject] ProductStateFacade _productStateFacade { get; init; } = null!;
+        [Inject] DayStateFacade _dayStateFacade { get; init; } = null!;
 
         #endregion
 
         #region Selectors
 
-        private ISelectorSubscription<List<Product>> _productsListSelector
-            => _productStateFacade.ListSelector;
+        private ISelectorSubscription<List<Day>> _dayListSelector
+            => _dayStateFacade.ListSelector;
 
         #endregion
-
-        private void OnTestButtonClick()
-        {
-
-        }
     }
 }

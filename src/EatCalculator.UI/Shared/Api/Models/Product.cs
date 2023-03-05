@@ -1,6 +1,8 @@
-﻿namespace EatCalculator.UI.Shared.Api.Models
+﻿using DALQueryChain.Interfaces;
+
+namespace EatCalculator.UI.Shared.Api.Models
 {
-    public record Product
+    public record Product : IDbModelBase
     {
         public required int Id { get; init; }
         public required string Name { get; init; }

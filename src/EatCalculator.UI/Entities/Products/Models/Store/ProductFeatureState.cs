@@ -3,7 +3,7 @@
     internal sealed class ProductFeatureState : Feature<ProductState>
     {
         public override string GetName()
-            => typeof(ProductState).FullName!;//nameof(ProductState);
+            => typeof(ProductState).FullName!;
 
         protected override ProductState GetInitialState()
             => (ProductState)ProductState.GetAdapter().GetInitialState(); 

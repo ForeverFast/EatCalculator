@@ -1,7 +1,5 @@
-﻿using EatCalculator.UI.App.Models.Store;
-using EatCalculator.UI.Entities.Products.Models.Store;
+﻿using EatCalculator.UI.Entities.Products.Models.Store;
 using EatCalculator.UI.Shared.Components;
-using EatCalculator.UI.Shared.Lib.Fluxor.Selectors;
 
 namespace EatCalculator.UI.App.Components
 {
@@ -19,18 +17,10 @@ namespace EatCalculator.UI.App.Components
 
         #endregion
 
-        #region Selectors
-
-        private ISelectorSubscription<LoadingState> _productsLoadingStateSelector
-            => _productStateFacade.LoadingStateSelector;
-
-        #endregion
-
         #region UI Fields
 
         //private LoadingState _serverUpdatesCheckLoadingState = LoadingState.NotTriggered;
-        private LoadingState _progressState
-            => GetLoadingState();
+        private LoadingState _progressState = LoadingState.Content;
 
         private string _progressText = "Загружаем...";
 
@@ -52,9 +42,6 @@ namespace EatCalculator.UI.App.Components
         #endregion
 
         #region Private methods
-
-        private LoadingState GetLoadingState()
-            => LoadingStateHelper.HandleLoadingStates(_productsLoadingStateSelector.Value);
 
         #endregion
     }

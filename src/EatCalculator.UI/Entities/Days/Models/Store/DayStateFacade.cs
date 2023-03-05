@@ -13,8 +13,8 @@ namespace EatCalculator.UI.Entities.Days.Models.Store
         
         public DayStateFacade(IStore store, IDispatcher dispatcher) : base(store, dispatcher)
         {
-            ListSelector = _store.SubscribeSelector(DayStateSelectors.SelectProducts);
-            LoadingStateSelector = _store.SubscribeSelector(DayStateSelectors.SelectProductsLoadingState);
+            CurrentDaySelector = _store.SubscribeSelector(DayStateSelectors.SelectCurrentDay);
+            ListSelector = _store.SubscribeSelector(DayStateSelectors.SelectDays);
         }
 
         #endregion
@@ -24,13 +24,16 @@ namespace EatCalculator.UI.Entities.Days.Models.Store
         protected override ISelector<DayState> StateSelectorPointer
             => DayStateSelectors.SelectFeatureState;
 
+        public ISelectorSubscription<Day> CurrentDaySelector { get; }
         public ISelectorSubscription<List<Day>> ListSelector { get; }
-        public ISelectorSubscription<LoadingState> LoadingStateSelector { get; }
 
         #endregion
 
-        public bool IsNoDataState()
-            => StateSelector.Value.LoadingState.IsNoDataState();
+        public void SelectDay(int dayId)
+            => _dispatcher.Dispatch(new SelectDayAction
+            {
+                DayId = dayId,
+            });
 
         public void LoadDays()
             => _dispatcher.Dispatch(new LoadDaysAction { });

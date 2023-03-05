@@ -10,8 +10,6 @@
         }
 
         public TResult Select(IStore state)
-        {
-            return _projectorFunc(state);
-        }
+            => _projectorFunc(state);
     }
 }

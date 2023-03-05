@@ -7,27 +7,15 @@ namespace EatCalculator.UI.Entities.Products.Models.Store
     {
         private static ProductStateEntityAdapter s_adapter => (ProductStateEntityAdapter)ProductState.GetAdapter();
 
-        [ReducerMethod]
-        public static ProductState ReduceLoadProductsAction(ProductState state, LoadProductsSuccessAction action)
-            => s_adapter.RemoveAll<ProductState>(state) with
-            {
-                LoadingState = LoadingState.Loading,
-            };
+
 
         [ReducerMethod]
-        public static ProductState ReduceLoadProductsFailureAction(ProductState state, LoadProductsFailureAction action)
-            => state with
-            {
-                LoadingState = LoadingState.Error
-            };
+        public static ProductState ReduceLoadProductsAction(ProductState state, LoadProductsSuccessAction _)
+            => s_adapter.RemoveAll<ProductState>(state);
 
         [ReducerMethod]
         public static ProductState ReduceLoadProductsSuccessAction(ProductState state, LoadProductsSuccessAction action)
-            => s_adapter.SetAll<ProductState>(action.Products, state) with
-            {
-                LoadingState = LoadingState.Content
-            };
-
+            => s_adapter.SetAll<ProductState>(action.Products, state);
 
 
 

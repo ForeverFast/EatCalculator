@@ -1,41 +1,43 @@
-﻿@using EatCalculator.UI.Entities.Products.Models.Store;
-@using EatCalculator.UI.Entities.Products.Components;
-@using EatCalculator.UI.Features.Products;
-@using EatCalculator.UI.Features.Products.CreateProductForm.Components;
-@using Fluxor.Blazor.Web.Components;
+﻿@using EatCalculator.UI.Entities.Days.Components
+@using EatCalculator.UI.Features.Days
+@using EatCalculator.UI.Features.Days.CreateDayDialog.Components
+@using Fluxor.Blazor.Web.Components
 
-@inherits FluxorComponent
+@inherits BasePageComponent
 
-<div class="index-page inner-main-content w-100 h-100">
-    <MudGrid>
-        <MudItem xs="12">
-            <MudText Typo="Typo.h2">Index page</MudText>
-        </MudItem>
-        <MudItem xs="12" md="6">
-            <MudPaper Class="d-flex flex-column align-center h-100"
-                      Elevation="3" Outlined="true">
-                <MudToolBar>
-                    <MudSpacer/>
-                    <MudIconButton Icon="@Icons.Material.Filled.Add"/>
-                </MudToolBar>
-                <Condition Evaluation="@(_productsListSelector.Value.Count() > 0)">
-                    <Match>
-                        <Iterations Items="@_productsListSelector.Value" Context="product">
-                            <ProductRow @key="product" Product="product">
-                                <DeleteProduct Product="product" />
-                            </ProductRow>
-                        </Iterations>
-                    </Match>
-                    <NotMatch>
-                        <MudPaper Elevation="3" Outlined="true">
-                            <MudText>Здесь пока ничего нет</MudText>
-                        </MudPaper>
-                    </NotMatch>
-                </Condition>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" md="6">
-            <MudButton OnClick="OnTestButtonClick">Test</MudButton>
-        </MudItem>
-    </MudGrid>
+<div class="index-page inner-main-content">
+    <MudPaper Elevation="0"
+              Class="d-flex flex-column align-center">
+        <MudPaper Width="100%" Elevation="3"
+                  Class="border-b rounded-0">
+            <MudToolBar Dense="true" Class="w-100">
+                <MudText Typo="Typo.h5">Дни</MudText>
+                <MudSpacer />
+                <CreateDayDialog/>
+            </MudToolBar>
+        </MudPaper>
+        <MudPaper Width="100%" Elevation="0"
+                  Class="mt-2 px-2">
+            <Condition Evaluation="@(_dayListSelector.Value.Count() > 0)">
+                <Match>
+                    <Iterations Items="@_dayListSelector.Value" Context="day">
+                        <DayRow @key="day" Day="day">
+                             <OptionalContent>
+                                  <MudPaper Width="100%" Elevation="0"
+                                          Class="d-flex flex-row align-center w-100">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                                   Size="Size.Small"
+                                                   Class="ms-auto" />
+                                    <DeleteDayButton Day="day" />
+                                </MudPaper>
+                            </OptionalContent>
+                        </DayRow>
+                    </Iterations>
+                </Match>
+                <NotMatch>
+                    <MudText Align="Align.Center">Здесь пока ничего нет</MudText>
+                </NotMatch>
+            </Condition>
+        </MudPaper>
+    </MudPaper>
 </div>

@@ -1,4 +1,7 @@
-﻿using EatCalculator.UI.App;
+﻿using Clients.Maui.Implementations;
+using EatCalculator.UI.App;
+using EatCalculator.UI.Shared.Api.LocalDatabase.Context;
+using EatCalculator.UI.Shared.Configs;
 using EatCalculator.UI.Shared.Lib.AppBuilder;
 using Microsoft.Extensions.Logging;
 
@@ -17,6 +20,8 @@ namespace Clients.Maui
 
         public static MauiApp CreateMauiApp()
         {
+            GlobalConstants.Environment = _environment;
+
             var defaultBuilder = MauiApp.CreateBuilder();
             defaultBuilder.UseMauiApp<App>();
             defaultBuilder.AddBaseConfiguration(_environment.ToString());
@@ -35,7 +40,16 @@ namespace Clients.Maui
                 defaultBuilder.Logging.AddDebug();
             }
 
+            builder.Services.AddSingleton<IEatCalculatorDbContextFactory, MauiEatCalculatorDbContextFactory>();
+
             builder.ConfigureAppLayer();
+
+            // TODO: переделать на неблокирующий вызов
+            builder.Services.AddScoped<EatCalculatorDbContext>(sp =>
+            {
+                var eatCalculatorDbContextFactory = sp.GetRequiredService<IEatCalculatorDbContextFactory>();
+                return eatCalculatorDbContextFactory.CreateContextAsync().Result;
+            });
 
             return defaultBuilder.Build();
         }

@@ -1,9 +1,10 @@
-﻿using EatCalculator.UI.Entities.Products.Models.Store;
+﻿using DALQueryChain.EntityFramework;
+using EatCalculator.UI.Shared.Api.LocalDatabase.Context;
 using EatCalculator.UI.Shared.Lib.AppBuilder;
-using EatCalculator.UI.Shared.Lib.EntityAdapter;
-using EatCalculator.UI.Shared.Lib.Fluxor.Effects;
 using EatCalculator.UI.Shared.Lib.Validation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using MudBlazor.Services;
 using System.Reflection;
 
@@ -17,19 +18,9 @@ namespace EatCalculator.UI.Shared
             var targetAssemblies = appBuilder.AdditionalAssemblies;
             var fullTargetAssemblies = targetAssemblies.Append(appBuilder.MainAssembly).ToArray();
 
-            // Redux
+            // DAL
 
-            Adapters.Scan(fullTargetAssemblies);
-            services.AddScoped<BaseEffectInjects>();
-            services.AddFluxor(options =>
-            {
-                options.ScanAssemblies(appBuilder.MainAssembly, targetAssemblies);
-                //options.WithLifetime(StoreLifetime.Singleton);
-                if (appBuilder.IsDevelopment())
-                    options.UseReduxDevTools();
-            });
-
-            services.AddScoped<ProductStateFacade>();
+            appBuilder.ConfigureDataAccessLayer();
 
             // UI
 
@@ -38,8 +29,6 @@ namespace EatCalculator.UI.Shared
             // Other
 
             services.AddValidators(fullTargetAssemblies);
-
-
 
             return appBuilder;
         }
@@ -56,6 +45,26 @@ namespace EatCalculator.UI.Shared
             types.ForEach(item => services.AddScoped(item.BaseType!, item));
 
             return services;
+        }
+
+        public static ClientAppBuilder ConfigureDataAccessLayer(this ClientAppBuilder appBuilder)
+        {
+            var services = appBuilder.Services;
+            var configuration = appBuilder.Configuration;
+
+            services.Configure<EatCalculatorDbContextSettings>(appBuilder.Configuration.GetSection(nameof(EatCalculatorDbContextSettings)));
+
+            services.AddDbContextFactory<EatCalculatorDbContext>((sp, options) =>
+            {
+                var settings = sp.GetRequiredService<IOptions<EatCalculatorDbContextSettings>>().Value;
+                var connectionString = $"Data Source={settings.DbName}";
+
+                options.UseSqlite(connectionString);
+            });
+
+            services.AddQueryChain(typeof(Configure).Assembly);
+
+            return appBuilder;
         }
     }
 }

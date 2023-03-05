@@ -21,17 +21,17 @@ namespace EatCalculator.UI.Entities.Days.Models.Store.Effects
         {
             try
             {
-                await Task.Yield();
-
-                var createdProduct = new Day
+                var newDay = new Day
                 {
-                    Id = RandomNumberGenerator.GetInt32(100, int.MaxValue),
+                    Id = 0,
                     Title = action.Day.Title,
                 };
 
+                var createdDay = await _injects.Dal.For<Day>().Insert.InsertWithObjectAsync(newDay);
+
                 dispatcher.Dispatch(new CreateDaySuccessAction
                 {
-                    Day = createdProduct,
+                    Day = createdDay,
                 });
             }
             catch (Exception ex)

@@ -1,5 +1,4 @@
 ﻿using EatCalculator.UI.Shared.Api.Models;
-using EatCalculator.UI.Shared.Components;
 using EatCalculator.UI.Shared.Lib.Fluxor.Selectors;
 
 namespace EatCalculator.UI.Entities.Days.Models.Store
@@ -9,10 +8,11 @@ namespace EatCalculator.UI.Entities.Days.Models.Store
         public static ISelector<DayState> SelectFeatureState { get; private set; }
             = SelectorFactory.CreateFeatureSelector<DayState>();
 
-        public static ISelector<List<Day>> SelectProducts { get; private set; }
-            = SelectorFactory.CreateSelector(SelectFeatureState, state => state.Entities.Values.ToList());
+        public static ISelector<Day> SelectCurrentDay { get; private set; }
+            = SelectorFactory.CreateSelector(SelectFeatureState,
+                state => state.Entities.Values.FirstOrDefault(x => x.Equals(state.CurrentDayId))!);
 
-        public static ISelector<LoadingState> SelectProductsLoadingState { get; private set; }
-            = SelectorFactory.CreateSelector(SelectFeatureState, state => state.LoadingState);
+        public static ISelector<List<Day>> SelectDays { get; private set; }
+            = SelectorFactory.CreateSelector(SelectFeatureState, state => state.Entities.Values.ToList());
     }
 }

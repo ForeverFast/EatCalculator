@@ -11,8 +11,5 @@ namespace EatCalculator.UI.Entities.Products.Models.Store
 
         public static ISelector<List<Product>> SelectProducts { get; private set; }
             = SelectorFactory.CreateSelector(SelectFeatureState, state => state.Entities.Values.ToList());
-
-        public static ISelector<LoadingState> SelectProductsLoadingState { get; private set; }
-            = SelectorFactory.CreateSelector(SelectFeatureState, state => state.LoadingState);
     }
 }

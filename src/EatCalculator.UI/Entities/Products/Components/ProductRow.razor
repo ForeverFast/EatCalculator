@@ -1,10 +1,13 @@
 ﻿@inherits BaseComponent
 
-<div class="@ClassName(nameof(ProductRow)) d-flex flex-row align-center w-100" @attributes="UserAttributes"
+<div class="@ClassName(nameof(ProductRow)) d-flex flex-row align-center border rounded w-100 mt-2 py-5 px-2"
+     @attributes="UserAttributes"
      @onclick="@OnClick">
-    <MudText>@Product.Name</MudText>
+    <MudText>
+        @Product.Name
+    </MudText>
 
-    <div class="product-row__optional ms-auto">
+    <div class="product-row__optional d-flex flex-row flex-grow-1">
         @OptionalContent
     </div>
 </div>

@@ -1,48 +1,50 @@
 ﻿@inherits BaseFluxorComponent
 
-<div class="@ClassName(nameof(CreateProductForm))" @attributes="UserAttributes">
+<div class="@ClassName(nameof(CreateProductForm)) pa-2" @attributes="UserAttributes">
+    <MudText Typo="Typo.h5">Создание продукта</MudText>
     <MudForm @ref="_createProductForm" Model="_createProductViewModel"
              Validation="_createProductViewModelValidator.Validation">
-        <MudText Class="mt-4">Name</MudText>
+        <MudText Class="mt-4">Название</MudText>
         <MudTextField @bind-Value="_createProductViewModel!.Name"
                       For="@(() => _createProductViewModel!.Name)" Immediate="true"
                       Variant="Variant.Outlined" Margin="Margin.Dense" />
 
-        <MudText Class="mt-6">Description</MudText>
+        <MudText Class="mt-4">Описание</MudText>
         <MudTextField @bind-Value="_createProductViewModel!.Description"
                       For="@(() => _createProductViewModel!.Description)" Immediate="true"
                       Variant="Variant.Outlined" Margin="Margin.Dense"
                       Lines="3" />
 
-        <MudText Class="mt-6">Grams</MudText>
+        <MudText Class="mt-4">Грамм</MudText>
         <MudTextField @bind-Value="_createProductViewModel!.Grams"
                       For="@(() => _createProductViewModel!.Grams)" Immediate="true"
                       Variant="Variant.Outlined" Margin="Margin.Dense" />
 
-        <MudText Class="mt-6">Protein</MudText>
+        <MudText Class="mt-4">Белки</MudText>
         <MudTextField @bind-Value="_createProductViewModel!.Protein"
                       For="@(() => _createProductViewModel!.Protein)" Immediate="true"
                       Variant="Variant.Outlined" Margin="Margin.Dense" />
 
-        <MudText Class="mt-6">Fat</MudText>
+        <MudText Class="mt-4">Жиры</MudText>
         <MudTextField @bind-Value="_createProductViewModel!.Fat"
                       For="@(() => _createProductViewModel!.Fat)" Immediate="true"
                       Variant="Variant.Outlined" Margin="Margin.Dense" />
 
-        <MudText Class="mt-6">Carbohydrate</MudText>
+        <MudText Class="mt-4">Углеводы</MudText>
         <MudTextField @bind-Value="_createProductViewModel!.Carbohydrate"
                       For="@(() => _createProductViewModel!.Carbohydrate)" Immediate="true"
                       Variant="Variant.Outlined" Margin="Margin.Dense" />
     </MudForm>
     <MudButton Variant="Variant.Filled" Color="Color.Primary"
-               OnClick="OnSubmit" Class="px-10">
+               OnClick="OnSubmit"
+               Class="px-10 mt-4">
         <Condition Evaluation="_saving">
             <Match>
                 <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                <MudText Class="ms-2">Saving...</MudText>
+                <MudText Class="ms-2">Создание...</MudText>
             </Match>
             <NotMatch>
-                Save
+                Создать
             </NotMatch>
         </Condition>
     </MudButton>

@@ -7,13 +7,15 @@
         public class Days
         {
             public const string BasePath = "days";
+
+            public const string Update = "update";
         }
 
         public class Products
         {
-            public const string BasePath = "product";
+            public const string BasePath = "products";
 
-            public const string CreateProduct = "-/create";
+            public const string Create = "-/create";
         }
     }
 }

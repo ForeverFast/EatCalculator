@@ -2,6 +2,7 @@
 using EatCalculator.UI.Entities.Products.Models.Store;
 using EatCalculator.UI.Entities.Products.Models.Store.Actions;
 using EatCalculator.UI.Features.Products.CreateProductForm.Models;
+using EatCalculator.UI.Shared.Lib;
 using EatCalculator.UI.Shared.Lib.Validation;
 
 namespace EatCalculator.UI.Features.Products.CreateProductForm.Components
@@ -33,13 +34,20 @@ namespace EatCalculator.UI.Features.Products.CreateProductForm.Components
             base.OnInitialized();
 
             SubscribeToAction<CreateProductSuccessAction>(OnCreateProductSuccessAction);
-        }    
+        }
+
+        #endregion
+
+        #region External events
+
+        private void OnCreateProductSuccessAction(CreateProductSuccessAction action)
+            => _navigationManager.NavigateToProductsPage();
 
         #endregion
 
         #region Internal events
 
-        private async void OnSubmit()
+        private async Task OnSubmit()
         {
             if (_createProductForm == null)
                 return;
@@ -57,15 +65,6 @@ namespace EatCalculator.UI.Features.Products.CreateProductForm.Components
                 Fat = _createProductViewModel.Fat,
                 Carbohydrate = _createProductViewModel.Carbohydrate,
             });
-        }
-
-        #endregion
-
-        #region External events
-
-        private void OnCreateProductSuccessAction(CreateProductSuccessAction action)
-        {
-            //_navigationManager.NavigateTo()
         }
 
         #endregion

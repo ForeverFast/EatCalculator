@@ -3,7 +3,7 @@ using EatCalculator.UI.Shared.Api.Models;
 
 namespace EatCalculator.UI.Features.Products
 {
-    public partial class DeleteProduct
+    public partial class DeleteProduct : BaseComponent
     {
         #region Params
 

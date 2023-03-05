@@ -1,8 +1,12 @@
 using Clients.PWA;
+using Clients.PWA.Implementations;
 using EatCalculator.UI.App;
+using EatCalculator.UI.Shared.Api.LocalDatabase.Context;
 using EatCalculator.UI.Shared.Lib.AppBuilder;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+
+EatCalculatorDbContext? GlobalEatCalculatorDbContext = null!;
 
 var defaultBuilder = WebAssemblyHostBuilder.CreateDefault(args);
 defaultBuilder.RootComponents.Add<ClientApp>("#app");
@@ -18,6 +22,16 @@ var clientAppBuilderSettings = new ClientAppBuilderSettings
 
 var builder = defaultBuilder.ToClientAppBuilder(clientAppBuilderSettings);
 
+builder.Services.AddSingleton<IEatCalculatorDbContextFactory, PWAEatCalculatorDbContextFactory>();
+builder.Services.AddSingleton<EatCalculatorDbContext>((sp) => GlobalEatCalculatorDbContext);
+
 builder.ConfigureAppLayer();
 
-await defaultBuilder.Build().RunAsync();
+
+
+var app = defaultBuilder.Build();
+
+var eatCalculatorDbContextFactory = app.Services.GetRequiredService<IEatCalculatorDbContextFactory>();
+GlobalEatCalculatorDbContext = await eatCalculatorDbContextFactory.CreateContextAsync();
+
+await app.RunAsync();

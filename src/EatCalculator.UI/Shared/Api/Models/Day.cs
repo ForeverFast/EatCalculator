@@ -1,11 +1,13 @@
-﻿namespace EatCalculator.UI.Shared.Api.Models
+﻿using DALQueryChain.Interfaces;
+
+namespace EatCalculator.UI.Shared.Api.Models
 {
-    public record Day
+    public record Day : IDbModelBase
     {
         public required int Id { get; init; }
 
         public required string Title { get; init; }
-
+        public string? Description { get; set; }
         public int MealCount { get; init; }
 
         /// <summary>
@@ -30,5 +32,9 @@
         public int CarbohydratePortions { get; init; }
 
         public int Order { get; init; }
+
+
+
+        public List<Meal> Meals { get; init; } = new List<Meal>();
     }
 }

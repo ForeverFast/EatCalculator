@@ -1,14 +1,11 @@
 ﻿@inherits BaseComponent
 
-<div class="@ClassName(nameof(DayRow)) d-flex flex-row align-center w-100" @attributes="UserAttributes"
+<div class="@ClassName(nameof(DayRow)) d-flex flex-row align-center border rounded w-100 mt-2 py-1 px-2"
+     @attributes="UserAttributes"
      @onclick="@OnClick">
     <MudText>@Day.Title</MudText>
 
-    @*<div class="day-row__info d-flex flex-column text-align-center">
-        <MudText>К: @Day.</MudText>
-    </div>*@
-
-    <div class="day-row__optional ms-auto">
+    <div class="day-row__optional d-flex flex-row flex-grow-1">
         @OptionalContent
     </div>
 </div>

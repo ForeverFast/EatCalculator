@@ -1,0 +1,46 @@
+﻿@using EatCalculator.UI.Entities.Products.Models.Store;
+@using EatCalculator.UI.Entities.Products.Components;
+@using EatCalculator.UI.Features.Products;
+@using EatCalculator.UI.Features.Products.CreateProductForm.Components;
+
+@inherits BasePageComponent
+
+<div class="products-page inner-main-content">
+    <MudPaper Elevation="0"
+              Class="d-flex flex-column align-center h-100">
+        <MudPaper Width="100%" Elevation="3"
+                  Class="border-b rounded-0">
+            <MudToolBar Dense="true" Class="w-100">
+                <MudText Typo="Typo.h5">Продукты</MudText>
+                <MudSpacer />
+                <MudIconButton Icon="@Icons.Material.Filled.Add"
+                               Size="Size.Small"
+                               OnClick="OnCreateProductButtonClick" />
+            </MudToolBar>
+        </MudPaper>
+        <MudPaper Width="100%" Elevation="0"
+                  Class="mt-2 px-2">
+            <Condition Evaluation="@(_productsListSelector.Value.Count() > 0)">
+                <Match>
+                    <Iterations Items="@_productsListSelector.Value" Context="product">
+                        <ProductRow @key="product" Product="product">
+                            <OptionalContent>
+                                <MudPaper Width="100%" Elevation="0"
+                                          Class="d-flex flex-row align-center w-100">
+                                    <ProductPFCInfo Product="product"/>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                                   Size="Size.Small"
+                                                   Class="ms-auto" />
+                                    <DeleteProduct Product="product" />
+                                </MudPaper>
+                            </OptionalContent>
+                        </ProductRow>
+                    </Iterations>
+                </Match>
+                <NotMatch>
+                    <MudText Align="Align.Center">Здесь пока ничего нет</MudText>
+                </NotMatch>
+            </Condition>
+        </MudPaper>
+    </MudPaper>
+</div>

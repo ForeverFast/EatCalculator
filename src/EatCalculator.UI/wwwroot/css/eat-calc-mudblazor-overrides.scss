@@ -7,14 +7,17 @@
 
     .inner-main-content {
         width: 100%;
+        height: 100%;
     }
 }
 
 @media (max-width: 599px) {
     .mud-main-content {
+        padding-top: 0px;
+
         .inner-main-content {
-            padding-left: 8px;
-            padding-right: 16px;
+            padding-left: 0px;
+            padding-right: 0px;
         }
     }
 }

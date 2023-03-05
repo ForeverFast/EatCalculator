@@ -20,43 +20,11 @@ namespace EatCalculator.UI.Entities.Products.Models.Store.Effects
         {
             try
             {
-                await Task.Yield();
-
-                var productsList = new List<Product>
-                {
-                    new Product
-                    {
-                        Id = 0,
-                        Name = "Гречка",
-                        Grams = 100,
-                        Protein = 50,
-                        Fat = 20,
-                        Carbohydrate = 120,
-                    },
-                    new Product
-                    {
-                        Id = 1,
-                        Name = "Творог",
-                        Grams = 100,
-                        Protein = 150,
-                        Fat = 10,
-                        Carbohydrate = 10,
-                    },
-
-                    new Product
-                    {
-                        Id = 2,
-                        Name = "Рис",
-                        Grams = 100,
-                        Protein = 50,
-                        Fat = 50,
-                        Carbohydrate = 50,
-                    },
-                };
-
+                var products = await _injects.Dal.For<Product>().Get.ToListAsync();
+ 
                 dispatcher.Dispatch(new LoadProductsSuccessAction
                 {
-                    Products = productsList,
+                    Products = products,
                 });
             }
             catch (Exception ex)
