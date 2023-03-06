@@ -1,5 +1,4 @@
-﻿using Mapster;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 
 namespace EatCalculator.UI.Shared.Lib.EntityAdapter
 {

@@ -10,7 +10,7 @@
     db.synchronizeDbWithCache = async function (filename) {
 
         const backupPath = `/${filename}`;
-        const cachePath = `/data/cache${backupPath.split('.')[0]}.db`;
+        const cachePath = `/data/cache/${backupPath.split('.')[0]}.db`;
         console.log(`Processing ${backupPath}...`);
 
         if (!db.init) {
