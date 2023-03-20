@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using EatCalculator.UI.Shared.Lib.AppBuilder;
+using Microsoft.UI.Xaml;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -19,6 +20,6 @@ namespace Clients.Maui.WinUI
             this.InitializeComponent();
         }
 
-        protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+        protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp(ClientAppPlatform.Windows);
     }
 }

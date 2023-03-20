@@ -27,6 +27,7 @@
                                           Class="d-flex flex-row align-center w-100">
                                     <MudIconButton Icon="@Icons.Material.Filled.Edit"
                                                    Size="Size.Small"
+                                                   OnClick="_ => OnEditDayButtonClick(day.Id)"
                                                    Class="ms-auto" />
                                     <DeleteDayButton Day="day" />
                                 </MudPaper>

@@ -1,6 +1,7 @@
 ﻿using EatCalculator.UI.App.Models;
 using EatCalculator.UI.App;
 using System.Reflection;
+using EatCalculator.UI.Shared.Lib.AppBuilder;
 
 namespace Clients.PWA
 {
@@ -8,8 +9,7 @@ namespace Clients.PWA
     {
         internal static readonly ClientAppConfiguration ClientAppConfiguration = new()
         {
-            IsWeb = true,
-            IsDesktop = false,
+            Platform = ClientAppPlatform.Web
         };
 
         internal static readonly Assembly MainAssembly = typeof(Program).Assembly;

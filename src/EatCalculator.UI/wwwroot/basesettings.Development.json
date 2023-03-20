@@ -1,5 +1,5 @@
 {
   "EatCalculatorDbContextSettings": {
-    "DbName":  "EatCalculator"
+    "DbName": "eat-calculator.db"
   }
 }

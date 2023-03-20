@@ -1,4 +1,5 @@
 ﻿using EatCalculator.UI.Entities.Products.Models.Store.Actions;
+using EatCalculator.UI.Shared.Api.Models;
 using EatCalculator.UI.Shared.Lib.Fluxor.Effects;
 using Microsoft.Extensions.Logging;
 
@@ -19,7 +20,7 @@ namespace EatCalculator.UI.Entities.Products.Models.Store.Effects
         {
             try
             {
-                await Task.Yield();
+                await _injects.Dal.For<Product>().Delete.DeleteAsync(x => x.Id == action.Id);  
 
                 dispatcher.Dispatch(new DeleteProductSuccessAction
                 {

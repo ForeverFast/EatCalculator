@@ -1,0 +1,19 @@
+
+.update-meal-dialog {
+    ::deep .portion-block {
+        
+        &__input {
+            width: 55px;
+        }
+
+        .mud-input {
+            > input {
+                padding: 5px;
+            }
+        }
+    }
+
+    ::deep .meal-list-container{
+        flex-basis: 50%;
+    }
+}

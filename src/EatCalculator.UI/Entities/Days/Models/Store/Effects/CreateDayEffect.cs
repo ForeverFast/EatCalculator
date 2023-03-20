@@ -2,7 +2,6 @@
 using EatCalculator.UI.Shared.Api.Models;
 using EatCalculator.UI.Shared.Lib.Fluxor.Effects;
 using Microsoft.Extensions.Logging;
-using System.Security.Cryptography;
 
 namespace EatCalculator.UI.Entities.Days.Models.Store.Effects
 {
@@ -28,6 +27,14 @@ namespace EatCalculator.UI.Entities.Days.Models.Store.Effects
                 };
 
                 var createdDay = await _injects.Dal.For<Day>().Insert.InsertWithObjectAsync(newDay);
+
+                await _injects.Dal.For<Meal>().Insert.BulkInsertAsync(Enumerable.Range(1, action.Day.MealCount ?? 3).Select(x => new Meal
+                {
+                    Id = 0,
+                    DayId = createdDay.Id,
+                    Title = $"Приём пищи №{x}",
+                    Order = x,
+                }));
 
                 dispatcher.Dispatch(new CreateDaySuccessAction
                 {

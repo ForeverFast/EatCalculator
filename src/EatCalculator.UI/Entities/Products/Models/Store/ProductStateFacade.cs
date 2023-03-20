@@ -6,24 +6,24 @@ using EatCalculator.UI.Shared.Lib.Fluxor.Selectors;
 
 namespace EatCalculator.UI.Entities.Products.Models.Store
 {
-    internal sealed class ProductStateFacade : StateFacade<ProductState>, IDisposable
+    internal sealed class ProductStateFacade : StateFacade<ProductState>
     {
         #region Ctors
 
         public ProductStateFacade(IStore store,
                                   IDispatcher dispatcher) : base(store, dispatcher)
         {
-            ListSelector = _store.SubscribeSelector(ProductStateSelectors.SelectProducts);
+            Products = _store.SubscribeSelector(ProductStateSelectors.SelectProducts);
         }
 
         #endregion
 
         #region Selectors
 
-        protected override ISelector<ProductState> StateSelectorPointer
+        protected override ISelector<ProductState> SelectState
             => ProductStateSelectors.SelectFeatureState;
 
-        public ISelectorSubscription<List<Product>> ListSelector { get; }
+        public ISelectorSubscription<List<Product>> Products { get; }
 
         #endregion
 
@@ -43,12 +43,15 @@ namespace EatCalculator.UI.Entities.Products.Models.Store
         public void DeleteProduct(int productId)
             => _dispatcher.Dispatch(new DeleteProductAction { Id = productId, });
 
+        public Product? GetProductById(int productId) 
+            => State.Value.Entities.FirstOrDefault(x => x.Key == productId).Value;    
 
 
-        public void Dispose()
+        public override void Dispose()
         {
-            StateSelector?.Dispose();
-            ListSelector.Dispose();
+            base.Dispose();
+
+            Products.Dispose();
         }
     }
 }

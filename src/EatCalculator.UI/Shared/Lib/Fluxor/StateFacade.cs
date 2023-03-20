@@ -2,7 +2,8 @@
 
 namespace EatCalculator.UI.Shared.Lib.Fluxor
 {
-    internal abstract class StateFacade<T> where T : class
+    internal abstract class StateFacade<T> : IDisposable
+        where T : class
     {
         #region Injects
 
@@ -18,13 +19,18 @@ namespace EatCalculator.UI.Shared.Lib.Fluxor
             _store = store;
             _dispatcher = dispatcher;
 
-            StateSelector = _store.SubscribeSelector(StateSelectorPointer);
+            State = _store.SubscribeSelector(SelectState);
         }
 
         #endregion
 
-        protected abstract ISelector<T> StateSelectorPointer { get; }
+        protected abstract ISelector<T> SelectState { get; }
 
-        public ISelectorSubscription<T> StateSelector { get; }
+        public ISelectorSubscription<T> State { get; }
+
+        public virtual void Dispose()
+        {
+            State?.Dispose();
+        }
     }
 }

@@ -2,6 +2,8 @@
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace EatCalculator.UI.Shared.Api.LocalDatabase.Migrations
 {
     /// <inheritdoc />
@@ -18,16 +20,9 @@ namespace EatCalculator.UI.Shared.Api.LocalDatabase.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: true),
-                    MealCount = table.Column<int>(type: "INTEGER", nullable: false),
-                    ProteinTotal = table.Column<double>(type: "REAL", nullable: false),
                     ProteinPercentages = table.Column<double>(type: "REAL", nullable: false),
-                    ProteinPortions = table.Column<int>(type: "INTEGER", nullable: false),
-                    FatTotal = table.Column<double>(type: "REAL", nullable: false),
                     FatPercentages = table.Column<double>(type: "REAL", nullable: false),
-                    FatPortions = table.Column<int>(type: "INTEGER", nullable: false),
-                    CarbohydrateTotal = table.Column<double>(type: "REAL", nullable: false),
                     CarbohydratePercentages = table.Column<double>(type: "REAL", nullable: false),
-                    CarbohydratePortions = table.Column<int>(type: "INTEGER", nullable: false),
                     Order = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -41,12 +36,13 @@ namespace EatCalculator.UI.Shared.Api.LocalDatabase.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: true),
                     Grams = table.Column<double>(type: "REAL", nullable: false),
                     Protein = table.Column<double>(type: "REAL", nullable: false),
                     Fat = table.Column<double>(type: "REAL", nullable: false),
-                    Carbohydrate = table.Column<double>(type: "REAL", nullable: false)
+                    Carbohydrate = table.Column<double>(type: "REAL", nullable: false),
+                    Order = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -60,7 +56,7 @@ namespace EatCalculator.UI.Shared.Api.LocalDatabase.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     DayId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Title = table.Column<string>(type: "TEXT", nullable: false),
                     Order = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -82,7 +78,10 @@ namespace EatCalculator.UI.Shared.Api.LocalDatabase.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     MealId = table.Column<int>(type: "INTEGER", nullable: false),
                     ProductId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Grams = table.Column<double>(type: "REAL", nullable: false)
+                    ProteinPercentages = table.Column<double>(type: "REAL", nullable: false),
+                    FatPercentages = table.Column<double>(type: "REAL", nullable: false),
+                    CarbohydratePercentages = table.Column<double>(type: "REAL", nullable: false),
+                    Order = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -99,6 +98,26 @@ namespace EatCalculator.UI.Shared.Api.LocalDatabase.Migrations
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "Carbohydrate", "Description", "Fat", "Grams", "Order", "Protein", "Title" },
+                values: new object[,]
+                {
+                    { 1, 20.600000000000001, null, 1.1000000000000001, 100.0, 1, 4.2000000000000002, "Гречка" },
+                    { 2, 24.690000000000001, null, 0.5, 100.0, 2, 2.2000000000000002, "Рис" },
+                    { 3, 0.59999999999999998, null, 8.1999999999999993, 100.0, 3, 21.0, "Курица" },
+                    { 4, 0.0, null, 7.2999999999999998, 100.0, 4, 26.800000000000001, "Индейка" },
+                    { 5, 3.0, null, 5.0, 100.0, 5, 16.0, "Творог" },
+                    { 6, 5.7000000000000002, null, 6.2000000000000002, 100.0, 6, 80.299999999999997, "Протеин" },
+                    { 7, 0.0, null, 0.90000000000000002, 100.0, 7, 15.9, "Минтай" },
+                    { 8, 61.799999999999997, null, 6.2000000000000002, 100.0, 8, 12.300000000000001, "Овсянка" },
+                    { 9, 0.0, null, 99.799999999999997, 100.0, 9, 0.0, "Масло льняное" },
+                    { 10, 0.0, null, 99.799999999999997, 100.0, 10, 0.0, "Масло оливковое" },
+                    { 11, 0.69999999999999996, null, 11.5, 100.0, 11, 12.699999999999999, "Яйцо" },
+                    { 12, 21.399999999999999, null, 0.69999999999999996, 100.0, 12, 3.6000000000000001, "Макароны из твёрдых сортов" },
+                    { 13, 68.0, null, 1.5, 100.0, 13, 13.0, "Булгур" }
                 });
 
             migrationBuilder.CreateIndex(

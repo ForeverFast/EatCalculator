@@ -1,6 +1,8 @@
 ﻿@inherits BaseFluxorComponent
 
-<div class="@ClassName(nameof(CreateDayDialog))" @attributes="UserAttributes">
+<div class="@GetCssName(nameof(CreateDayDialog)) @ClassName"
+     style="@StyleName"
+     @attributes="UserAttributes">
     <MudIconButton Icon="@Icons.Material.Filled.Add"
                    Size="Size.Small"
                    OnClick="OnClick" />

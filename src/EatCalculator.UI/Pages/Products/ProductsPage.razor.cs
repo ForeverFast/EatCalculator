@@ -18,7 +18,7 @@ namespace EatCalculator.UI.Pages.Products
         #region Selectors
 
         private ISelectorSubscription<List<Product>> _productsListSelector
-            => _productStateFacade.ListSelector;
+            => _productStateFacade.Products;
 
         #endregion
 

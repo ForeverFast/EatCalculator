@@ -1,5 +1,4 @@
-﻿using Clients.Maui.Helpers;
-using EatCalculator.UI.App;
+﻿using EatCalculator.UI.App;
 using EatCalculator.UI.App.Models;
 using System.Reflection;
 
@@ -7,10 +6,9 @@ namespace Clients.Maui
 {
     internal static class MauiAppConfiguration
     {
-        internal static readonly ClientAppConfiguration ClientAppConfiguration = new()
+        internal static ClientAppConfiguration ClientAppConfiguration = new()
         {
-            IsWeb = false,
-            IsDesktop = PlatformHelper.IsDesktop,
+
         };
 
         internal static readonly Assembly MainAssembly = typeof(MauiProgram).Assembly;

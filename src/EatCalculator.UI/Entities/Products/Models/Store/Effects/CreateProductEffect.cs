@@ -24,7 +24,7 @@ namespace EatCalculator.UI.Entities.Products.Models.Store.Effects
                 var newProduct = new Product
                 {
                     Id = 0,
-                    Name = action.Product.Name,
+                    Title = action.Product.Name,
                     Description = action.Product.Description,
                     Grams = action.Product.Grams,
                     Protein = action.Product.Protein,

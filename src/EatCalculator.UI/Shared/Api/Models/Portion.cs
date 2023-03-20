@@ -8,7 +8,20 @@ namespace EatCalculator.UI.Shared.Api.Models
         public required int MealId { get; init; }
         public required int ProductId { get; init; }
 
-        public required double Grams { get; init; }
+        /// <summary>
+        /// Белки (100г.)
+        /// </summary>
+        public double ProteinPercentages { get; init; }
+        /// <summary>
+        /// Жиры (100г.)
+        /// </summary>
+        public double FatPercentages { get; init; }
+        /// <summary>
+        /// Углеводы (100г.)
+        /// </summary>
+        public double CarbohydratePercentages { get; init; }
+
+        public int Order { get; init; }
 
         public Product Product { get; init; } = null!;
     }

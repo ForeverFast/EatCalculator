@@ -24,11 +24,13 @@ namespace Clients.Maui
         }
 
         public static ClientAppBuilder ToClientAppBuilder(this MauiAppBuilder builder,
+                                                          ClientAppPlatform platform,
                                                           ClientAppEnvironment environment,
                                                           string baseAddress,
                                                           ClientAppBuilderSettings clientAppBuilderSettings)
             => new ClientAppBuilder
             {
+                Platform = platform,
                 Environment = environment,
                 Domain = clientAppBuilderSettings.Domain,
                 BaseAddress = baseAddress,

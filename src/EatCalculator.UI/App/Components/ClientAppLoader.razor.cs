@@ -1,4 +1,5 @@
-﻿using EatCalculator.UI.Entities.Products.Models.Store;
+﻿using EatCalculator.UI.Entities.Days.Models.Store;
+using EatCalculator.UI.Entities.Products.Models.Store;
 using EatCalculator.UI.Shared.Components;
 
 namespace EatCalculator.UI.App.Components
@@ -14,6 +15,7 @@ namespace EatCalculator.UI.App.Components
         #region Injects
 
         [Inject] ProductStateFacade _productStateFacade { get; init; } = null!;
+        [Inject] DayStateFacade _dayStateFacade { get; init; } = null!;
 
         #endregion
 
@@ -37,6 +39,7 @@ namespace EatCalculator.UI.App.Components
             _progressText = "Проверяем обновления на сервере...";
             //_serverUpdatesCheckLoadingState = LoadingState.Loading;
             _productStateFacade.LoadProducts();
+            _dayStateFacade.LoadDays(); 
         }
 
         #endregion

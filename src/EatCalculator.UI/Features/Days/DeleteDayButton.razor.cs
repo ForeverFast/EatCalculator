@@ -9,6 +9,11 @@ namespace EatCalculator.UI.Features.Days
 
         [Parameter, EditorRequired] public required Day Day { get; set; }
 
+        [Parameter] public Variant Variant { get; set; }
+        [Parameter] public Size Size { get; set; } = Size.Small;
+
+        [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }  
+
         #endregion
 
         #region Injects
@@ -19,8 +24,12 @@ namespace EatCalculator.UI.Features.Days
 
         #region Internal events
 
-        private void OnClick()
-            => _dayStateFacade.DeleteDay(Day.Id);
+        private async Task OnButtonClick(MouseEventArgs args)
+        {
+            await OnClick.InvokeAsync(args);
+
+            _dayStateFacade.DeleteDay(Day.Id);
+        }
 
         #endregion
     }

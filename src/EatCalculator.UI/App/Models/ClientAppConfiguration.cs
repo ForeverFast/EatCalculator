@@ -1,8 +1,9 @@
-﻿namespace EatCalculator.UI.App.Models
+﻿using EatCalculator.UI.Shared.Lib.AppBuilder;
+
+namespace EatCalculator.UI.App.Models
 {
     public sealed record ClientAppConfiguration
     {
-        public required bool IsWeb { get; init; }
-        public required bool IsDesktop { get; init; }
+        public ClientAppPlatform Platform { get; init; }
     }
 }

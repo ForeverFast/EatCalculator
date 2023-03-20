@@ -6,7 +6,7 @@ using Microsoft.JSInterop;
 
 namespace Clients.PWA.Implementations
 {
-    public class PWAEatCalculatorDbContextFactory : IEatCalculatorDbContextFactory
+    public class PwaEatCalculatorDbContextFactory : IEatCalculatorDbContextFactory
     {
         #region Injects
 
@@ -18,7 +18,7 @@ namespace Clients.PWA.Implementations
 
         #region Ctors
 
-        public PWAEatCalculatorDbContextFactory(
+        public PwaEatCalculatorDbContextFactory(
             IOptions<EatCalculatorDbContextSettings> eatCalculatorDbContextSettings,
             IDbContextFactory<EatCalculatorDbContext> eatCalculatorDbContextFactory,
             IJSRuntime jSRuntime)
@@ -27,7 +27,7 @@ namespace Clients.PWA.Implementations
             _eatCalculatorDbContextFactory = eatCalculatorDbContextFactory;
             _jSRuntime = jSRuntime;
 
-            _dbFilename = $"{_eatCalculatorDbContextSettings.DbName}.sqlite3";
+            _dbFilename = $"{_eatCalculatorDbContextSettings.DbName}";
             _backup = $"{_dbFilename}_bak";
             _backupName = _backup;
 
@@ -38,7 +38,7 @@ namespace Clients.PWA.Implementations
 
         #region Fields
 
-        private string _dbFilename = "eatcalculator.sqlite3";
+        private string _dbFilename = "eat-calculator.db";
         private string _backup;
         private string _backupName;
 
@@ -65,18 +65,19 @@ namespace Clients.PWA.Implementations
             return ctx;
         }
 
-        private async Task CheckForPendingTasksAsync()
+        private async ValueTask CheckForPendingTasksAsync()
         {
-            if (_lastTask != null)
-            {
-                _lastStatus = await _lastTask;
-                _lastTask.Dispose();
-                _lastTask = null;
-                if (_lastStatus == 0)
-                {
-                    Restore();
-                }
-            }
+            if (_lastTask == null)
+                return;
+
+            _lastStatus = await _lastTask;
+            _lastTask.Dispose();
+            _lastTask = null;
+
+            if (_lastStatus != 0)
+                return;
+
+            Restore();
         }
 
         private void OnSavedChanges(object? sender, SavedChangesEventArgs e)
@@ -89,9 +90,13 @@ namespace Clients.PWA.Implementations
                 Backup();
             }
 
-            var result = await _jSRuntime.InvokeAsync<int>(
-                "db.synchronizeDbWithCache", _backupName);
-            var resultText = result == -1 ? "Failure" : (result == 0 ? "Restored" : "Cached");
+            var result = await _jSRuntime.InvokeAsync<int>("db.synchronizeDbWithCache", _backupName);
+            var resultText = result switch
+            {
+                1 => "Cached",
+                0 => "Restored",
+                -1 or _ => "Failure",
+            };
             Console.WriteLine($"Synchronization status: {resultText}");
 
             return result;
@@ -107,10 +112,11 @@ namespace Clients.PWA.Implementations
         {
             _backupName = restore ? _backup : $"{_backup}-{Guid.NewGuid().ToString().Split('-')[0]}";
             var dir = restore ? nameof(restore) : "backup";
+
             Console.WriteLine($"Begin {dir}.");
 
-            var source = restore ? $"Data Source={_backupName}" : $"Data Source={_dbFilename}";
-            var target = restore ? $"Data Source={_dbFilename}" : $"Data Source={_backupName}";
+            var source = $"Data Source={(restore ? _backupName : _dbFilename)}";
+            var target = $"Data Source={(restore ? _dbFilename : _backupName)}";
             using var src = new SqliteConnection(source);
             using var tgt = new SqliteConnection(target);
 

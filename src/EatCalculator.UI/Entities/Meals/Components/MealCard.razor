@@ -1,0 +1,18 @@
+﻿@inherits BaseComponent
+
+<div class="@GetCssName(nameof(MealCard)) d-flex flex-row align-center border rounded w-100 mt-2 py-1 px-2 @ClassName"
+     style="@StyleName"
+     @attributes="UserAttributes"
+     @onclick="@OnClick">
+    <div class="d-flex flex-column align-start">
+        <MudText>@Meal.Title</MudText>
+
+        <div class="meal-card__bottom-content">
+            @BottomContent
+        </div>
+    </div>
+
+    <div class="meal-card__optional-content d-flex flex-row ms-auto">
+        @OptionalContent
+    </div>
+</div>

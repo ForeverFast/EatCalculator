@@ -89,7 +89,7 @@ namespace EatCalculator.UI.Features.Days.CreateDayDialog.Components
 
         #region Config
 
-        private readonly DialogOptions _dialogOptions = new() { FullWidth = true };
+        private readonly DialogOptions _dialogOptions = new() { FullScreen = true };
 
         #endregion
     }

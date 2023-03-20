@@ -18,9 +18,13 @@ namespace Clients.Maui
             AdditionalAssemblies = MauiAppConfiguration.TargetAssemblies
         };
 
-        public static MauiApp CreateMauiApp()
+        public static MauiApp CreateMauiApp(ClientAppPlatform platform)
         {
             GlobalConstants.Environment = _environment;
+            MauiAppConfiguration.ClientAppConfiguration = MauiAppConfiguration.ClientAppConfiguration with
+            {
+                Platform = platform,
+            };
 
             var defaultBuilder = MauiApp.CreateBuilder();
             defaultBuilder.UseMauiApp<App>();
@@ -29,6 +33,7 @@ namespace Clients.Maui
             // Blazor
 
             var builder = defaultBuilder.ToClientAppBuilder(
+                platform,
                 _environment,
                 _baseWebViewAddress,
                 _clientAppBuilderSettings);
@@ -41,6 +46,7 @@ namespace Clients.Maui
             }
 
             builder.Services.AddSingleton<IEatCalculatorDbContextFactory, MauiEatCalculatorDbContextFactory>();
+            builder.Services.AddSingleton<IEatCalculatorDbContextPathResolver, MauiEatCalculatorDbContextPathResolver>();
 
             builder.ConfigureAppLayer();
 

@@ -23,11 +23,11 @@ namespace EatCalculator.UI.Shared.Lib.BaseComponents
 
         #region Css/Style
 
-        protected CssBuilder GetCssBuilder(string componentName)
-            => new CssBuilder(componentName.PascalToKebabCase());
+        protected string GetCssName(string componentName)
+            => componentName.PascalToKebabCase();
 
-        protected virtual string ClassName(string componentName)
-            => GetCssBuilder(componentName)
+        protected virtual string ClassName
+            => new CssBuilder()
             .AddClass(Class)
             .Build();
 
@@ -38,11 +38,8 @@ namespace EatCalculator.UI.Shared.Lib.BaseComponents
 
         #endregion
 
-        protected void OnStateHasChangedAction(object action)
-           => InvokeAsync(() => OnStateHasChangedActionExecute(action));
-
-        protected virtual void OnStateHasChangedActionExecute(object _)
-            => StateHasChanged();
+        protected void OnStateHasChangedAction(object _)
+            => InvokeAsync(StateHasChanged);
 
         protected Task BeforeStateHasChanged(Action action)
             => InvokeAsync(() =>

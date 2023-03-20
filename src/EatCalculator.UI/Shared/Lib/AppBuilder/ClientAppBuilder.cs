@@ -7,6 +7,7 @@ namespace EatCalculator.UI.Shared.Lib.AppBuilder
 {
     public record ClientAppBuilder
     {
+        public required ClientAppPlatform Platform { get; init; }
         public required ClientAppEnvironment Environment { get; init; }
         public required string Domain { get; init; }
         public required string BaseAddress { get; init; }

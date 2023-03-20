@@ -30,6 +30,7 @@ namespace Clients.PWA
 
             => new ClientAppBuilder
             {
+                Platform = ClientAppPlatform.Web,
                 Environment = builder.GetEnvironment(),
                 Domain = clientAppBuilderSettings.Domain,
                 BaseAddress = builder.HostEnvironment.BaseAddress,

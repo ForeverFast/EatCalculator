@@ -8,9 +8,9 @@ namespace EatCalculator.UI.Entities.Days.Models.Store
         public static ISelector<DayState> SelectFeatureState { get; private set; }
             = SelectorFactory.CreateFeatureSelector<DayState>();
 
-        public static ISelector<Day> SelectCurrentDay { get; private set; }
+        public static ISelector<Day?> SelectCurrentDay { get; private set; }
             = SelectorFactory.CreateSelector(SelectFeatureState,
-                state => state.Entities.Values.FirstOrDefault(x => x.Equals(state.CurrentDayId))!);
+                state => state.Entities.Values.FirstOrDefault(x => x.Id == state.CurrentDayId));
 
         public static ISelector<List<Day>> SelectDays { get; private set; }
             = SelectorFactory.CreateSelector(SelectFeatureState, state => state.Entities.Values.ToList());

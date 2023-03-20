@@ -22,5 +22,12 @@ namespace EatCalculator.UI.Shared.Api.LocalDatabase.Context
         public DbSet<Product> Products { get; set; } = null!;
 
         #endregion
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(EatCalculatorDbContext).Assembly);
+        }   
     }
 }

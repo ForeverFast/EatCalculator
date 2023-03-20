@@ -1,5 +1,51 @@
-﻿@inherits BasePageComponent
+﻿@using EatCalculator.UI.Entities.Meals.Components
+@using EatCalculator.UI.Features.Days
+@using EatCalculator.UI.Features.Meals;
 
-<div class="update-day-page inner-main-content">
+@inherits BasePageComponent
 
+<div class="@GetCssName(nameof(UpdateDayPage)) inner-main-content @ClassName"
+     @attributes="@UserAttributes">
+    <Condition Evaluation="_currentDay.Value != null">
+        <Match>
+            <MudPaper Width="100%" Elevation="3"
+                      Class="border-b rounded-0">
+                <MudToolBar Dense="true"
+                            Class="w-100">
+                    <MudText Typo="Typo.h5">@_currentDay.Value!.Title</MudText>
+                    <MudSpacer />
+                    <DeleteDayButton Day="_currentDay.Value!"
+                                     Variant="Variant.Outlined"
+                                     OnClick="OnDeleteDayButtonClick"/>
+                </MudToolBar>
+            </MudPaper>
+            <MudPaper Width="100%" Elevation="0"
+                      Class="mt-2 px-2">
+                <Condition Evaluation="@(_meals.Value?.Count() > 0)">
+                    <Match>
+                        <Iterations Items="@_meals.Value" Context="meal">
+                            <MealCard @key="meal" Meal="meal">
+                                <OptionalContent>
+                                    <MudPaper Width="100%" Elevation="0"
+                                              Class="d-flex flex-row align-center w-100">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                                       Size="Size.Small"
+                                                       OnClick="_ => OnEditMealButtonClick(meal)"
+                                                       Class="ms-auto" />
+                                        <DeleteMealButton Meal="meal" />
+                                    </MudPaper>
+                                </OptionalContent>
+                                <BottomContent>
+                                    
+                                </BottomContent>
+                            </MealCard>
+                        </Iterations>
+                    </Match>
+                    <NotMatch>
+                        <MudText Align="Align.Center">Здесь пока ничего нет</MudText>
+                    </NotMatch>
+                </Condition>
+            </MudPaper>
+        </Match>
+    </Condition>
 </div>

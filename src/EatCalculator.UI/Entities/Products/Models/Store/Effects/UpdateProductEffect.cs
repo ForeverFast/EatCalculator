@@ -21,22 +21,24 @@ namespace EatCalculator.UI.Entities.Products.Models.Store.Effects
         {
             try
             {
-                await Task.Yield();
+                var targetProduct = await _injects.Dal.For<Product>().Get.FirstOrDefaultAsync(x => x.Id == action.Id)
+                    ?? throw new Exception();
 
-                var updatedProduct = new Product
+                targetProduct = targetProduct with
                 {
-                    Id = RandomNumberGenerator.GetInt32(100, int.MaxValue),
-                    Name = action.Product.Name,
+                    Title = action.Product.Name,
                     Description = action.Product.Description,
                     Grams = action.Product.Grams,
                     Protein = action.Product.Protein,
-                    Fat = action.Product.Fat,
+                    Fat = action.Product.Fat,   
                     Carbohydrate = action.Product.Carbohydrate,
                 };
 
+                await _injects.Dal.For<Product>().Update.UpdateAsync(targetProduct);
+
                 dispatcher.Dispatch(new UpdateProductSuccessAction
                 {
-                    Product = updatedProduct,
+                    Product = targetProduct,
                 });
             }
             catch (Exception ex)

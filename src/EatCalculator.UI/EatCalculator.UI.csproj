@@ -55,8 +55,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\Portions\Components\" />
     <Folder Include="Shared\Api\LocalDatabase\DesignTimeFiles\" />
+    <Folder Include="Shared\Api\LocalDatabase\Migrations\" />
     <Folder Include="Shared\Lib\Fluxor\Selectors\" />
     <Folder Include="Widgets\" />
   </ItemGroup>

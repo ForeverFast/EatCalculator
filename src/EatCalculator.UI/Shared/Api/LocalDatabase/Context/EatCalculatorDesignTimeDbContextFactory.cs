@@ -32,7 +32,7 @@ namespace EatCalculator.UI.Shared.Api.LocalDatabase.Context
                 "Api",
                 "LocalDatabase",
                 "DesignTimeFiles",
-                $"{settings.DbName}.sqlite3");
+                $"{settings.DbName}.db");
 
             optionsBuilder.UseSqlite($@"Data Source={dbFilePath};");
             return new EatCalculatorDbContext(optionsBuilder.Options);

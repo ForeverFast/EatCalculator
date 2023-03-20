@@ -1,7 +1,6 @@
 ﻿using EatCalculator.UI.Entities.Days.Models.Contracts;
 using EatCalculator.UI.Entities.Days.Models.Store.Actions;
 using EatCalculator.UI.Shared.Api.Models;
-using EatCalculator.UI.Shared.Components;
 using EatCalculator.UI.Shared.Lib.Fluxor;
 using EatCalculator.UI.Shared.Lib.Fluxor.Selectors;
 
@@ -13,19 +12,19 @@ namespace EatCalculator.UI.Entities.Days.Models.Store
         
         public DayStateFacade(IStore store, IDispatcher dispatcher) : base(store, dispatcher)
         {
-            CurrentDaySelector = _store.SubscribeSelector(DayStateSelectors.SelectCurrentDay);
-            ListSelector = _store.SubscribeSelector(DayStateSelectors.SelectDays);
+            CurrentDay = _store.SubscribeSelector(DayStateSelectors.SelectCurrentDay);
+            Days = _store.SubscribeSelector(DayStateSelectors.SelectDays);
         }
 
         #endregion
 
         #region Selectors
 
-        protected override ISelector<DayState> StateSelectorPointer
+        protected override ISelector<DayState> SelectState
             => DayStateSelectors.SelectFeatureState;
 
-        public ISelectorSubscription<Day> CurrentDaySelector { get; }
-        public ISelectorSubscription<List<Day>> ListSelector { get; }
+        public ISelectorSubscription<Day?> CurrentDay { get; }
+        public ISelectorSubscription<List<Day>> Days { get; }
 
         #endregion
 
@@ -53,10 +52,12 @@ namespace EatCalculator.UI.Entities.Days.Models.Store
 
 
 
-        public void Dispose()
+        public override void Dispose()
         {
-            StateSelector?.Dispose();
-            ListSelector.Dispose();
+            base.Dispose();
+
+            CurrentDay.Dispose();   
+            Days.Dispose();
         }
     }
 }

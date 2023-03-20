@@ -22,7 +22,8 @@ var clientAppBuilderSettings = new ClientAppBuilderSettings
 
 var builder = defaultBuilder.ToClientAppBuilder(clientAppBuilderSettings);
 
-builder.Services.AddSingleton<IEatCalculatorDbContextFactory, PWAEatCalculatorDbContextFactory>();
+builder.Services.AddSingleton<IEatCalculatorDbContextFactory, PwaEatCalculatorDbContextFactory>();
+builder.Services.AddSingleton<IEatCalculatorDbContextPathResolver, PwaEatCalculatorDbContextPathResolver>();
 builder.Services.AddSingleton<EatCalculatorDbContext>((sp) => GlobalEatCalculatorDbContext);
 
 builder.ConfigureAppLayer();

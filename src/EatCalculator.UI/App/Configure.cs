@@ -1,4 +1,5 @@
 ﻿using EatCalculator.UI.Entities.Days.Models.Store;
+using EatCalculator.UI.Entities.Meals.Models.Store;
 using EatCalculator.UI.Entities.Products.Models.Store;
 using EatCalculator.UI.Shared;
 using EatCalculator.UI.Shared.Lib.AppBuilder;
@@ -13,6 +14,7 @@ namespace EatCalculator.UI.App
         public static ClientAppBuilder ConfigureAppLayer(this ClientAppBuilder appBuilder)
         {
             appBuilder.ConfigureSharedLayer();
+            appBuilder.ConfigureDataAccessLayer();
 
             var services = appBuilder.Services;
             var targetAssemblies = appBuilder.AdditionalAssemblies;
@@ -29,8 +31,9 @@ namespace EatCalculator.UI.App
                     options.UseReduxDevTools();
             });
 
-            services.AddScoped<ProductStateFacade>();
             services.AddScoped<DayStateFacade>();
+            services.AddScoped<MealStateFacade>();
+            services.AddScoped<ProductStateFacade>();
 
             return appBuilder;
         }

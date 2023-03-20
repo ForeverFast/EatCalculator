@@ -1,5 +1,4 @@
 ﻿using EatCalculator.UI.Shared.Api.Models;
-using EatCalculator.UI.Shared.Components;
 using EatCalculator.UI.Shared.Lib.Fluxor.Selectors;
 
 namespace EatCalculator.UI.Entities.Products.Models.Store

@@ -4,11 +4,11 @@
     {
         #region Css/Style
 
-        protected CssBuilder GetCssBuilder(string componentName)
-            => new CssBuilder(componentName.PascalToKebabCase());
+        protected string GetCssName(string componentName)
+            => componentName.PascalToKebabCase();
 
-        protected virtual string ClassName(string componentName)
-            => GetCssBuilder(componentName)
+        protected virtual string ClassName
+            => new CssBuilder()
             .AddClass(Class)
             .Build();
             

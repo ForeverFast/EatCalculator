@@ -1,6 +1,9 @@
 ﻿@inherits BaseComponent
 
-<MudIconButton Class="@ClassName(nameof(DeleteDayButton))" Style="@StyleName" UserAttributes="UserAttributes"
+<MudIconButton Class="@($"{GetCssName(nameof(DeleteDayButton))} {ClassName}")"
+               Style="@StyleName"
+               UserAttributes="UserAttributes"
                Icon="@Icons.Material.Filled.Delete"
-               Color="Color.Error" Size="Size.Small"
-               OnClick="OnClick" />
+               Variant="@Variant"
+               Color="Color.Error" Size="@Size"
+               OnClick="OnButtonClick" />

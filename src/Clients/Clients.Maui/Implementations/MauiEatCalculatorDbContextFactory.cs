@@ -14,7 +14,9 @@ namespace Clients.Maui.Implementations
         #region Ctors
 
         public MauiEatCalculatorDbContextFactory(IDbContextFactory<EatCalculatorDbContext> eatCalculatorDbContextFactory)
-            => _eatCalculatorDbContextFactory = eatCalculatorDbContextFactory;
+        {
+            _eatCalculatorDbContextFactory = eatCalculatorDbContextFactory;
+        }
 
         #endregion
 
@@ -30,7 +32,7 @@ namespace Clients.Maui.Implementations
 
             if (!_init)
             {
-                await dbContext.Database.EnsureCreatedAsync();
+                await dbContext.Database.MigrateAsync();
                 _init = true;
             }
 

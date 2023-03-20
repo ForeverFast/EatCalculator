@@ -1,6 +1,8 @@
 ﻿@inherits BaseFluxorComponent
 
-<div class="@ClassName(nameof(CreateProductForm)) pa-2" @attributes="UserAttributes">
+<div class="@GetCssName(nameof(CreateProductForm)) pa-2 @ClassName"
+     style="@StyleName"
+     @attributes="UserAttributes">
     <MudText Typo="Typo.h5">Создание продукта</MudText>
     <MudForm @ref="_createProductForm" Model="_createProductViewModel"
              Validation="_createProductViewModelValidator.Validation">
