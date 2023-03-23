@@ -1,9 +1,7 @@
 ﻿using EatCalculator.UI.Entities.Days.Models.Store.Actions;
-using EatCalculator.UI.Entities.Products.Models.Store.Actions;
 using EatCalculator.UI.Shared.Api.Models;
 using EatCalculator.UI.Shared.Lib.Fluxor.Effects;
 using Microsoft.Extensions.Logging;
-using System.Security.Cryptography;
 
 namespace EatCalculator.UI.Entities.Days.Models.Store.Effects
 {
@@ -22,17 +20,27 @@ namespace EatCalculator.UI.Entities.Days.Models.Store.Effects
         {
             try
             {
-                await Task.Yield();
+                var targetDay = await _injects.Dal.For<Day>().Get
+                    .FirstOrDefaultAsync(x => x.Id == action.Id)
+                    ?? throw new Exception();
 
-                var updatedDay = new Day
+                targetDay = targetDay with
                 {
-                    Id = RandomNumberGenerator.GetInt32(100, int.MaxValue),
-                    Title = action.Day.Title
+                    Title = action.Day.Title,
+                    Description = action.Day.Description,
+                    ProteinPercentages = action.Day.ProteinPercentages,
+                    FatPercentages = action.Day.FatPercentages,
+                    CarbohydratePercentages = action.Day.CarbohydratePercentages,
+                    ProteinMealCount = action.Day.ProteinMealCount,
+                    FatMealCount = action.Day.FatMealCount,
+                    CarbohydrateMealCount = action.Day.CarbohydrateMealCount,
                 };
+
+                await _injects.Dal.For<Day>().Update.UpdateAsync(targetDay);
 
                 dispatcher.Dispatch(new UpdateDaySuccessAction
                 {
-                    Day = updatedDay,
+                    Day = targetDay,
                 });
             }
             catch (Exception ex)

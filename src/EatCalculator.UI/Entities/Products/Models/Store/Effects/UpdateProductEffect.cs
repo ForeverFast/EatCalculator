@@ -26,7 +26,7 @@ namespace EatCalculator.UI.Entities.Products.Models.Store.Effects
 
                 targetProduct = targetProduct with
                 {
-                    Title = action.Product.Name,
+                    Title = action.Product.Title,
                     Description = action.Product.Description,
                     Grams = action.Product.Grams,
                     Protein = action.Product.Protein,

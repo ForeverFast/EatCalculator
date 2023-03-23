@@ -1,41 +1,40 @@
 ﻿@using EatCalculator.UI.Entities.Products.Models.Store;
 @using EatCalculator.UI.Entities.Products.Components;
 @using EatCalculator.UI.Features.Products;
-@using EatCalculator.UI.Features.Products.CreateProductForm.Components;
 
 @inherits BasePageComponent
 
-<div class="@GetCssName(nameof(ProductsPage)) d-flex flex-column align-center h-100 inner-main-content @ClassName">
-    <MudPaper Width="100%" Elevation="3"
-              Class="border-b rounded-0">
-        <MudToolBar Dense="true" Class="w-100">
+<div class="@GetCssName(nameof(ProductsPage)) inner-main-content h-100 overflow-hidden @ClassName">
+    <ScrollableContainerWithToolbar>
+        <ToolbarContent>
             <MudText Typo="Typo.h5">Продукты</MudText>
             <MudSpacer />
             <MudIconButton Icon="@Icons.Material.Filled.Add"
                            Size="Size.Small"
                            OnClick="OnCreateProductButtonClick" />
-        </MudToolBar>
-    </MudPaper>
-    <MudContainer Class="mt-2">
-        <Condition Evaluation="@(_productsListSelector.Value.Count() > 0)">
-            <Match>
-                <Iterations Items="@_productsListSelector.Value" Context="product">
-                    <ProductRow @key="product" Product="product">
-                        <OptionalContent>
-                            <MudContainer Class="d-flex flex-row align-center px-0">
-                                <ProductPFCInfo Product="product" />
-                                <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                               Size="Size.Small"
-                                               Class="ms-auto" />
-                                <DeleteProduct Product="product" />
-                            </MudContainer>
-                        </OptionalContent>
-                    </ProductRow>
-                </Iterations>
-            </Match>
-            <NotMatch>
-                <MudText Align="Align.Center">Здесь пока ничего нет</MudText>
-            </NotMatch>
-        </Condition>
-    </MudContainer>
+        </ToolbarContent>
+        <Content>
+            <Condition Evaluation="@(_productsListSelector.Value.Count() > 0)">
+                <Match>
+                    <Iterations Items="@_productsListSelector.Value" Context="product">
+                        <ProductRow @key="product" Product="product">
+                            <OptionalContent>
+                                <MudContainer Class="d-flex flex-row align-center px-0">
+                                    <ProductPFCInfo Product="product" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                                   Size="Size.Small"
+                                                   OnClick="_ => OnUpdateProductButtonClick(product)"
+                                                   Class="ms-auto" />
+                                    <DeleteProduct Product="product" />
+                                </MudContainer>
+                            </OptionalContent>
+                        </ProductRow>
+                    </Iterations>
+                </Match>
+                <NotMatch>
+                    <MudText Align="Align.Center">Здесь пока ничего нет</MudText>
+                </NotMatch>
+            </Condition>
+        </Content>
+    </ScrollableContainerWithToolbar>
 </div>

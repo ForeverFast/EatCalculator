@@ -7,15 +7,18 @@ namespace EatCalculator.UI.Shared.Lib.Fluxor.Effects
     {
         #region Injects
 
+        public ISnackbar Snackbar { get; } 
+
         public IDALQueryChain<EatCalculatorDbContext> Dal { get; }
 
         #endregion
 
         #region Ctors
 
-        public BaseEffectInjects(IDALQueryChain<EatCalculatorDbContext> dal)
+        public BaseEffectInjects(IDALQueryChain<EatCalculatorDbContext> dal, ISnackbar snackbar)
         {
             Dal = dal;
+            Snackbar = snackbar;
         }
 
         #endregion

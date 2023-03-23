@@ -29,11 +29,11 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog.Components
         private bool _isEditTitle = false;
 
         private Meal _mealCopy = null!;
-        private List<PortionViewModel> _portions = new();
+        private List<PortionWithProductInfo> _portions = new();
         private List<Product> _products = new();
 
         private List<Product> _notIncludedProducts
-            => _products.Where(x => !_portions.Any(y => y.ProductId == x.Id)).ToList();
+            => _products.Where(x => !_portions.Any(y => y.Portion.ProductId == x.Id)).ToList();
 
         private List<string> _portionsValidation = new();
 
@@ -56,14 +56,26 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog.Components
                 base.OnInitialized();
 
                 _mealCopy = Meal with { };
-                _portions = _mealCopy.Portions.Select(x => new PortionViewModel
+                _products.AddRange(_productStateFacade.Products.Value);
+
+                _mealCopy.Portions.Select(x => new PortionViewModel
                 {
-                    ProductId = x.Id,
+                    ProductId = x.ProductId,
                     ProteinPercentages = x.ProteinPercentages,
                     FatPercentages = x.FatPercentages,
                     CarbohydratePercentages = x.CarbohydratePercentages,
-                }).ToList();
-                _products.AddRange(_productStateFacade.Products.Value);
+                }).ToList().ForEach(x =>
+                {
+                    var product = _productStateFacade.GetProductById(x.ProductId);
+                    if (product == null)
+                        return;
+
+                    _portions.Add(new PortionWithProductInfo
+                    {
+                        Product = product,
+                        Portion = x,
+                    });
+                });
             });
 
         #endregion
@@ -82,8 +94,8 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog.Components
         private void OnStartEditTitleButtonClick()
             => _isEditTitle = true;
 
-        private void OnDeleteProductFromMealButtonClick(PortionViewModel portion)
-            => CalculatePortionsInfo(() => _portions.Remove(portion));
+        private void OnDeleteProductFromMealButtonClick(PortionWithProductInfo portionWithProductInfo)
+            => CalculatePortionsInfo(() => _portions.Remove(portionWithProductInfo));
 
         private void OnProteinValueChanged(PortionViewModel portion, double newValue)
             => CalculatePortionsInfo(() => portion.ProteinPercentages = newValue);
@@ -95,9 +107,13 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog.Components
             => CalculatePortionsInfo(() => portion.CarbohydratePercentages = newValue);
 
         private void OnAddProductToMealButtonClick(Product product)
-            => CalculatePortionsInfo(() => _portions.Add(new PortionViewModel
+            => CalculatePortionsInfo(() => _portions.Add(new PortionWithProductInfo
             {
-                ProductId = product.Id,
+                Product = product,
+                Portion = new PortionViewModel
+                {
+                    ProductId = product.Id,
+                },
             }));
 
         private void OnSaveButtonClick()
@@ -113,10 +129,10 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog.Components
                 {
                     Id = 0,
                     MealId = Meal.Id,
-                    ProductId = x.ProductId,
-                    ProteinPercentages = x.ProteinPercentages,
-                    FatPercentages = x.FatPercentages,
-                    CarbohydratePercentages = x.CarbohydratePercentages,
+                    ProductId = x.Portion.ProductId,
+                    ProteinPercentages = x.Portion.ProteinPercentages,
+                    FatPercentages = x.Portion.FatPercentages,
+                    CarbohydratePercentages = x.Portion.CarbohydratePercentages,
                 }).ToList(),
             });
         }
@@ -132,30 +148,30 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog.Components
             _portionsValidation.Clear();
 
             if (_portions.Count == 0)
-                return false;
+                return true;
 
-            var proteinTotal = _portions.Sum(x => x.ProteinPercentages);
+            var proteinTotal = _portions.Sum(x => x.Portion.ProteinPercentages);
             if (proteinTotal < 100.0)
                 _portionsValidation.Add("Протеина меньше 100%");
             if (proteinTotal > 100.0)
                 _portionsValidation.Add("Протеина больше 100%");
 
-            var fatTotal = _portions.Sum(x => x.FatPercentages);
+            var fatTotal = _portions.Sum(x => x.Portion.FatPercentages);
             if (fatTotal < 100.0)
                 _portionsValidation.Add("Жиров меньше 100%");
             if (fatTotal > 100.0)
                 _portionsValidation.Add("Жиров больше 100%");
 
-            var carbohydrateTotal = _portions.Sum(x => x.CarbohydratePercentages);
+            var carbohydrateTotal = _portions.Sum(x => x.Portion.CarbohydratePercentages);
             if (carbohydrateTotal < 100.0)
                 _portionsValidation.Add("Углеводов меньше 100%");
             if (carbohydrateTotal > 100.0)
                 _portionsValidation.Add("Углеводов больше 100%");
 
             if (_portions.Any(x
-                => x.ProteinPercentages == 0.0
-                && x.FatPercentages == 0.0
-                && x.CarbohydratePercentages == 0.0))
+                => x.Portion.ProteinPercentages == 0.0
+                && x.Portion.FatPercentages == 0.0
+                && x.Portion.CarbohydratePercentages == 0.0))
                 _portionsValidation.Add("Есть незадействованные продукты!");
 
             return !_portionsValidation.Any();
@@ -163,6 +179,16 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog.Components
 
         private void Close()
             => MudDialog.Close();
+
+        #endregion
+
+        #region Inner models
+
+        record PortionWithProductInfo
+        {
+            public required PortionViewModel Portion { get; init; }
+            public required Product Product { get; init; }
+        }
 
         #endregion
 

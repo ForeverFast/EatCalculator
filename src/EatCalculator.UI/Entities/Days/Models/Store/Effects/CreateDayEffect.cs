@@ -24,6 +24,7 @@ namespace EatCalculator.UI.Entities.Days.Models.Store.Effects
                 {
                     Id = 0,
                     Title = action.Day.Title,
+                    Description = action.Day.Description,
                 };
 
                 var createdDay = await _injects.Dal.For<Day>().Insert.InsertWithObjectAsync(newDay);

@@ -9,7 +9,7 @@ namespace EatCalculator.UI.Shared.Api.LocalDatabase.Context
 
         public EatCalculatorDbContext(DbContextOptions options) : base(options)
         {
-            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            
         }
 
         #endregion
@@ -28,6 +28,15 @@ namespace EatCalculator.UI.Shared.Api.LocalDatabase.Context
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(EatCalculatorDbContext).Assembly);
-        }   
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var result = await base.SaveChangesAsync(cancellationToken);
+
+            ChangeTracker.Clear();
+
+            return result;
+        }
     }
 }

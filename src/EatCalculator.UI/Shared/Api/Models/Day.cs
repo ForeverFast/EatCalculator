@@ -22,6 +22,9 @@ namespace EatCalculator.UI.Shared.Api.Models
         /// </summary>
         public double CarbohydratePercentages { get; init; }
 
+        public int ProteinMealCount { get; init; }
+        public int FatMealCount { get; init; }
+        public int CarbohydrateMealCount { get; init; }
 
         public int Order { get; init; }
 

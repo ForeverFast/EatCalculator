@@ -13,12 +13,14 @@
     <MudLayout>
         <ClientAppLoader>
             <Content>
-                <MudPaper Class="overflow-hidden relative">
+                <MudSwipeArea OnSwipe="OnSwipe"
+                              Class="overflow-hidden relative">
                     <MudDrawerContainer Class="h-100">
                         <MudDrawer @bind-Open="_drawerOpened"
                                    Fixed="false" Elevation="1"
-                                   Variant="@DrawerVariant.Mini" Breakpoint="Breakpoint.Xxl"
-                                   OpenMiniOnHover="true">
+                                   Variant="@DrawerVariant.Mini" Breakpoint="Breakpoint.Xl"
+                                   OpenMiniOnHover="true" 
+                                   Class="@_drawerCssName">
                             <MudNavMenu>
                                 <MudNavLink Match="NavLinkMatch.All" Href="/"
                                             Icon="@Icons.Material.Filled.AllOut">
@@ -27,10 +29,12 @@
                                 <MudDivider />
                                 <MudNavLink Match="NavLinkMatch.Prefix" Href="@($"{Routes.Products.BasePath}")"
                                             Icon="@Icons.Material.Filled.FormatListBulleted"
+                                            
                                             Class="mt-2">
                                     Продукты
                                 </MudNavLink>
-                                <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Today">
+                                <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Today"
+                                            OnClick="OnNavLinkClick">
                                     Community
                                 </MudNavLink>
                             </MudNavMenu>
@@ -39,7 +43,7 @@
                             @Body
                         </MudMainContent>
                     </MudDrawerContainer>
-                </MudPaper>
+                </MudSwipeArea>
             </Content>
         </ClientAppLoader>
     </MudLayout>

@@ -2,7 +2,7 @@
 {
     internal record UpdateProductContract
     {
-        public required string Name { get; init; }
+        public required string Title { get; init; }
         public string? Description { get; set; }
 
         public required double Grams { get; init; }

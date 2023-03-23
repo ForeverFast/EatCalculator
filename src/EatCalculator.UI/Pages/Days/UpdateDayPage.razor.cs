@@ -1,5 +1,7 @@
-﻿using EatCalculator.UI.Entities.Days.Models.Store;
+﻿using EatCalculator.UI.Entities.Days.Models.Contracts;
+using EatCalculator.UI.Entities.Days.Models.Store;
 using EatCalculator.UI.Entities.Meals.Models.Store;
+using EatCalculator.UI.Entities.Products.Models.Store;
 using EatCalculator.UI.Features.Meals.UpdateMealDialog.Components;
 using EatCalculator.UI.Shared.Api.Models;
 using EatCalculator.UI.Shared.Configs;
@@ -23,10 +25,20 @@ namespace EatCalculator.UI.Pages.Days
 
         [Inject] DayStateFacade _dayStateFacade { get; init; } = null!;
         [Inject] MealStateFacade _mealStateFacade { get; init; } = null!;
-
+       
         #endregion
 
         #region UI Fields
+
+        private double _proteinPercentages;
+        private double _fatPercentages;
+        private double _carbohydratePercentages;
+
+        private int _proteinMealCount;
+        private int _fatMealCount;
+        private int _carbohydrateMealCount;
+
+        private List<string> _dayValidation = new();
 
         #endregion
 
@@ -85,6 +97,24 @@ namespace EatCalculator.UI.Pages.Days
 
         }
 
+        private void OnChangeDayInfo(Action action)
+        {
+            if (_currentDay.Value == null || !ValidateDay(action))
+                return;
+
+            _dayStateFacade.UpdateDay(DayId, new UpdateDayContract
+            {
+                Title = _currentDay.Value.Title,
+                Description = _currentDay.Value.Description,
+                ProteinPercentages = _proteinPercentages,
+                FatPercentages = _fatPercentages,
+                CarbohydratePercentages = _carbohydratePercentages,
+                ProteinMealCount = _proteinMealCount,
+                FatMealCount = _fatMealCount,
+                CarbohydrateMealCount = _carbohydrateMealCount,
+            });
+        }
+
         private void OnEditMealButtonClick(Meal meal)
             => _dialogService.Show<UpdateMealDialog>(
                 "",
@@ -103,7 +133,45 @@ namespace EatCalculator.UI.Pages.Days
             if (_currentDay.Value == null)
                 return;
 
+            _proteinPercentages = _currentDay.Value.ProteinPercentages;
+            _fatPercentages = _currentDay.Value.FatPercentages;
+            _carbohydratePercentages = _currentDay.Value.CarbohydratePercentages;
+
+            _proteinMealCount = _currentDay.Value.ProteinMealCount;
+            _fatMealCount = _currentDay.Value.FatMealCount;
+            _carbohydrateMealCount = _currentDay.Value.CarbohydrateMealCount;
+
             _mealStateFacade.LoadMeals(_currentDay.Value.Id);
+        }
+
+        private bool ValidateDay(Action? action = null)
+        {
+            action?.Invoke();
+            _dayValidation.Clear();
+
+            bool correctPercentages = _proteinPercentages + _fatPercentages + _carbohydratePercentages == 100.0;
+            if (!correctPercentages)
+                _dayValidation.Add("Сумма БЖУ в % на день должна быть равна 100%");
+
+            var actualProteinMealCount = _meals.Value.Where(x => x.Portions.Any(x => x.ProteinPercentages > 0)).Count();
+            if (actualProteinMealCount > _proteinMealCount)
+                _dayValidation.Add("Много белковых приёмов пищи");
+            if (actualProteinMealCount < _proteinMealCount)
+                _dayValidation.Add("Мало белковых приёмов пищи");
+
+            var actualFatMealCount = _meals.Value.Where(x => x.Portions.Any(x => x.FatPercentages > 0)).Count();
+            if (actualFatMealCount > _fatMealCount)
+                _dayValidation.Add("Много жировых приёмов пищи");
+            if (actualFatMealCount < _fatMealCount)
+                _dayValidation.Add("Мало жировых приёмов пищи");
+
+            var actualCarbohydrateMealCount = _meals.Value.Where(x => x.Portions.Any(x => x.CarbohydratePercentages > 0)).Count();
+            if (actualCarbohydrateMealCount > _carbohydrateMealCount)
+                _dayValidation.Add("Много углеводных приёмов пищи");
+            if (actualCarbohydrateMealCount < _carbohydrateMealCount)
+                _dayValidation.Add("Мало углеводных приёмов пищи");
+
+            return _dayValidation.Count > 0;
         }
 
         #endregion

@@ -44,6 +44,7 @@ namespace EatCalculator.UI.Shared
 
                 var connectionString = $"Data Source={dbFilePath}";
 
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 options.UseSqlite(connectionString);
             });
 

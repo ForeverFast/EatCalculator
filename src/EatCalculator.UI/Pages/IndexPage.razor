@@ -5,25 +5,19 @@
 
 @inherits BasePageComponent
 
-<div class="index-page inner-main-content">
-    <MudPaper Elevation="0"
-              Class="d-flex flex-column align-center">
-        <MudPaper Width="100%" Elevation="3"
-                  Class="border-b rounded-0">
-            <MudToolBar Dense="true" Class="w-100">
-                <MudText Typo="Typo.h5">Дни</MudText>
-                <MudSpacer />
-                <CreateDayDialog/>
-            </MudToolBar>
-        </MudPaper>
-        <MudPaper Width="100%" Elevation="0"
-                  Class="mt-2 px-2">
+<div class="@GetCssName(nameof(IndexPage)) inner-main-content h-100 overflow-hidden @ClassName">
+    <ScrollableContainerWithToolbar>
+        <ToolbarContent>
+            <MudText Typo="Typo.h5">Дни</MudText>
+            <MudSpacer />
+        </ToolbarContent>
+        <Content>
             <Condition Evaluation="@(_dayListSelector.Value.Count() > 0)">
                 <Match>
                     <Iterations Items="@_dayListSelector.Value" Context="day">
                         <DayRow @key="day" Day="day">
-                             <OptionalContent>
-                                  <MudPaper Width="100%" Elevation="0"
+                            <OptionalContent>
+                                <MudPaper Width="100%" Elevation="0"
                                           Class="d-flex flex-row align-center w-100">
                                     <MudIconButton Icon="@Icons.Material.Filled.Edit"
                                                    Size="Size.Small"
@@ -39,6 +33,6 @@
                     <MudText Align="Align.Center">Здесь пока ничего нет</MudText>
                 </NotMatch>
             </Condition>
-        </MudPaper>
-    </MudPaper>
+        </Content>
+    </ScrollableContainerWithToolbar>
 </div>

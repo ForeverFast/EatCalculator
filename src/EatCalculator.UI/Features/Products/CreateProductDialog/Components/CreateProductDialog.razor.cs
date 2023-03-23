@@ -1,13 +1,12 @@
 ﻿using EatCalculator.UI.Entities.Products.Models.Contracts;
 using EatCalculator.UI.Entities.Products.Models.Store;
 using EatCalculator.UI.Entities.Products.Models.Store.Actions;
-using EatCalculator.UI.Features.Products.CreateProductForm.Models;
-using EatCalculator.UI.Shared.Lib;
+using EatCalculator.UI.Features.Products.CreateProductDialog.Models;
 using EatCalculator.UI.Shared.Lib.Validation;
 
-namespace EatCalculator.UI.Features.Products.CreateProductForm.Components
+namespace EatCalculator.UI.Features.Products.CreateProductDialog.Components
 {
-    public partial class CreateProductForm : BaseFluxorComponent
+    public partial class CreateProductDialog : BaseDialogComponent
     {
         #region Injects
 
@@ -41,11 +40,14 @@ namespace EatCalculator.UI.Features.Products.CreateProductForm.Components
         #region External events
 
         private void OnCreateProductSuccessAction(CreateProductSuccessAction action)
-            => _navigationManager.NavigateToProductsPage();
+            => Close();
 
         #endregion
 
         #region Internal events
+
+        private void OnBackButtonClick()
+            => Close();
 
         private async Task OnSubmit()
         {
@@ -58,7 +60,7 @@ namespace EatCalculator.UI.Features.Products.CreateProductForm.Components
 
             _productStateFacade.CreateProduct(new CreateProductContract
             {
-                Name = _createProductViewModel.Name,
+                Name = _createProductViewModel.Title,
                 Description = _createProductViewModel.Description,
                 Grams = _createProductViewModel.Grams,
                 Protein = _createProductViewModel.Protein,
@@ -66,6 +68,25 @@ namespace EatCalculator.UI.Features.Products.CreateProductForm.Components
                 Carbohydrate = _createProductViewModel.Carbohydrate,
             });
         }
+
+        #endregion
+
+        #region Private methods
+
+        private void Close()
+            => MudDialog.Close();
+
+        #endregion
+
+        #region Config
+
+        public static readonly DialogOptions DialogOptions = new()
+        {
+            FullScreen = true,
+            FullWidth = true,
+            NoHeader = true,
+            MaxWidth = MaxWidth.False
+        };
 
         #endregion
     }

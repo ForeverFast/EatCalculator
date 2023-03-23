@@ -2,7 +2,6 @@
 using EatCalculator.UI.Shared.Api.Models;
 using EatCalculator.UI.Shared.Lib.Fluxor.Effects;
 using Microsoft.Extensions.Logging;
-using System.Security.Cryptography;
 
 namespace EatCalculator.UI.Entities.Products.Models.Store.Effects
 {
@@ -33,6 +32,8 @@ namespace EatCalculator.UI.Entities.Products.Models.Store.Effects
                 };
 
                 var createdProduct = await _injects.Dal.For<Product>().Insert.InsertWithObjectAsync(newProduct);
+
+                _injects.Snackbar.Add("Продукт добавлен");
 
                 dispatcher.Dispatch(new CreateProductSuccessAction
                 {
