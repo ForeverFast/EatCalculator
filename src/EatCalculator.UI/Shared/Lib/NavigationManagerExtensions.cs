@@ -4,6 +4,9 @@ namespace EatCalculator.UI.Shared.Lib
 {
     internal static class NavigationManagerExtensions
     {
+        public static void NavigateToIndexPage(this NavigationManager navigationManager)
+            => navigationManager.NavigateTo($"{Routes.Main}");
+
         public static void NavigateToProductsPage(this NavigationManager navigationManager)
             => navigationManager.NavigateTo($"{Routes.Products.BasePath}");
 

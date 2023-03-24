@@ -19,7 +19,7 @@ namespace EatCalculator.UI.App
 
         #endregion
 
-        #region State methods
+        #region LC Methods
 
         protected override async Task OnParametersSetAsync()
         {

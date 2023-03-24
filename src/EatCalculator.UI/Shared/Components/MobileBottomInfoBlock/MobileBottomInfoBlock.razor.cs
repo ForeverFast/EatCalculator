@@ -6,11 +6,18 @@
 
         [Parameter] public RenderFragment? ChildContent { get; set; }
 
+        [Parameter] public bool IsVisible { get; set; }
+        [Parameter] public EventCallback<bool> IsVisibleChanged { get; set; }
+
         #endregion
 
-        #region UI Fields
+        #region Css/Style
 
-        private bool _showInfoBlock = false;
+        protected override string ClassName
+            => new CssBuilder()
+            .AddClass(Class)
+            .AddClass("active", IsVisible)
+            .Build();
 
         #endregion
 
@@ -18,14 +25,25 @@
 
         private void OnSwipe(SwipeDirection direction)
         {
-            _ = direction switch
+            Action? action = direction switch
             {
-                { } when _showInfoBlock && direction == SwipeDirection.TopToBottom => _showInfoBlock = false,
-                { } when !_showInfoBlock && direction == SwipeDirection.BottomToTop => _showInfoBlock = true,
-                _ => false,
+                { } when IsVisible && direction == SwipeDirection.TopToBottom => () => FireIsVisibleChange(false),
+                { } when !IsVisible && direction == SwipeDirection.BottomToTop => () => FireIsVisibleChange(true),
+                _ => null,
             };
 
+            action?.Invoke();
             StateHasChanged();
+        }
+
+        #endregion
+
+        #region Private methods
+
+        private void FireIsVisibleChange(bool value)
+        {
+            IsVisible = value;
+            IsVisibleChanged.InvokeAsync(IsVisible).AndForget();
         }
 
         #endregion

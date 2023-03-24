@@ -29,7 +29,7 @@ namespace EatCalculator.UI.Features.Days.CreateDayDialog.Components
 
         #endregion
 
-        #region State methods
+        #region LC Methods
 
         protected override void OnInitialized()
         {

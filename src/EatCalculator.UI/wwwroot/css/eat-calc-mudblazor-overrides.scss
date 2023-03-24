@@ -1,11 +1,27 @@
 ﻿.mud-main-content {
-    padding-top: 16px;
     overflow-y: auto;
     overflow-x: hidden;
+    padding-top: 16px;
 
     .inner-main-content {
         padding-bottom: 16px;
         width: 100%;
+    }
+}
+
+.mud-dialog-container {
+    z-index: 3000;
+
+    .mud-dialog {
+        background-color: var(--mud-palette-background);
+
+        .eat-calc-dialog-content {
+            overflow-x: hidden;
+            width: 100%;
+            height: 100%;
+            padding-top: 16px;
+            z-index: 3000;
+        }
     }
 }
 
@@ -19,11 +35,26 @@
             padding-right: 0px;
         }
     }
+
+    .mud-dialog {
+        .eat-calc-dialog-content {
+            padding-top: 0px;
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+    }
 }
 
 @media (min-width: 600px) and (max-width: 959px) {
     .mud-main-content {
         .inner-main-content {
+            padding-left: 8px;
+            padding-right: 16px;
+        }
+    }
+
+    .mud-dialog {
+        .eat-calc-dialog-content {
             padding-left: 8px;
             padding-right: 16px;
         }
@@ -37,11 +68,25 @@
             padding-right: 32px;
         }
     }
+
+    .mud-dialog {
+        .eat-calc-dialog-content {
+            padding-left: 16px;
+            padding-right: 32px;
+        }
+    }
 }
 
 @media (min-width: 1280px) and (max-width: 1919px) {
     .mud-main-content {
         .inner-main-content {
+            padding-left: 16px;
+            padding-right: 32px;
+        }
+    }
+
+    .mud-dialog {
+        .eat-calc-dialog-content {
             padding-left: 16px;
             padding-right: 32px;
         }
@@ -55,11 +100,25 @@
             padding-right: 40px;
         }
     }
+
+    .mud-dialog {
+        .eat-calc-dialog-content {
+            padding-left: 24px;
+            padding-right: 40px;
+        }
+    }
 }
 
 @media (min-width: 2560px) {
     .mud-main-content {
         .inner-main-content {
+            padding-left: 24px;
+            padding-right: 40px;
+        }
+    }
+
+    .mud-dialog {
+        .eat-calc-dialog-content {
             padding-left: 24px;
             padding-right: 40px;
         }

@@ -1,11 +1,12 @@
 ﻿using EatCalculator.UI.Entities.Days.Models.Contracts;
 using EatCalculator.UI.Entities.Days.Models.Store;
 using EatCalculator.UI.Entities.Meals.Models.Store;
-using EatCalculator.UI.Entities.Products.Models.Store;
 using EatCalculator.UI.Features.Meals.UpdateMealDialog.Components;
 using EatCalculator.UI.Shared.Api.Models;
 using EatCalculator.UI.Shared.Configs;
+using EatCalculator.UI.Shared.Lib;
 using EatCalculator.UI.Shared.Lib.Fluxor.Selectors;
+using EatCalculator.UI.Shared.Lib.Validation.SingleValueValidators;
 using System.ComponentModel;
 
 namespace EatCalculator.UI.Pages.Days
@@ -25,10 +26,13 @@ namespace EatCalculator.UI.Pages.Days
 
         [Inject] DayStateFacade _dayStateFacade { get; init; } = null!;
         [Inject] MealStateFacade _mealStateFacade { get; init; } = null!;
-       
+
         #endregion
 
         #region UI Fields
+
+        private string _title = string.Empty;
+        private TitleValidator _titleValidator = null!;
 
         private double _proteinPercentages;
         private double _fatPercentages;
@@ -52,13 +56,16 @@ namespace EatCalculator.UI.Pages.Days
 
         #endregion
 
-        #region State methods
+        #region LC Methods
 
         protected override void OnInitialized()
         {
             base.OnInitialized();
 
+            _titleValidator = new();
+
             _currentDay.PropertyChanged += OnCurrentDayChanged;
+            _meals.PropertyChanged += OnMealsChanged;
         }
 
         protected override void OnParametersSet()
@@ -86,11 +93,17 @@ namespace EatCalculator.UI.Pages.Days
         #region External events
 
         private void OnCurrentDayChanged(object? sender, PropertyChangedEventArgs e)
-           => LoadDayData();
+            => LoadDayData();
+
+        private void OnMealsChanged(object? sender, PropertyChangedEventArgs e)
+            => ValidateDay();
 
         #endregion
 
         #region Internal events
+
+        private void OnBackToDaysButtonClick()
+            => _navigationManager.NavigateToIndexPage();
 
         private void OnDeleteDayButtonClick()
         {
@@ -104,7 +117,7 @@ namespace EatCalculator.UI.Pages.Days
 
             _dayStateFacade.UpdateDay(DayId, new UpdateDayContract
             {
-                Title = _currentDay.Value.Title,
+                Title = _title,
                 Description = _currentDay.Value.Description,
                 ProteinPercentages = _proteinPercentages,
                 FatPercentages = _fatPercentages,
@@ -132,6 +145,8 @@ namespace EatCalculator.UI.Pages.Days
         {
             if (_currentDay.Value == null)
                 return;
+
+            _title = _currentDay.Value.Title;
 
             _proteinPercentages = _currentDay.Value.ProteinPercentages;
             _fatPercentages = _currentDay.Value.FatPercentages;

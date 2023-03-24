@@ -1,10 +1,10 @@
-﻿using EatCalculator.UI.Entities.Days.Models.Store;
-using EatCalculator.UI.Entities.Meals.Models.Contracts;
+﻿using EatCalculator.UI.Entities.Meals.Models.Contracts;
 using EatCalculator.UI.Entities.Meals.Models.Store;
+using EatCalculator.UI.Entities.Meals.Models.Store.Actions;
 using EatCalculator.UI.Entities.Products.Models.Store;
 using EatCalculator.UI.Features.Meals.UpdateMealDialog.Models;
 using EatCalculator.UI.Shared.Api.Models;
-using EatCalculator.UI.Shared.Lib.Validation;
+using EatCalculator.UI.Shared.Lib.Validation.SingleValueValidators;
 using FluentValidation;
 
 namespace EatCalculator.UI.Features.Meals.UpdateMealDialog.Components
@@ -26,9 +26,10 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog.Components
 
         #region UI Fields
 
-        private bool _isEditTitle = false;
+        private bool _titleEditMode = false;
+        private string _title = string.Empty;
+        private TitleValidator _titleValidator = null!;
 
-        private Meal _mealCopy = null!;
         private List<PortionWithProductInfo> _portions = new();
         private List<Product> _products = new();
 
@@ -36,29 +37,24 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog.Components
             => _products.Where(x => !_portions.Any(y => y.Portion.ProductId == x.Id)).ToList();
 
         private List<string> _portionsValidation = new();
+        private bool _IsPortionsValidationInfoVisible = false;
 
         #endregion
 
-        #region Validation
-
-        private BaseSingleValueValidator<string> _mealTitleValidator = new(
-            x => x.NotEmpty()
-                .MinimumLength(1)
-                .MaximumLength(32));
-
-        #endregion
-
-        #region State methods
+        #region LC Methods
 
         protected override void OnInitialized()
             => CalculatePortionsInfo(() =>
             {
                 base.OnInitialized();
 
-                _mealCopy = Meal with { };
+                SubscribeToAction<UpdateMealSuccessAction>(OnUpdateMealSuccessAction);
+
+                _title = Meal.Title;
+                _titleValidator = new TitleValidator();
                 _products.AddRange(_productStateFacade.Products.Value);
 
-                _mealCopy.Portions.Select(x => new PortionViewModel
+                Meal.Portions.Select(x => new PortionViewModel
                 {
                     ProductId = x.ProductId,
                     ProteinPercentages = x.ProteinPercentages,
@@ -82,7 +78,8 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog.Components
 
         #region External events
 
-
+        private void OnUpdateMealSuccessAction(UpdateMealSuccessAction _)
+            => Close();
 
         #endregion
 
@@ -91,20 +88,11 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog.Components
         private void OnBackToDayButtonClick()
             => Close();
 
-        private void OnStartEditTitleButtonClick()
-            => _isEditTitle = true;
-
         private void OnDeleteProductFromMealButtonClick(PortionWithProductInfo portionWithProductInfo)
             => CalculatePortionsInfo(() => _portions.Remove(portionWithProductInfo));
 
-        private void OnProteinValueChanged(PortionViewModel portion, double newValue)
-            => CalculatePortionsInfo(() => portion.ProteinPercentages = newValue);
-
-        private void OnFatValueChanged(PortionViewModel portion, double newValue)
-            => CalculatePortionsInfo(() => portion.FatPercentages = newValue);
-
-        private void OnCarbohydrateValueChanged(PortionViewModel portion, double newValue)
-            => CalculatePortionsInfo(() => portion.CarbohydratePercentages = newValue);
+        private void OnPortionViewModelValueChanged(Action action)
+            => CalculatePortionsInfo(action);
 
         private void OnAddProductToMealButtonClick(Product product)
             => CalculatePortionsInfo(() => _portions.Add(new PortionWithProductInfo
@@ -119,12 +107,15 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog.Components
         private void OnSaveButtonClick()
         {
             if (!CalculatePortionsInfo())
+            {
+                _IsPortionsValidationInfoVisible = true;    
                 return;
+            }
 
             _mealStateFacade.UpdateMeal(Meal.Id, new UpdateMealContract
             {
-                Title = _mealCopy.Title,
-                Order = _mealCopy.Order,
+                Title = _title,
+                Order = Meal.Order,
                 Portions = _portions.Select(x => new Portion
                 {
                     Id = 0,

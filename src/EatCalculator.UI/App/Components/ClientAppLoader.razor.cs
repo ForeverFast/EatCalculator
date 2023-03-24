@@ -30,7 +30,7 @@ namespace EatCalculator.UI.App.Components
 
         #endregion
 
-        #region State methods
+        #region LC Methods
 
         protected override void OnInitialized()
         {

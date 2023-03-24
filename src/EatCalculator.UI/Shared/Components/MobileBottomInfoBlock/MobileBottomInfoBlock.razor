@@ -2,21 +2,21 @@
 
 @inherits BaseComponent
 
-<div class="@GetCssName(nameof(MobileBottomInfoBlock)) absolute w-100 @ClassName"
-     style="bottom: 2%; z-index: 2001"
+<div class="@GetCssName(nameof(MobileBottomInfoBlock)) absolute @ClassName"
+     style="z-index: 2001"
 @attributes="@UserAttributes">
-    <MudContainer MaxWidth="MaxWidth.ExtraSmall"
+    <MudContainer MaxWidth="MaxWidth.Small"
                   Class="px-0">
         <MudSwipeArea OnSwipe="OnSwipe"
                       Class="d-flex flex-column align-center px-4">
-            <Condition Evaluation="_showInfoBlock">
+            <Condition Evaluation="IsVisible">
                 <Match>
                     @ChildContent
                 </Match>
                 <NotMatch>
-                    <div class="d-flex flex-row align-center">
-                        <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowUp"
-                        @onclick="_ => _showInfoBlock = true" />
+                    <div class="blink-effect d-flex flex-row align-center"
+                    @onclick="_ => IsVisible = true">
+                        <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowUp" />
                         <MudText>Подсказки</MudText>
                     </div>
                 </NotMatch>
@@ -25,7 +25,7 @@
     </MudContainer>
 </div>
 
-<MudOverlay @bind-Visible="_showInfoBlock"
+<MudOverlay @bind-Visible="IsVisible"
             AutoClose="true" DarkBackground="true"
             Absolute="true" ZIndex="2000" />
 

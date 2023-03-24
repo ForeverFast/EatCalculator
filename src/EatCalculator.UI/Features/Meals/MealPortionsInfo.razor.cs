@@ -26,7 +26,7 @@ namespace EatCalculator.UI.Features.Meals
 
         #endregion
 
-        #region State methods
+        #region LC Methods
 
         protected override async Task OnParametersSetAsync()
         {
@@ -48,13 +48,25 @@ namespace EatCalculator.UI.Features.Meals
         private double _carbohydrateKoef = 4;
 
         private double GetPFCGramsValueForDay(double totalKkal, double pfcValuePercentage, double kkalKoef)
-            => totalKkal * (pfcValuePercentage / 100) / kkalKoef;
+            => true switch
+            {
+                { } when pfcValuePercentage == 0 => 0,
+                _ => totalKkal * (pfcValuePercentage / 100) / kkalKoef,
+            };
 
         private double GetPFCGramsValueForMeal(double totalKkal, double pfcValuePercentage, double kkalKoef, int mealsCount)
-            => GetPFCGramsValueForDay(totalKkal, pfcValuePercentage, kkalKoef) / mealsCount;
+        {
+            var pfcGramsValueForDay = GetPFCGramsValueForDay(totalKkal, pfcValuePercentage, kkalKoef);
+
+            return true switch
+            {
+                { } when pfcGramsValueForDay == 0 || mealsCount == 0 => 0,
+                _ => pfcGramsValueForDay / mealsCount,
+            };
+        }
 
         private double GetPFCGramsValueForProduct(double pfcValue, double per)
-            => per switch
+            => true switch
             {
                 { } when pfcValue == 0 => 0,
                 { } when per != _defaultPer => (pfcValue * _defaultPer / per),

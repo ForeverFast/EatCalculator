@@ -31,7 +31,7 @@ namespace EatCalculator.UI.Features.Products.UpdateProductDialog.Components
 
         #endregion
 
-        #region State methods
+        #region LC Methods
 
         protected override void OnInitialized()
         {
