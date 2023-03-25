@@ -7,7 +7,7 @@ using EatCalculator.UI.Shared.Api.Models;
 using EatCalculator.UI.Shared.Lib.Validation.SingleValueValidators;
 using FluentValidation;
 
-namespace EatCalculator.UI.Features.Meals.UpdateMealDialog.Components
+namespace EatCalculator.UI.Features.Meals.UpdateMealDialog
 {
     public partial class UpdateMealDialog : BaseDialogComponent
     {
@@ -30,7 +30,7 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog.Components
         private string _title = string.Empty;
         private TitleValidator _titleValidator = null!;
 
-        private List<PortionWithProductInfo> _portions = new();
+        private List<EditablePortionWithProductInfo> _portions = new();
         private List<Product> _products = new();
 
         private List<Product> _notIncludedProducts
@@ -66,7 +66,7 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog.Components
                     if (product == null)
                         return;
 
-                    _portions.Add(new PortionWithProductInfo
+                    _portions.Add(new EditablePortionWithProductInfo
                     {
                         Product = product,
                         Portion = x,
@@ -88,14 +88,14 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog.Components
         private void OnBackToDayButtonClick()
             => Close();
 
-        private void OnDeleteProductFromMealButtonClick(PortionWithProductInfo portionWithProductInfo)
+        private void OnDeleteProductFromMealButtonClick(EditablePortionWithProductInfo portionWithProductInfo)
             => CalculatePortionsInfo(() => _portions.Remove(portionWithProductInfo));
 
         private void OnPortionViewModelValueChanged(Action action)
             => CalculatePortionsInfo(action);
 
         private void OnAddProductToMealButtonClick(Product product)
-            => CalculatePortionsInfo(() => _portions.Add(new PortionWithProductInfo
+            => CalculatePortionsInfo(() => _portions.Add(new EditablePortionWithProductInfo
             {
                 Product = product,
                 Portion = new PortionViewModel
@@ -175,23 +175,11 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog.Components
 
         #region Inner models
 
-        record PortionWithProductInfo
+        record EditablePortionWithProductInfo
         {
             public required PortionViewModel Portion { get; init; }
             public required Product Product { get; init; }
         }
-
-        #endregion
-
-        #region Config
-
-        public static readonly DialogOptions DialogOptions = new()
-        {
-            FullScreen = true,
-            FullWidth = true,
-            NoHeader = true,
-            MaxWidth = MaxWidth.False
-        };
 
         #endregion
     }

@@ -4,7 +4,7 @@ using EatCalculator.UI.Entities.Products.Models.Store.Actions;
 using EatCalculator.UI.Features.Products.CreateProductDialog.Models;
 using EatCalculator.UI.Shared.Lib.Validation;
 
-namespace EatCalculator.UI.Features.Products.CreateProductDialog.Components
+namespace EatCalculator.UI.Features.Products.CreateProductDialog
 {
     public partial class CreateProductDialog : BaseDialogComponent
     {
@@ -75,18 +75,6 @@ namespace EatCalculator.UI.Features.Products.CreateProductDialog.Components
 
         private void Close()
             => MudDialog.Close();
-
-        #endregion
-
-        #region Config
-
-        public static readonly DialogOptions DialogOptions = new()
-        {
-            FullScreen = true,
-            FullWidth = true,
-            NoHeader = true,
-            MaxWidth = MaxWidth.False
-        };
 
         #endregion
     }

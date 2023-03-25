@@ -1,7 +1,7 @@
 ﻿using EatCalculator.UI.Entities.Days.Models.Store;
 using EatCalculator.UI.Shared.Api.Models;
 
-namespace EatCalculator.UI.Features.Days
+namespace EatCalculator.UI.Features.Days.DeleteDayButton
 {
     public partial class DeleteDayButton : BaseComponent
     {
@@ -12,7 +12,7 @@ namespace EatCalculator.UI.Features.Days
         [Parameter] public Variant Variant { get; set; }
         [Parameter] public Size Size { get; set; } = Size.Small;
 
-        [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }  
+        [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
         #endregion
 

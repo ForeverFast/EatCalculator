@@ -5,6 +5,7 @@
         #region Injects
 
         [Inject] protected NavigationManager _navigationManager { get; init; } = null!;
+        [Inject] protected IDialogService _dialogService { get; init; } = null!;
 
         #endregion
     }

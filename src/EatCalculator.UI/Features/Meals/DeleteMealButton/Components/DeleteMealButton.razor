@@ -1,6 +1,8 @@
-﻿@inherits BaseComponent
+﻿@namespace EatCalculator.UI.Features.Meals.DeleteMealButton
 
-<MudIconButton Class="@($"{@GetCssName(nameof(DeleteProduct))} {ClassName}")"
+@inherits BaseComponent
+
+<MudIconButton Class="@($"{GetCssName(nameof(DeleteMealButton))} {ClassName}")"
                Style="@StyleName"
                UserAttributes="UserAttributes"
                Icon="@Icons.Material.Filled.Delete"

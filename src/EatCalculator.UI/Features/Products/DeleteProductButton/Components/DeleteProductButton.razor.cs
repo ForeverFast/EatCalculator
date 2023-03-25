@@ -1,9 +1,9 @@
 ﻿using EatCalculator.UI.Entities.Products.Models.Store;
 using EatCalculator.UI.Shared.Api.Models;
 
-namespace EatCalculator.UI.Features.Products
+namespace EatCalculator.UI.Features.Products.DeleteProductButton
 {
-    public partial class DeleteProduct : BaseComponent
+    public partial class DeleteProductButton : BaseComponent
     {
         #region Params
 

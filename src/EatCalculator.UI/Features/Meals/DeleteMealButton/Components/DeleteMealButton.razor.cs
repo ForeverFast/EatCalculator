@@ -1,7 +1,7 @@
 ﻿using EatCalculator.UI.Entities.Meals.Models.Store;
 using EatCalculator.UI.Shared.Api.Models;
 
-namespace EatCalculator.UI.Features.Meals
+namespace EatCalculator.UI.Features.Meals.DeleteMealButton
 {
     public partial class DeleteMealButton : BaseComponent
     {

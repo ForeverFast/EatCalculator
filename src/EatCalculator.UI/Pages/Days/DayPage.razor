@@ -1,10 +1,11 @@
 ﻿@using EatCalculator.UI.Entities.Meals.Components
-@using EatCalculator.UI.Features.Days
-@using EatCalculator.UI.Features.Meals
+@using EatCalculator.UI.Features.Days.DeleteDayButton
+@using EatCalculator.UI.Features.Meals.DeleteMealButton
+@using EatCalculator.UI.Features.Meals.MealPortionsInfo
 
 @inherits BasePageComponent
 
-<div class="@GetCssName(nameof(UpdateDayPage)) inner-main-content @ClassName"
+<div class="@GetCssName(nameof(DayPage)) inner-main-content @ClassName"
 @attributes="@UserAttributes">
     <Condition Evaluation="_currentDay.Value != null">
         <Match>

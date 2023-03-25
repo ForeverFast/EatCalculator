@@ -4,9 +4,9 @@ using EatCalculator.UI.Entities.Days.Models.Store.Actions;
 using EatCalculator.UI.Features.Days.CreateDayDialog.Models;
 using EatCalculator.UI.Shared.Lib.Validation;
 
-namespace EatCalculator.UI.Features.Days.CreateDayDialog.Components
+namespace EatCalculator.UI.Features.Days.CreateDayDialog
 {
-    public partial class CreateDayDialog : BaseFluxorComponent 
+    public partial class CreateDayDialog : BaseDialogComponent 
     {
         #region Injects
 
@@ -20,11 +20,8 @@ namespace EatCalculator.UI.Features.Days.CreateDayDialog.Components
 
         #region UI Fields
 
-        private MudDialog? _createDayDialog;
-        private bool _createDayDialogOpened;
-
         private MudForm? _createDayForm;
-        private CreateDayViewModel? _createDayViewModel;
+        private CreateDayViewModel _createDayViewModel = new();
         private bool _creating = false;
 
         #endregion
@@ -49,21 +46,12 @@ namespace EatCalculator.UI.Features.Days.CreateDayDialog.Components
 
         #region Internal events
 
-        private void OnClick()
-        {
-            _createDayDialogOpened = true;
-            _createDayViewModel = new CreateDayViewModel { };
-        }
-
-        private void OnCancelButtonClick()
-            => Close();
-
-        private void OnDialogBackdropClick()
+        private void OnBackButtonClick()
             => Close();
 
         private async Task OnSubmit()
         {
-            if (_createDayForm == null || _createDayViewModel == null)
+            if (_createDayForm == null)
                 return;
 
             await _createDayForm.Validate();
@@ -83,13 +71,7 @@ namespace EatCalculator.UI.Features.Days.CreateDayDialog.Components
         #region Private methods
 
         private void Close()
-            => _createDayDialogOpened = false;
-
-        #endregion
-
-        #region Config
-
-        private readonly DialogOptions _dialogOptions = new() { FullScreen = true };
+            => MudDialog.Close();
 
         #endregion
     }

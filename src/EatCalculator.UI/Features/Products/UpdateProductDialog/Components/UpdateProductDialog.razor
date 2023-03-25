@@ -1,4 +1,6 @@
-﻿@inherits BaseDialogComponent
+﻿@namespace EatCalculator.UI.Features.Products.UpdateProductDialog
+
+@inherits BaseDialogComponent
 
 <div class="@GetCssName(nameof(UpdateProductDialog)) eat-calc-dialog-content @ClassName"
      style="@StyleName"
@@ -8,7 +10,7 @@
             <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
                            OnClick="OnBackButtonClick"
                            Class="me-1" />
-            <MudText Typo="Typo.h5">Создание продукта</MudText>
+            <MudText Typo="Typo.h5">Обновление продукта</MudText>
         </ToolbarContent>
         <Content>
             <MudForm @ref="_updateProductForm" Model="_updateProductViewModel"

@@ -1,7 +1,6 @@
 ﻿@using EatCalculator.UI.Entities.Products.Models.Store;
 @using EatCalculator.UI.Entities.Products.Components;
-@using EatCalculator.UI.Features.Products;
-
+@using EatCalculator.UI.Features.Products.DeleteProductButton
 @inherits BasePageComponent
 
 <div class="@GetCssName(nameof(ProductsPage)) inner-main-content h-100 overflow-hidden @ClassName">
@@ -25,7 +24,7 @@
                                                    Size="Size.Small"
                                                    OnClick="_ => OnUpdateProductButtonClick(product)"
                                                    Class="ms-auto" />
-                                    <DeleteProduct Product="product" />
+                                    <DeleteProductButton Product="product" />
                                 </MudContainer>
                             </OptionalContent>
                         </ProductRow>

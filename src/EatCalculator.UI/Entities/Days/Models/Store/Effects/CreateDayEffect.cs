@@ -20,16 +20,26 @@ namespace EatCalculator.UI.Entities.Days.Models.Store.Effects
         {
             try
             {
+                var mealCount = action.Day.MealCount ?? _injects.CalculatorService.DefaultMealCountForDay;
+
                 var newDay = new Day
                 {
                     Id = 0,
                     Title = action.Day.Title,
                     Description = action.Day.Description,
+
+                    ProteinPercentages = _injects.CalculatorService.DefaultProteinPercentagesForDay,
+                    FatPercentages = _injects.CalculatorService.DefaultFatPercentagesForDay,
+                    CarbohydratePercentages = _injects.CalculatorService.DefaultCarbohydratePercentagesForDay,
+
+                    ProteinMealCount = mealCount,
+                    FatMealCount = mealCount,
+                    CarbohydrateMealCount = mealCount,
                 };
 
                 var createdDay = await _injects.Dal.For<Day>().Insert.InsertWithObjectAsync(newDay);
 
-                await _injects.Dal.For<Meal>().Insert.BulkInsertAsync(Enumerable.Range(1, action.Day.MealCount ?? 3).Select(x => new Meal
+                await _injects.Dal.For<Meal>().Insert.BulkInsertAsync(Enumerable.Range(1, mealCount).Select(x => new Meal
                 {
                     Id = 0,
                     DayId = createdDay.Id,

@@ -1,4 +1,5 @@
 ﻿using EatCalculator.UI.Entities.Days.Models.Store;
+using EatCalculator.UI.Features.Days.CreateDayDialog;
 using EatCalculator.UI.Shared.Api.Models;
 using EatCalculator.UI.Shared.Lib;
 using EatCalculator.UI.Shared.Lib.Fluxor.Selectors;
@@ -23,8 +24,11 @@ namespace EatCalculator.UI.Pages
 
         #region Internal events
 
-        private void OnEditDayButtonClick(int dayId)
-            => _navigationManager.NavigateToUpdateDayPage(dayId);
+        private void OnCreateDayButtonClick()
+            => _dialogService.OpenCreateDayDialog();
+
+        private void OnDayRowClick(Day day)
+            => _navigationManager.NavigateToDayPage(day.Id);
 
         #endregion
     }

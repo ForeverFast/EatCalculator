@@ -33,7 +33,7 @@ namespace EatCalculator.UI.Entities.Products.Models.Store.Effects
 
                 var createdProduct = await _injects.Dal.For<Product>().Insert.InsertWithObjectAsync(newProduct);
 
-                _injects.Snackbar.Add("Продукт добавлен");
+                _injects.Snackbar.Add("Продукт добавлен", Severity.Normal, config => { config.HideIcon = true; });
 
                 dispatcher.Dispatch(new CreateProductSuccessAction
                 {

@@ -1,4 +1,6 @@
-﻿@inherits BaseDialogComponent
+﻿@namespace EatCalculator.UI.Features.Products.CreateProductDialog
+
+@inherits BaseDialogComponent
 
 <div class="@GetCssName(nameof(CreateProductDialog)) eat-calc-dialog-content @ClassName"
      style="@StyleName"
@@ -33,8 +35,7 @@
                 <MudText Class="mt-4">Белки</MudText>
                 <MudTextField @bind-Value="_createProductViewModel.Protein"
                               For="@(() => _createProductViewModel.Protein)" Immediate="true"
-                              Variant="Variant.Outlined" Margin="Margin.Dense"
-                              OnKeyPress="OnBackButtonClick" />
+                              Variant="Variant.Outlined" Margin="Margin.Dense" />
 
                 <MudText Class="mt-4">Жиры</MudText>
                 <MudTextField @bind-Value="_createProductViewModel.Fat"
@@ -45,7 +46,6 @@
                 <MudTextField @bind-Value="_createProductViewModel.Carbohydrate"
                               For="@(() => _createProductViewModel.Carbohydrate)" Immediate="true"
                               Variant="Variant.Outlined" Margin="Margin.Dense" />
-
             </MudForm>
         </Content>
         <BottomContent>

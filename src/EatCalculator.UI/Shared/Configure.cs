@@ -1,6 +1,7 @@
 ﻿using DALQueryChain.EntityFramework;
 using EatCalculator.UI.Shared.Api.LocalDatabase.Context;
 using EatCalculator.UI.Shared.Lib.AppBuilder;
+using EatCalculator.UI.Shared.Lib.Calculator;
 using EatCalculator.UI.Shared.Lib.Validation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,9 +19,14 @@ namespace EatCalculator.UI.Shared
             var targetAssemblies = appBuilder.AdditionalAssemblies;
             var fullTargetAssemblies = targetAssemblies.Append(appBuilder.MainAssembly).ToArray();
 
+            services.AddScoped<ICalculatorService, CalculatorService>();
+
             // UI
 
-            services.AddMudServices();
+            services.AddMudServices(opt =>
+            {
+                opt.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;
+            });
 
             // Other
 

@@ -1,6 +1,6 @@
 ﻿@using EatCalculator.UI.Entities.Days.Components
-@using EatCalculator.UI.Features.Days
-@using EatCalculator.UI.Features.Days.CreateDayDialog.Components
+@using EatCalculator.UI.Features.Days.CreateDayDialog
+@using EatCalculator.UI.Features.Days.DeleteDayButton
 @using Fluxor.Blazor.Web.Components
 
 @inherits BasePageComponent
@@ -10,19 +10,21 @@
         <ToolbarContent>
             <MudText Typo="Typo.h5">Дни</MudText>
             <MudSpacer />
+            <MudIconButton Icon="@Icons.Material.Filled.Add"
+                           Size="Size.Small"
+                           OnClick="OnCreateDayButtonClick" />
         </ToolbarContent>
         <Content>
             <Condition Evaluation="@(_dayListSelector.Value.Count() > 0)">
                 <Match>
                     <Iterations Items="@_dayListSelector.Value" Context="day">
-                        <DayRow @key="day" Day="day">
+                        <DayRow @key="day" Day="day"
+                                OnClick="_ => OnDayRowClick(day)"
+                                Class="cursor-pointer">
                             <OptionalContent>
                                 <MudContainer Class="d-flex flex-row align-center px-0">
-                                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                                   Size="Size.Small"
-                                                   OnClick="_ => OnEditDayButtonClick(day.Id)"
-                                                   Class="ms-auto" />
-                                    <DeleteDayButton Day="day" />
+                                    <DeleteDayButton Day="day"
+                                                     Class="ms-auto" />
                                 </MudContainer>
                             </OptionalContent>
                         </DayRow>

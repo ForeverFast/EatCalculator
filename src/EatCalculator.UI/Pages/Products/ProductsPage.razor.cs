@@ -1,6 +1,6 @@
 ﻿using EatCalculator.UI.Entities.Products.Models.Store;
-using EatCalculator.UI.Features.Products.CreateProductDialog.Lib;
-using EatCalculator.UI.Features.Products.UpdateProductDialog.Lib;
+using EatCalculator.UI.Features.Products.CreateProductDialog;
+using EatCalculator.UI.Features.Products.UpdateProductDialog;
 using EatCalculator.UI.Shared.Api.Models;
 using EatCalculator.UI.Shared.Configs;
 using EatCalculator.UI.Shared.Lib.Fluxor.Selectors;
@@ -11,8 +11,6 @@ namespace EatCalculator.UI.Pages.Products
     public partial class ProductsPage : BasePageComponent
     {
         #region Injects
-
-        [Inject] IDialogService _dialogService { get; init; } = null!;
 
         [Inject] ProductStateFacade _productStateFacade { get; init; } = null!;
 

@@ -1,10 +1,12 @@
-﻿namespace EatCalculator.UI.Features.Products.CreateProductDialog.Lib
+﻿using EatCalculator.UI.Shared.Configs;
+
+namespace EatCalculator.UI.Features.Products.CreateProductDialog
 {
     internal static class DialogServiceExtensions
     {
         public static IDialogReference OpenCreateProductDialog(this IDialogService dialogService)
-            => dialogService.Show<Components.CreateProductDialog>(
+            => dialogService.Show<CreateProductDialog>(
                 "",
-                Components.CreateProductDialog.DialogOptions);
+                DialogsConfig.GetDialogDefaultOptions());
     }
 }

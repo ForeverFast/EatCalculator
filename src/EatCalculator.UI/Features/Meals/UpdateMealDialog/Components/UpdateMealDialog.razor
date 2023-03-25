@@ -1,10 +1,12 @@
 ﻿@using EatCalculator.UI.Entities.Products.Components
 
+@namespace EatCalculator.UI.Features.Meals.UpdateMealDialog
+
 @inherits BaseDialogComponent
 
 <div class="@GetCssName(nameof(UpdateMealDialog)) eat-calc-dialog-content @ClassName"
 @attributes="@UserAttributes">
-    <ScrollableContainerWithToolbar DisableScroll="true">
+    <ScrollableContainerWithToolbar>
         <ToolbarContent>
             <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
                            OnClick="OnBackToDayButtonClick"

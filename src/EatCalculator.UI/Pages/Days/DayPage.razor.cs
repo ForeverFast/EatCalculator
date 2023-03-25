@@ -1,7 +1,7 @@
 ﻿using EatCalculator.UI.Entities.Days.Models.Contracts;
 using EatCalculator.UI.Entities.Days.Models.Store;
 using EatCalculator.UI.Entities.Meals.Models.Store;
-using EatCalculator.UI.Features.Meals.UpdateMealDialog.Components;
+using EatCalculator.UI.Features.Meals.UpdateMealDialog;
 using EatCalculator.UI.Shared.Api.Models;
 using EatCalculator.UI.Shared.Configs;
 using EatCalculator.UI.Shared.Lib;
@@ -11,8 +11,8 @@ using System.ComponentModel;
 
 namespace EatCalculator.UI.Pages.Days
 {
-    [Route($"{Routes.Days.BasePath}/{{DayId:int}}/{Routes.Days.Update}")]
-    public partial class UpdateDayPage : BasePageComponent
+    [Route($"{Routes.Days.BasePath}/{{DayId:int}}")]
+    public partial class DayPage : BasePageComponent
     {
         #region Params
 
@@ -21,8 +21,6 @@ namespace EatCalculator.UI.Pages.Days
         #endregion
 
         #region Injects
-
-        [Inject] IDialogService _dialogService { get; init; } = null!;
 
         [Inject] DayStateFacade _dayStateFacade { get; init; } = null!;
         [Inject] MealStateFacade _mealStateFacade { get; init; } = null!;
@@ -129,13 +127,7 @@ namespace EatCalculator.UI.Pages.Days
         }
 
         private void OnEditMealButtonClick(Meal meal)
-            => _dialogService.Show<UpdateMealDialog>(
-                "",
-                new DialogParameters
-                {
-                    { nameof(UpdateMealDialog.Meal), meal },
-                },
-                UpdateMealDialog.DialogOptions);
+            => _dialogService.OpenUpdateMealDialog(meal);
 
         #endregion
 
