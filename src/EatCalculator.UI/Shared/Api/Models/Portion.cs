@@ -1,8 +1,9 @@
 ﻿using DALQueryChain.Interfaces;
+using EatCalculator.UI.Shared.Lib.EntityAdapter;
 
 namespace EatCalculator.UI.Shared.Api.Models
 {
-    public record Portion : IDbModelBase
+    public record Portion : AdapterEntity, IDbModelBase
     {
         public required int Id { get; init; }
         public required int MealId { get; init; }

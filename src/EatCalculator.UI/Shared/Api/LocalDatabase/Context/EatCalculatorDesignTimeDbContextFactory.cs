@@ -35,6 +35,7 @@ namespace EatCalculator.UI.Shared.Api.LocalDatabase.Context
                 $"{settings.DbName}.db");
 
             optionsBuilder.UseSqlite($@"Data Source={dbFilePath};");
+
             return new EatCalculatorDbContext(optionsBuilder.Options);
         }
     }

@@ -38,5 +38,19 @@ namespace EatCalculator.UI.Entities.Days.Models.Store
         [ReducerMethod]
         public static DayState ReduceDeleteDaySuccessAction(DayState state, DeleteDaySuccessAction action)
             => s_adapter.Remove<DayState>(action.Id, state);
+
+        [ReducerMethod]
+        public static DayState ReduceAttachDayToDateSuccessAction(DayState state, AttachDayToDateSuccessAction action)
+            => s_adapter.Map<DayState>(action.DayDateBind.DayId, day => day with
+            {
+                DayDateBinds = day.DayDateBinds.Append(action.DayDateBind).ToList(),
+            }, state);
+
+        [ReducerMethod]
+        public static DayState ReduceDetachDayFromDateSuccessAction(DayState state, DetachDayFromDateSuccessAction action)
+            => s_adapter.Map<DayState>(action.DayId, day => day with
+            {
+                DayDateBinds = day.DayDateBinds.Where(x => x.Id != action.DayDateBindId).ToList(),
+            }, state);
     }
 }

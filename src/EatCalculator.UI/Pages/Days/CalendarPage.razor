@@ -1,0 +1,73 @@
+﻿@inherits BasePageComponent
+
+<div class="@GetCssName(nameof(CalendarPage)) inner-main-content @ClassName"
+     style="@StyleName"
+@attributes="@UserAttributes">
+    <ScrollableContainerWithToolbar>
+        <ToolbarContent>
+            <MudButton OnClick="_ => OnChangeMonthButtonClick(false)">
+                <MudContainer Class="d-flex align-center px-0">
+                    <MudIcon Icon="@Icons.Material.Filled.ArrowBack" />
+                    <MudText>@_previousMonthTitle</MudText>
+                </MudContainer>
+            </MudButton>
+            <MudSpacer />
+            <MudText>@_currentMonthTitle</MudText>
+            <MudSpacer />
+            <MudButton OnClick="_ => OnChangeMonthButtonClick(true)">
+                <MudContainer Class="d-flex align-center px-0">
+                    <MudText>@_nextMonthTitle</MudText>
+                    <MudIcon Icon="@Icons.Material.Filled.ArrowForward" />
+                </MudContainer>
+            </MudButton>
+        </ToolbarContent>
+        <Content>
+            <MudContainer Class="d-flex flex-column align-center px-0">
+                <Iterations Items="@_dayDateBindsInfo" Context="dayDateBindInfo">
+                    <MudContainer @key="dayDateBindInfo"
+                                  Class="border rounded px-0 mt-2 cursor-pointer">
+                        <EcCard Title="@dayDateBindInfo.DateWithFormat()"
+                                OnClick="_ => OnDayDateBindInfoBlockClick(dayDateBindInfo)">
+                            <OptionalContent>
+                                <MudContainer Class="d-flex align-center px-0">
+                                    <Condition Evaluation="dayDateBindInfo.Day == null">
+                                        <Match>
+                                            <MudMenu FullWidth="true" MaxHeight="250"
+                                                     Class="ms-auto">
+                                                <ActivatorContent>
+                                                    <MudButton>
+                                                        Прикрепить день
+                                                    </MudButton>
+                                                </ActivatorContent>
+                                                <ChildContent>
+                                                    <Iterations Items="_daysSelector.Value" Context="day">
+                                                        <MudMenuItem OnClick="_ => OnSelectDayForDateMenuButtonClick(day, dayDateBindInfo)">
+                                                            <MudText Class="text-ellipsis">
+                                                                @day.Title
+                                                            </MudText>
+                                                        </MudMenuItem>
+                                                    </Iterations>
+                                                </ChildContent>
+                                            </MudMenu>
+                                        </Match>
+                                        <NotMatch>
+                                            <MudSpacer />
+                                            <MudText Class="text-ellipsis">
+                                                @dayDateBindInfo.Day!.Title
+                                            </MudText>
+                                            <MudSpacer />
+                                            <MudButton OnClick="_ => OnDetachDayFromDateButtonClick(dayDateBindInfo)"
+                                                       Class="ms-auto">
+                                                Открепить день
+                                            </MudButton>
+                                        </NotMatch>
+                                    </Condition>
+                                </MudContainer>
+                            </OptionalContent>
+                        </EcCard>
+                    </MudContainer>
+                </Iterations>
+            </MudContainer>
+        </Content>
+    </ScrollableContainerWithToolbar>
+</div>

@@ -19,7 +19,7 @@
                         <MudDrawer @bind-Open="_drawerOpened"
                                    Fixed="false" Elevation="1"
                                    Variant="@DrawerVariant.Mini" Breakpoint="Breakpoint.Xl"
-                                   OpenMiniOnHover="true" 
+                                   OpenMiniOnHover="true"
                                    Class="@_drawerCssName">
                             <MudNavMenu>
                                 <MudNavLink Match="NavLinkMatch.All" Href="/"
@@ -29,13 +29,12 @@
                                 <MudDivider />
                                 <MudNavLink Match="NavLinkMatch.Prefix" Href="@($"{Routes.Products.BasePath}")"
                                             Icon="@Icons.Material.Filled.FormatListBulleted"
-                                            
                                             Class="mt-2">
                                     Продукты
                                 </MudNavLink>
-                                <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Today"
-                                            OnClick="OnNavLinkClick">
-                                    Community
+                                <MudNavLink Match="NavLinkMatch.All" Href="@($"{Routes.Days.BasePath}/{Routes.Days.Calendar}")"
+                                            Icon="@Icons.Material.Filled.Today">
+                                    Календарь
                                 </MudNavLink>
                             </MudNavMenu>
                         </MudDrawer>

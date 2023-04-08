@@ -1,4 +1,5 @@
-﻿using EatCalculator.UI.Entities.Days.Models.Store.Actions;
+﻿using DALQueryChain.EntityFramework.Extensions;
+using EatCalculator.UI.Entities.Days.Models.Store.Actions;
 using EatCalculator.UI.Shared.Api.Models;
 using EatCalculator.UI.Shared.Lib.Fluxor.Effects;
 using Microsoft.Extensions.Logging;
@@ -20,7 +21,10 @@ namespace EatCalculator.UI.Entities.Days.Models.Store.Effects
         {
             try
             {
-                var days = await _injects.Dal.For<Day>().Get.ToListAsync();
+                var days = await _injects.Dal.For<Day>()
+                    .Get
+                    .LoadWith(x => x.DayDateBinds)
+                    .ToListAsync();
 
                 dispatcher.Dispatch(new LoadDaysSuccessAction
                 {

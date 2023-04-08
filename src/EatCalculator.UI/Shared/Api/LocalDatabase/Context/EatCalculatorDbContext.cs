@@ -17,6 +17,7 @@ namespace EatCalculator.UI.Shared.Api.LocalDatabase.Context
         #region Areas
 
         public DbSet<Day> Days { get; set; } = null!;
+        public DbSet<DayDateBind> DayDateBinds { get; set; } = null!;
         public DbSet<Meal> Meals { get; set; } = null!;
         public DbSet<Portion> Portions { get; set; } = null!;
         public DbSet<Product> Products { get; set; } = null!;

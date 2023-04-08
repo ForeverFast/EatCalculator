@@ -14,5 +14,8 @@ namespace EatCalculator.UI.Entities.Days.Models.Store
 
         public static ISelector<List<Day>> SelectDays { get; private set; }
             = SelectorFactory.CreateSelector(SelectFeatureState, state => state.Entities.Values.ToList());
+
+        public static ISelector<List<DayDateBind>> DayDateBinds { get; private set; }
+            = SelectorFactory.CreateSelector(SelectDays, state => state.SelectMany(x => x.DayDateBinds).ToList());
     }
 }

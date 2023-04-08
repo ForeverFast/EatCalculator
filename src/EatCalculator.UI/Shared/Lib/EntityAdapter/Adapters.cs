@@ -7,8 +7,8 @@ namespace EatCalculator.UI.Shared.Lib.EntityAdapter
         private static Dictionary<Type, object> s_cachedAdapters { get; set; } = new();
 
         public static EntityAdapter<TKey, TEntity> Get<TKey, TEntity>()
-            where TEntity : class
             where TKey : notnull
+            where TEntity : AdapterEntity
         {
             if (!s_cachedAdapters.TryGetValue(typeof(TEntity), out var adapter))
                 throw new Exception();

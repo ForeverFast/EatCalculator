@@ -1,8 +1,9 @@
 ﻿using DALQueryChain.Interfaces;
+using EatCalculator.UI.Shared.Lib.EntityAdapter;
 
 namespace EatCalculator.UI.Shared.Api.Models
 {
-    public record Day : IDbModelBase
+    public record Day : AdapterEntity, IDbModelBase
     {
         public required int Id { get; init; }
 
@@ -29,6 +30,7 @@ namespace EatCalculator.UI.Shared.Api.Models
         public int Order { get; init; }
 
 
-        public List<Meal> Meals { get; init; } = new List<Meal>();
+        public List<DayDateBind> DayDateBinds { get; init; } = new();
+        public List<Meal> Meals { get; init; } = new();
     }
 }

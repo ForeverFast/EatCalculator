@@ -9,11 +9,12 @@ namespace EatCalculator.UI.Entities.Days.Models.Store
     internal sealed class DayStateFacade : StateFacade<DayState>
     {
         #region Ctors
-        
+
         public DayStateFacade(IStore store, IDispatcher dispatcher) : base(store, dispatcher)
         {
             CurrentDay = _store.SubscribeSelector(DayStateSelectors.SelectCurrentDay);
             Days = _store.SubscribeSelector(DayStateSelectors.SelectDays);
+            DayDateBinds = _store.SubscribeSelector(DayStateSelectors.DayDateBinds);
         }
 
         #endregion
@@ -25,6 +26,7 @@ namespace EatCalculator.UI.Entities.Days.Models.Store
 
         public ISelectorSubscription<Day?> CurrentDay { get; }
         public ISelectorSubscription<List<Day>> Days { get; }
+        public ISelectorSubscription<List<DayDateBind>> DayDateBinds { get; }
 
         #endregion
 
@@ -38,7 +40,10 @@ namespace EatCalculator.UI.Entities.Days.Models.Store
             => _dispatcher.Dispatch(new LoadDaysAction { });
 
         public void CreateDay(CreateDayContract day)
-            => _dispatcher.Dispatch(new CreateDayAction { Day = day, });
+            => _dispatcher.Dispatch(new CreateDayAction
+            {
+                Day = day,
+            });
 
         public void UpdateDay(int id, UpdateDayContract day)
             => _dispatcher.Dispatch(new UpdateDayAction
@@ -50,14 +55,27 @@ namespace EatCalculator.UI.Entities.Days.Models.Store
         public void DeleteDay(int id)
             => _dispatcher.Dispatch(new DeleteDayAction { Id = id, });
 
+        public void AttachDayToDate(int dayId, DateOnly date)
+            => _dispatcher.Dispatch(new AttachDayToDateAction
+            {
+                DayId = dayId,
+                Date = date,
+            });
 
+        public void DetachDayFromDate(int dayId, int dayDateBindId)
+            => _dispatcher.Dispatch(new DetachDayFromDateAction
+            {
+                DayId = dayId,
+                DayDateBindId = dayDateBindId,
+            });
 
         public override void Dispose()
         {
             base.Dispose();
 
-            CurrentDay.Dispose();   
+            CurrentDay.Dispose();
             Days.Dispose();
+            DayDateBinds.Dispose();
         }
     }
 }

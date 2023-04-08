@@ -4,7 +4,7 @@ namespace EatCalculator.UI.Shared.Lib.EntityAdapter
 {
     public abstract class EntityAdapter<TKey, TEntity>
         where TKey : notnull
-        where TEntity : class
+        where TEntity : AdapterEntity
     {
         protected abstract Func<TEntity, TKey> SelectId { get; }
 
@@ -208,5 +208,21 @@ namespace EatCalculator.UI.Shared.Lib.EntityAdapter
             {
                 Entities = entities.ToImmutableDictionary(entity => SelectId(entity), entity => entity),
             };
+
+        public TState Map<TState>(TKey id, Func<TEntity, TEntity> updateFunc, EntityState<TKey, TEntity> state)
+             where TState : EntityState<TKey, TEntity>
+             => (TState)state with
+             {
+                 Entities = state.Entities.SetItem(id, updateFunc(state.Entities[id])),
+             };
+
+        public TState MapRange<TState>(IEnumerable<TKey> ids, Func<TEntity, TEntity> updateFunc, EntityState<TKey, TEntity> state)
+             where TState : EntityState<TKey, TEntity>
+             => (TState)state with
+             {
+                 Entities = state.Entities.SetItems(state.Entities
+                     .Where(x => ids.Contains(x.Key))
+                     .ToImmutableDictionary(x => x.Key, x => updateFunc(x.Value))),
+             };
     }
 }

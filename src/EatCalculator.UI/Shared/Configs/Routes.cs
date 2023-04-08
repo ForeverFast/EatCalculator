@@ -7,6 +7,8 @@
         public class Days
         {
             public const string BasePath = "days";
+
+            public const string Calendar = "calendar";
         }
 
         public class Products
