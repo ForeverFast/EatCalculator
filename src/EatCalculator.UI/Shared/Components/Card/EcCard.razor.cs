@@ -1,12 +1,10 @@
-﻿using EatCalculator.UI.Shared.Api.Models;
-
-namespace EatCalculator.UI.Entities.Products.Components
+﻿namespace EatCalculator.UI.Shared.Components
 {
-    public partial class ProductRow : BaseComponent
+    public partial class EcCard : BaseComponent
     {
         #region Params
 
-        [Parameter, EditorRequired] public required Product Product { get; set; }
+        [Parameter, EditorRequired] public required string Title { get; set; }
 
         [Parameter] public RenderFragment? OptionalContent { get; set; }
         [Parameter] public RenderFragment? BottomContent { get; set; }

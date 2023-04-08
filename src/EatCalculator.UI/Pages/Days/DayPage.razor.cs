@@ -1,5 +1,6 @@
 ﻿using EatCalculator.UI.Entities.Days.Models.Contracts;
 using EatCalculator.UI.Entities.Days.Models.Store;
+using EatCalculator.UI.Entities.Meals.Models.Contracts;
 using EatCalculator.UI.Entities.Meals.Models.Store;
 using EatCalculator.UI.Features.Meals.UpdateMealDialog;
 using EatCalculator.UI.Shared.Api.Models;
@@ -94,7 +95,7 @@ namespace EatCalculator.UI.Pages.Days
             => LoadDayData();
 
         private void OnMealsChanged(object? sender, PropertyChangedEventArgs e)
-            => ValidateDay();
+            => ValidateAndCalculateDay();
 
         #endregion
 
@@ -103,6 +104,9 @@ namespace EatCalculator.UI.Pages.Days
         private void OnBackToDaysButtonClick()
             => _navigationManager.NavigateToIndexPage();
 
+        private void OnCreateMealButtonClick()
+            => _mealStateFacade.CreateEmptyMeal(DayId);
+
         private void OnDeleteDayButtonClick()
         {
 
@@ -110,7 +114,7 @@ namespace EatCalculator.UI.Pages.Days
 
         private void OnChangeDayInfo(Action action)
         {
-            if (_currentDay.Value == null || !ValidateDay(action))
+            if (_currentDay.Value == null || !ValidateAndCalculateDay(action))
                 return;
 
             _dayStateFacade.UpdateDay(DayId, new UpdateDayContract
@@ -151,7 +155,7 @@ namespace EatCalculator.UI.Pages.Days
             _mealStateFacade.LoadMeals(_currentDay.Value.Id);
         }
 
-        private bool ValidateDay(Action? action = null)
+        private bool ValidateAndCalculateDay(Action? action = null)
         {
             action?.Invoke();
             _dayValidation.Clear();

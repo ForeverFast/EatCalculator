@@ -21,9 +21,10 @@ namespace EatCalculator.UI.Shared.Components
         #region UI Fields
 
         private MudTextField<string>? _textField;
-        private string _innerValue = string.Empty;
         private List<string> _validationMessages = new();
         private bool _isValidationTooltipVisible;
+
+        private string _innerValue = string.Empty;
 
         #endregion
 

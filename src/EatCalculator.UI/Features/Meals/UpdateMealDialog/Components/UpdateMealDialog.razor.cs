@@ -44,35 +44,36 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog
         #region LC Methods
 
         protected override void OnInitialized()
-            => CalculatePortionsInfo(() =>
+        {
+            base.OnInitialized();
+
+            SubscribeToAction<UpdateMealSuccessAction>(OnUpdateMealSuccessAction);
+
+            _title = Meal.Title;
+            _titleValidator = new TitleValidator();
+            _products.AddRange(_productStateFacade.Products.Value);
+
+            Meal.Portions.Select(x => new PortionViewModel
             {
-                base.OnInitialized();
+                ProductId = x.ProductId,
+                ProteinPercentages = x.ProteinPercentages,
+                FatPercentages = x.FatPercentages,
+                CarbohydratePercentages = x.CarbohydratePercentages,
+            }).ToList().ForEach(x =>
+            {
+                var product = _productStateFacade.GetProductById(x.ProductId);
+                if (product == null)
+                    return;
 
-                SubscribeToAction<UpdateMealSuccessAction>(OnUpdateMealSuccessAction);
-
-                _title = Meal.Title;
-                _titleValidator = new TitleValidator();
-                _products.AddRange(_productStateFacade.Products.Value);
-
-                Meal.Portions.Select(x => new PortionViewModel
+                _portions.Add(new EditablePortionWithProductInfo
                 {
-                    ProductId = x.ProductId,
-                    ProteinPercentages = x.ProteinPercentages,
-                    FatPercentages = x.FatPercentages,
-                    CarbohydratePercentages = x.CarbohydratePercentages,
-                }).ToList().ForEach(x =>
-                {
-                    var product = _productStateFacade.GetProductById(x.ProductId);
-                    if (product == null)
-                        return;
-
-                    _portions.Add(new EditablePortionWithProductInfo
-                    {
-                        Product = product,
-                        Portion = x,
-                    });
+                    Product = product,
+                    Portion = x,
                 });
             });
+
+            ValidateAndCalculatePortionsInfo();
+        }
 
         #endregion
 
@@ -89,13 +90,13 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog
             => Close();
 
         private void OnDeleteProductFromMealButtonClick(EditablePortionWithProductInfo portionWithProductInfo)
-            => CalculatePortionsInfo(() => _portions.Remove(portionWithProductInfo));
+            => ValidateAndCalculatePortionsInfo(() => _portions.Remove(portionWithProductInfo));
 
         private void OnPortionViewModelValueChanged(Action action)
-            => CalculatePortionsInfo(action);
+            => ValidateAndCalculatePortionsInfo(action);
 
         private void OnAddProductToMealButtonClick(Product product)
-            => CalculatePortionsInfo(() => _portions.Add(new EditablePortionWithProductInfo
+            => ValidateAndCalculatePortionsInfo(() => _portions.Add(new EditablePortionWithProductInfo
             {
                 Product = product,
                 Portion = new PortionViewModel
@@ -106,9 +107,9 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog
 
         private void OnSaveButtonClick()
         {
-            if (!CalculatePortionsInfo())
+            if (!ValidateAndCalculatePortionsInfo())
             {
-                _IsPortionsValidationInfoVisible = true;    
+                _IsPortionsValidationInfoVisible = true;
                 return;
             }
 
@@ -132,7 +133,7 @@ namespace EatCalculator.UI.Features.Meals.UpdateMealDialog
 
         #region Private methods
 
-        private bool CalculatePortionsInfo(Action? action = null)
+        private bool ValidateAndCalculatePortionsInfo(Action? action = null)
         {
             action?.Invoke();
 

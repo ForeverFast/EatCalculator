@@ -41,6 +41,12 @@ namespace EatCalculator.UI.Entities.Meals.Models.Store
                 Meal = meal
             });
 
+        public void CreateEmptyMeal(int dayId)
+           => _dispatcher.Dispatch(new CreateEmptyMealAction
+           {
+               DayId = dayId,
+           });
+
         public void UpdateMeal(int id, UpdateMealContract meal)
             => _dispatcher.Dispatch(new UpdateMealAction
             {

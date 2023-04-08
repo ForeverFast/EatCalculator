@@ -14,7 +14,7 @@
     <Nullable>enable</Nullable>
 
     <!-- Display name -->
-    <ApplicationTitle>Clients.Maui</ApplicationTitle>
+    <ApplicationTitle>EatCalculator</ApplicationTitle>
 
     <!-- App Identifier -->
     <ApplicationId>com.companyname.clients.maui</ApplicationId>

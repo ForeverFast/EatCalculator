@@ -19,7 +19,6 @@
                         <ProductRow @key="product" Product="product">
                             <OptionalContent>
                                 <MudContainer Class="d-flex flex-row align-center px-0">
-                                    <ProductPFCInfo Product="product" />
                                     <MudIconButton Icon="@Icons.Material.Filled.Edit"
                                                    Size="Size.Small"
                                                    OnClick="_ => OnUpdateProductButtonClick(product)"
@@ -27,6 +26,12 @@
                                     <DeleteProductButton Product="product" />
                                 </MudContainer>
                             </OptionalContent>
+                            <BottomContent>
+                                <MudContainer Class="pa-1">
+                                    <ProductPFCInfo Product="product"
+                                                    Class="border rounded pa-1" />
+                                </MudContainer>
+                            </BottomContent>
                         </ProductRow>
                     </Iterations>
                 </Match>

@@ -1,14 +1,15 @@
 ﻿@inherits BaseComponent
 
-<div class="@GetCssName(nameof(ProductRow)) d-flex flex-row align-center border rounded w-100 pa-2 mt-2 @ClassName"
+<div class="@GetCssName(nameof(ProductRow)) border rounded w-100 mt-2 @ClassName"
      style="@StyleName"
-     @attributes="UserAttributes"
-     @onclick="@OnClick">
-    <MudText Class="px-1">
-        @Product.Title
-    </MudText>
-
-    <div class="product-row__optional d-flex flex-row flex-grow-1">
-        @OptionalContent
-    </div>
+@attributes="UserAttributes">
+    <EcCard Title="@Product.Title"
+            OnClick="OnClick">
+        <OptionalContent>
+            @OptionalContent
+        </OptionalContent>
+        <BottomContent>
+            @BottomContent
+        </BottomContent>
+    </EcCard>
 </div>

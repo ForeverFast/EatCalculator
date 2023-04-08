@@ -23,6 +23,10 @@ namespace EatCalculator.UI.Entities.Meals.Models.Store
             => s_adapter.Add<MealState>(action.Meal, state);
 
         [ReducerMethod]
+        public static MealState ReduceCreateEmptyMealSuccessAction(MealState state, CreateEmptyMealSuccessAction action)
+            => s_adapter.Add<MealState>(action.Meal, state);
+
+        [ReducerMethod]
         public static MealState ReduceUpdateMealSuccessAction(MealState state, UpdateMealSuccessAction action)
             => s_adapter.Update<MealState>(action.Meal, state);
 

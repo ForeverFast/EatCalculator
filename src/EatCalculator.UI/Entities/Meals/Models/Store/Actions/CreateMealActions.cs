@@ -13,4 +13,14 @@ namespace EatCalculator.UI.Entities.Meals.Models.Store.Actions
     {
         public required Meal Meal { get; init; }
     }
+
+    internal record CreateEmptyMealAction : BaseAction
+    {
+        public required int DayId { get; init; }
+    }
+    internal record CreateEmptyMealFailureAction : BaseFailureAction;
+    internal record CreateEmptyMealSuccessAction : BaseSuccessAction
+    {
+        public required Meal Meal { get; init; }
+    }
 }

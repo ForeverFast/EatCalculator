@@ -2,10 +2,12 @@
 
 @inherits BaseComponent
 
-<div class="@GetCssName(nameof(EditableField)) d-flex flex-row align-center pa-1 @ClassName">
+<div class="@GetCssName(nameof(EditableField)) d-flex flex-row align-center overflow-hidden pa-1 @ClassName">
     <Condition Evaluation="IsEditMode">
         <NotMatch>
-            <MudText>@Value</MudText>
+            <MudText Class="text-ellipsis">
+                @Value
+            </MudText>
             <MudIconButton Icon="@Icons.Material.Filled.Edit"
                            Size="Size.Small"
                            OnClick="OnStartEditButtonClick"
