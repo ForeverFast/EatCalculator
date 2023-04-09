@@ -2,6 +2,7 @@
 using Client.Core.Entities.Meals.Models.Store;
 using Client.Core.Entities.Products.Models.Store;
 using Client.Core.Shared;
+using Client.Core.Shared.Api.LocalDatabase;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Client.Core.App

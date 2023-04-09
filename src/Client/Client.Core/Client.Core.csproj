@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Shared\Api\HttpClient\Endpoints\" />
     <Folder Include="Shared\Api\LocalDatabase\DesignTimeFiles\" />
     <Folder Include="Shared\Api\LocalDatabase\Migrations\" />
   </ItemGroup>

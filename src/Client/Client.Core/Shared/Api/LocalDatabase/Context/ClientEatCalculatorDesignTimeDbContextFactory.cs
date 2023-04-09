@@ -10,7 +10,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
         public ClientEatCalculatorDbContext CreateDbContext(string[] args)
         {
             string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
-                ?? GlobalConstants.Environment.ToString();
+                ?? ClientGlobalConstants.Environment.ToString();
 
             // Build config
             IConfiguration config = new ConfigurationBuilder()

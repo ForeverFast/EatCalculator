@@ -19,7 +19,7 @@ namespace Client.EntryPoints.Maui
 
         public static MauiApp CreateMauiApp(ClientAppPlatform platform)
         {
-            GlobalConstants.Environment = _environment;
+            ClientGlobalConstants.Environment = _environment;
             MauiAppConfiguration.ClientAppConfiguration = MauiAppConfiguration.ClientAppConfiguration with
             {
                 Platform = platform,
