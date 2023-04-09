@@ -1,0 +1,55 @@
+﻿@namespace Client.Core.Features.Days.CreateDayDialog
+
+@inherits BaseDialogComponent
+
+<div class="@GetCssName(nameof(CreateDayDialog)) eat-calc-dialog-content @ClassName"
+     style="@StyleName"
+@attributes="UserAttributes">
+    <ScrollableContainerWithToolbar>
+        <ToolbarContent>
+            <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
+                           OnClick="OnBackButtonClick"
+                           Class="me-1" />
+            <MudText Typo="Typo.h6"
+                     Class="ms-3">
+                Создание дня
+            </MudText>
+        </ToolbarContent>
+        <Content>
+            <MudForm @ref="_createDayForm" Model="_createDayViewModel"
+                     Validation="_createDayViewModelValidator.Validation">
+                <MudText Class="mt-4">Название</MudText>
+                <MudTextField @bind-Value="_createDayViewModel.Title"
+                              For="@(() => _createDayViewModel.Title)" Immediate="true"
+                              Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+                <MudText Class="mt-6">Описание</MudText>
+                <MudTextField @bind-Value="_createDayViewModel.Description"
+                              For="@(() => _createDayViewModel.Description)" Immediate="true"
+                              Variant="Variant.Outlined" Margin="Margin.Dense"
+                              Lines="3" />
+
+                <MudText Class="mt-6">Количество приёмов пищи</MudText>
+                <MudTextField @bind-Value="_createDayViewModel.MealCount"
+                              For="@(() => _createDayViewModel.MealCount)" Immediate="true"
+                              Variant="Variant.Outlined" Margin="Margin.Dense" />
+            </MudForm>
+        </Content>
+        <BottomContent>
+            <MudButton OnClick="OnSubmit"
+                       Variant="Variant.Filled" Color="Color.Primary"
+                       Class="px-10 ms-auto">
+                <Condition Evaluation="_creating">
+                    <Match>
+                        <MudProgressCircular Size="Size.Small" Indeterminate="true"
+                                             Class="ms-n1" />
+                        <MudText Class="ms-2">Создание...</MudText>
+                    </Match>
+                    <NotMatch>
+                        Создать
+                    </NotMatch>
+                </Condition>
+            </MudButton>
+        </BottomContent>
+    </ScrollableContainerWithToolbar>
+</div>

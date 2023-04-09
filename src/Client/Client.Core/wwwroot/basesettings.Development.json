@@ -1,0 +1,5 @@
+{
+  "ClientEatCalculatorDbContextSettings": {
+    "DbName": "client-eat-calculator.db"
+  }
+}

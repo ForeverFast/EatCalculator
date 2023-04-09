@@ -1,0 +1,11 @@
+﻿@namespace Client.Core.Features.Days.DeleteDayButton
+
+@inherits BaseComponent
+
+<MudIconButton Class="@($"{GetCssName(nameof(DeleteDayButton))} {ClassName}")"
+               Style="@StyleName"
+               UserAttributes="UserAttributes"
+               Icon="@Icons.Material.Filled.Delete"
+               Variant="@Variant"
+               Color="Color.Error" Size="@Size"
+               OnClick="OnButtonClick" />

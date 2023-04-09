@@ -1,0 +1,31 @@
+﻿@namespace UI
+
+@inherits BaseComponent
+
+<div class="@GetCssName(nameof(ScrollableContainerWithToolbar)) w-100 h-100 @ClassName">
+    <MudContainer MaxWidth="MaxWidth.Medium"
+                  Class="d-flex flex-column overflow-hidden h-100 px-0 px-sm-1">
+        <MudPaper Width="100%" Elevation="4"
+                  Class="border-b rounded-0">
+            <MudToolBar Dense="true"
+                        Class="w-100 px-2">
+                @ToolbarContent
+            </MudToolBar>
+        </MudPaper>
+
+        @AdditionalToolbarContent
+
+        <MudContainer Class="overflow-x-hidden overflow-y-auto px-2 pb-4 my-2">
+            @Content
+        </MudContainer>
+
+        <Condition Evaluation="BottomContent != null">
+            <Match>
+                <MudPaper Width="100%" Elevation="4"
+                          Class="d-flex flex-row align-center border-t rounded-0 py-2 px-2 mt-auto">
+                    @BottomContent
+                </MudPaper>
+            </Match>
+        </Condition>
+    </MudContainer>
+</div>

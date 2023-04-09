@@ -1,0 +1,10 @@
+﻿@namespace Client.Core.Features.Products.DeleteProductButton
+
+@inherits BaseComponent
+
+<MudIconButton Class="@($"{@GetCssName(nameof(DeleteProductButton))} {ClassName}")"
+               Style="@StyleName"
+               UserAttributes="UserAttributes"
+               Icon="@Icons.Material.Filled.Delete"
+               Color="Color.Error" Size="Size.Small"
+               OnClick="OnClick" />

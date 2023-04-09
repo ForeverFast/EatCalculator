@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:web_ui="clr-namespace:Client.Core.App;assembly=Client.Core"
+             x:Class="Client.EntryPoints.Maui.Pages.MainPage"
+             Title="MainPage">
+    <BlazorWebView HostPage="wwwroot/index.html">
+        <BlazorWebView.RootComponents>
+            <RootComponent x:Name="BlazorWebViewRoot" Selector="#app" ComponentType="{x:Type web_ui:ClientApp}" />
+        </BlazorWebView.RootComponents>
+    </BlazorWebView>
+</ContentPage>

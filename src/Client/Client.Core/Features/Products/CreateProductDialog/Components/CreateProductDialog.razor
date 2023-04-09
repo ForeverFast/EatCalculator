@@ -1,0 +1,67 @@
+﻿@namespace Client.Core.Features.Products.CreateProductDialog
+
+@inherits BaseDialogComponent
+
+<div class="@GetCssName(nameof(CreateProductDialog)) eat-calc-dialog-content @ClassName"
+     style="@StyleName"
+@attributes="UserAttributes">
+    <ScrollableContainerWithToolbar>
+        <ToolbarContent>
+            <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
+                           OnClick="OnBackButtonClick"
+                           Class="me-1" />
+            <MudText Typo="Typo.h5">Создание продукта</MudText>
+        </ToolbarContent>
+        <Content>
+            <MudForm @ref="_createProductForm" Model="_createProductViewModel"
+                     Validation="_createProductViewModelValidator.Validation"
+                     Class="w-100">
+                <MudText Class="mt-4">Название</MudText>
+                <MudTextField @bind-Value="_createProductViewModel.Title"
+                              For="@(() => _createProductViewModel.Title)" Immediate="true"
+                              Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+                <MudText Class="mt-4">Описание</MudText>
+                <MudTextField @bind-Value="_createProductViewModel.Description"
+                              For="@(() => _createProductViewModel.Description)" Immediate="true"
+                              Variant="Variant.Outlined" Margin="Margin.Dense"
+                              Lines="3" />
+
+                <MudText Class="mt-4">Грамм</MudText>
+                <MudTextField @bind-Value="_createProductViewModel.Grams"
+                              For="@(() => _createProductViewModel.Grams)" Immediate="true"
+                              Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+                <MudText Class="mt-4">Белки</MudText>
+                <MudTextField @bind-Value="_createProductViewModel.Protein"
+                              For="@(() => _createProductViewModel.Protein)" Immediate="true"
+                              Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+                <MudText Class="mt-4">Жиры</MudText>
+                <MudTextField @bind-Value="_createProductViewModel.Fat"
+                              For="@(() => _createProductViewModel.Fat)" Immediate="true"
+                              Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+                <MudText Class="mt-4">Углеводы</MudText>
+                <MudTextField @bind-Value="_createProductViewModel.Carbohydrate"
+                              For="@(() => _createProductViewModel.Carbohydrate)" Immediate="true"
+                              Variant="Variant.Outlined" Margin="Margin.Dense" />
+            </MudForm>
+        </Content>
+        <BottomContent>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       OnClick="OnSubmit"
+                       Class="px-10 ms-auto">
+                <Condition Evaluation="_saving">
+                    <Match>
+                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                        <MudText Class="ms-2">Создание...</MudText>
+                    </Match>
+                    <NotMatch>
+                        Создать
+                    </NotMatch>
+                </Condition>
+            </MudButton>
+        </BottomContent>
+    </ScrollableContainerWithToolbar>
+</div>
