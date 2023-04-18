@@ -31,12 +31,6 @@ namespace Server.Core.Context.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("RefreshTokenExpiryTime")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("TEXT");

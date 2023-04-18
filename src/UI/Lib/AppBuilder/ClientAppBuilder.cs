@@ -17,5 +17,8 @@ namespace UI.Lib.AppBuilder
         public required ILoggingBuilder Logging { get; init; }
         public required Assembly MainAssembly { get; init; }
         public required Assembly[] AdditionalAssemblies { get; init; }
+
+        public Assembly[] FullTargetAssemblies
+            => AdditionalAssemblies.Append(MainAssembly).ToArray();
     }
 }

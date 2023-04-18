@@ -33,6 +33,27 @@
                                             Icon="@Icons.Material.Filled.Today">
                                     Календарь
                                 </MudNavLink>
+
+                                <AuthorizeView>
+                                    <Authorized>
+                                        <MudNavLink Match="NavLinkMatch.All" Href="@($"{Routes.Identity.BasePath}/{Routes.Identity.UserProfile}")"
+                                                    Icon="@Icons.Material.Filled.AccountCircle">
+                                            Профиль
+                                        </MudNavLink>
+                                        <MudNavLink Match="NavLinkMatch.All"
+                                                    Icon="@Icons.Material.Filled.Logout"
+                                                    >
+                                            Выйти
+                                        </MudNavLink>
+                                    </Authorized>
+                                    <NotAuthorized>
+                                        <MudNavLink Match="NavLinkMatch.All" Href="@($"{Routes.Identity.BasePath}/{Routes.Identity.SignIn}")"
+                                                    Icon="@Icons.Material.Filled.Login">
+                                            Войти
+                                        </MudNavLink>
+                                    </NotAuthorized>
+                                </AuthorizeView>
+
                             </MudNavMenu>
                         </MudDrawer>
                         <MudMainContent Class="h-vh-100">

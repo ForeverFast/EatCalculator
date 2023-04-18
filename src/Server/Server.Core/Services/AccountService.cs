@@ -6,7 +6,6 @@ using Server.Core.Helpers;
 using Server.Core.Interfaces.Services;
 using Server.Core.Models.Api.Identity.Requests;
 using Server.Core.Models.Api.Identity.Responses;
-using System.Security.Claims;
 
 namespace Server.Core.Services
 {
@@ -38,24 +37,10 @@ namespace Server.Core.Services
             if (!checkResult)
                 throw new BadRequestException("Bad login or password");
 
-            if (user.RefreshToken == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
-            {
-                user = user with
-                {
-                    RefreshToken = TokenHelper.GenerateRefreshToken(),
-                    RefreshTokenExpiryTime = DateTime.UtcNow.AddYears(1),
-                };
-
-                await _dal.For<User>()
-                    .Update
-                    .UpdateAsync(user);
-            }
-
             return new SignInResponse
             {
                 UserId = user.Id,
                 AccessToken = TokenHelper.GenerateAccessToken(user),
-                RefreshToken = user.RefreshToken,
             };
         }
 
@@ -73,8 +58,6 @@ namespace Server.Core.Services
                 Email = request.Data.Email,
                 UserName = request.Data.UserName,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Data.Password),
-                RefreshToken = TokenHelper.GenerateRefreshToken(),
-                RefreshTokenExpiryTime = DateTime.UtcNow.AddYears(1),
 
                 UserEatData = new UserEatData
                 {
@@ -88,28 +71,6 @@ namespace Server.Core.Services
             {
                 UserId = createdUser.Id,
                 AccessToken = TokenHelper.GenerateAccessToken(createdUser),
-                RefreshToken = createdUser.RefreshToken!,
-            };
-        }
-
-        public async ValueTask<RefreshTokenResponse> RefreshTokenAsync(RefreshTokenRequest request, CancellationToken ctn)
-        {
-            var principal = TokenHelper.GetPrincipalFromToken(request.Data.AccessToken);
-            var userIdFromClaims = principal?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-            if (!int.TryParse(userIdFromClaims, out var userId))
-                throw new BadRequestException("Invalid token");
-
-            var user = await _dal.For<User>()
-               .Get
-               .FirstOrDefaultAsync(x => x.Id == userId, ctn)
-               ?? throw new BadRequestException("Invalid token");
-
-            if (!(user.RefreshToken == request.Data.RefreshToken && user.RefreshTokenExpiryTime >= DateTime.UtcNow))
-                throw new BadRequestException("Invalid refresh token");
-
-            return new RefreshTokenResponse
-            {
-                AccessToken = TokenHelper.GenerateAccessToken(user),
             };
         }
     }

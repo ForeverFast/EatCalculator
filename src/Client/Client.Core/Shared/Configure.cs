@@ -1,9 +1,10 @@
-﻿using Client.Core.Shared.Api.LocalDatabase.Context;
+﻿using Blazored.LocalStorage;
+using Client.Core.Shared.Api.HttpClient;
+using Client.Core.Shared.Api.LocalDatabase;
 using Client.Core.Shared.Lib.Calculator;
-using DALQueryChain.EntityFramework;
-using Microsoft.EntityFrameworkCore;
+using Client.Core.Shared.Lib.FrameworkAbstractions;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using MudBlazor.Services;
 
 namespace Client.Core.Shared
@@ -12,22 +13,29 @@ namespace Client.Core.Shared
     {
         public static ClientAppBuilder ConfigureSharedLayer(this ClientAppBuilder appBuilder)
         {
-            var services = appBuilder.Services;
-            var targetAssemblies = appBuilder.AdditionalAssemblies;
-            var fullTargetAssemblies = targetAssemblies.Append(appBuilder.MainAssembly).ToArray();
+            appBuilder.ConfigureDataAccessLayer();
+            appBuilder.ConfigureHttpClient();
 
-            services.AddScoped<ICalculatorService, CalculatorService>();
+            // Auth 
+
+            appBuilder.Services
+                .AddAuthorizationCore()
+                .AddScoped<AuthenticationStateProvider, ClientAppAuthenticationStateProvider>()
+                .AddScoped<ClientAppAuthenticationStateProviderWrapper>();
 
             // UI
 
-            services.AddMudServices(opt =>
+            appBuilder.Services.AddMudServices(opt =>
             {
                 opt.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;
             });
 
             // Other
 
-            services.AddValidators(fullTargetAssemblies);
+            appBuilder.Services.AddBlazoredLocalStorage();
+            appBuilder.Services.AddValidators(appBuilder.FullTargetAssemblies);
+
+            appBuilder.Services.AddScoped<ICalculatorService, CalculatorService>();
 
             return appBuilder;
         }

@@ -7,6 +7,5 @@ namespace Server.Core.Interfaces.Services
     {
         ValueTask<SignInResponse> SingInAsync(SignInRequest request, CancellationToken ctn);
         ValueTask<SignUpResponse> SingUpAsync(SignUpRequest request, CancellationToken ctn);
-        ValueTask<RefreshTokenResponse> RefreshTokenAsync(RefreshTokenRequest request, CancellationToken ctn);
     }
 }

@@ -2,8 +2,7 @@
 using Client.Core.Entities.Meals.Models.Store;
 using Client.Core.Entities.Products.Models.Store;
 using Client.Core.Shared;
-using Client.Core.Shared.Api.LocalDatabase;
-using Microsoft.Extensions.DependencyInjection;
+
 
 namespace Client.Core.App
 {
@@ -12,26 +11,21 @@ namespace Client.Core.App
         public static ClientAppBuilder ConfigureAppLayer(this ClientAppBuilder appBuilder)
         {
             appBuilder.ConfigureSharedLayer();
-            appBuilder.ConfigureDataAccessLayer();
 
-            var services = appBuilder.Services;
-            var targetAssemblies = appBuilder.AdditionalAssemblies;
-            var fullTargetAssemblies = targetAssemblies.Append(appBuilder.MainAssembly).ToArray();
+            // Flux
 
-            // Redux
-
-            Adapters.Scan(fullTargetAssemblies);
-            services.AddScoped<BaseEffectInjects>();
-            services.AddFluxor(options =>
+            Adapters.Scan(appBuilder.FullTargetAssemblies);
+            appBuilder.Services.AddScoped<BaseEffectInjects>();
+            appBuilder.Services.AddFluxor(options =>
             {
-                options.ScanAssemblies(appBuilder.MainAssembly, targetAssemblies);
+                options.ScanAssemblies(appBuilder.MainAssembly, appBuilder.AdditionalAssemblies);
                 if (appBuilder.IsDevelopment())
                     options.UseReduxDevTools();
             });
 
-            services.AddScoped<DayStateFacade>();
-            services.AddScoped<MealStateFacade>();
-            services.AddScoped<ProductStateFacade>();
+            appBuilder.Services.AddScoped<DayStateFacade>();
+            appBuilder.Services.AddScoped<MealStateFacade>();
+            appBuilder.Services.AddScoped<ProductStateFacade>();
 
             return appBuilder;
         }

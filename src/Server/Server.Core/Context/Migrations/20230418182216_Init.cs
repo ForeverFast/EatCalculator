@@ -20,8 +20,6 @@ namespace Server.Core.Context.Migrations
                     Email = table.Column<string>(type: "TEXT", nullable: false),
                     UserName = table.Column<string>(type: "TEXT", nullable: false),
                     PasswordHash = table.Column<string>(type: "TEXT", nullable: false),
-                    RefreshToken = table.Column<string>(type: "TEXT", nullable: true),
-                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "TEXT", nullable: true),
                     FilePath = table.Column<string>(type: "TEXT", nullable: true),
                     LastUpdateDate = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },

@@ -2,7 +2,7 @@
 {
     public record SignUpRequest
     {
-        public required SignUpRequestData Data { get; init; }
+        public required SignUpRequestData Body { get; init; }
     }
 
     public record SignUpRequestData

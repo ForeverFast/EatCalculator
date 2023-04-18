@@ -3,8 +3,6 @@ using Server.Core.Context.Entities.Identity;
 using Server.Core.Resources;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Server.Core.Helpers
 {
@@ -17,7 +15,7 @@ namespace Server.Core.Helpers
                 issuer: TokenDefaults.Issuer,
                 audience: TokenDefaults.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddYears(1),
                 signingCredentials: signInCredentials
             );
 
@@ -33,16 +31,6 @@ namespace Server.Core.Helpers
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.UserName),
             });
-
-        public static string GenerateRefreshToken()
-        {
-            var randomNumber = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randomNumber);
-                return Convert.ToBase64String(randomNumber);
-            }
-        }
 
         public static ClaimsPrincipal GetPrincipalFromToken(string token)
         {

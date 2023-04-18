@@ -34,10 +34,5 @@ namespace Server.EntryPoints.WebApi.Controllers
         [HttpPost, Route("sing-up")]
         public async Task<SignUpResponse> SingUp(SignUpRequest request, CancellationToken ctn)
             => await _accountService.SingUpAsync(request, ctn);
-
-        [AllowAnonymous]
-        [HttpPost, Route("refresh-token")]
-        public async Task<RefreshTokenResponse> RefreshToken(RefreshTokenRequest request, CancellationToken ctn)
-            => await _accountService.RefreshTokenAsync(request, ctn);
     }
 }

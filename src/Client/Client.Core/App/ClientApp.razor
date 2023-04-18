@@ -1,14 +1,20 @@
 ﻿<StoreInitializer />
 
-<Router AppAssembly="@typeof(ClientApp).Assembly"
-        AdditionalAssemblies="@Assemblies">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(ClientAppLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-    <NotFound>
-        <LayoutView Layout="@typeof(ClientAppLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</Router>
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(ClientApp).Assembly"
+            AdditionalAssemblies="@Assemblies">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@LayoutComponent">
+                 <NotAuthorized>
+                    <RedirectTo Uri="@(GetLoginUri())" />
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(ClientAppLayout)">
+                <p role="alert">Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

@@ -2,6 +2,6 @@
 {
     public record UploadUserEatDataRequest
     {
-        public required byte[] DbFile { get; init; }
+        public required byte[] DbFileData { get; init; }
     }
 }

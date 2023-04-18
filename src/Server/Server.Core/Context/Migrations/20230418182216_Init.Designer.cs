@@ -11,7 +11,7 @@ using Server.Core.Context;
 namespace Server.Core.Context.Migrations
 {
     [DbContext(typeof(ServerEatCalculatorDbContext))]
-    [Migration("20230409163743_Init")]
+    [Migration("20230418182216_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -32,12 +32,6 @@ namespace Server.Core.Context.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("RefreshTokenExpiryTime")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserName")

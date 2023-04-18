@@ -27,8 +27,8 @@ namespace Server.EntryPoints.WebApi.Controllers
 
         [Authorize]
         [HttpGet, Route("check-updates")]
-        public async Task<CheckUpdatesResponse> CheckUpdates(CheckUpdatesRequest request, CancellationToken ctn)
-            => await _userDataService.CheckUpdatesAsync(request, ctn);
+        public ValueTask<CheckUpdatesResponse> CheckUpdates(CheckUpdatesRequest request, CancellationToken ctn)
+            => _userDataService.CheckUpdatesAsync(request, ctn);
 
         [Authorize]
         [HttpGet, Route("load-user-eat-data")]

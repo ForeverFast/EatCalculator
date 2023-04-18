@@ -1,5 +1,8 @@
 ﻿using Client.Core.App.Models;
+using Client.Core.App.Models.Store;
+using Client.Core.Shared.Configs;
 using System.Reflection;
+using System.Text.Encodings.Web;
 
 namespace Client.Core.App
 {
@@ -16,6 +19,7 @@ namespace Client.Core.App
         #region Injects
 
         [Inject] IDispatcher _dispatcher { get; init; } = null!;
+        [Inject] NavigationManager _navigationManager { get; init; } = null!;
 
         #endregion
 
@@ -25,8 +29,21 @@ namespace Client.Core.App
         {
             await base.OnInitializedAsync();
 
-            //_dispatcher.Dispatch(AppStateConfiguration);
+            _dispatcher.Dispatch(new InitializeAppAction
+            {
+                Platform = AppConfiguration.Platform,
+            });
         }
+
+        #endregion
+
+        #region Private methods
+
+        private string GetLoginUri()
+            => _navigationManager.GetUriWithQueryParameters($"{Routes.Identity.BasePath}/{Routes.Identity.SignIn}", new Dictionary<string, object?>
+            {
+                ["RedirectUri"] = $"{UrlEncoder.Default.Encode(_navigationManager.Uri)}",
+            });
 
         #endregion
     }

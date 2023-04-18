@@ -30,9 +30,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UI", "src\UI\UI.csproj", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "src\Common\Common.csproj", "{FAC342D5-FC40-4248-8168-C8C66128C6BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Core", "src\Server\Server.Core\Server.Core.csproj", "{847F5D9A-8517-4253-A70C-66E6B5A0A560}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.Core", "src\Server\Server.Core\Server.Core.csproj", "{847F5D9A-8517-4253-A70C-66E6B5A0A560}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.EntryPoints.WebApi", "src\Server\EntryPoints\Server.EntryPoints.WebApi\Server.EntryPoints.WebApi.csproj", "{2851E93D-3CCB-48C1-BE18-BA07B5238200}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.EntryPoints.WebApi", "src\Server\EntryPoints\Server.EntryPoints.WebApi\Server.EntryPoints.WebApi.csproj", "{2851E93D-3CCB-48C1-BE18-BA07B5238200}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

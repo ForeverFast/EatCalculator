@@ -11,14 +11,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
     <PackageReference Include="DALQueryChain" Version="1.0.19" />
     <PackageReference Include="DALQueryChain.EntityFramework" Version="1.0.19" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="7.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+    <PackageReference Include="RestSharp" Version="108.0.3" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.4" />
   </ItemGroup>
 
@@ -27,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Shared\Api\HttpClient\Endpoints\" />
     <Folder Include="Shared\Api\LocalDatabase\DesignTimeFiles\" />
     <Folder Include="Shared\Api\LocalDatabase\Migrations\" />
   </ItemGroup>

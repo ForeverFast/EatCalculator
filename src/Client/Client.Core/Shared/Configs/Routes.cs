@@ -15,5 +15,14 @@
         {
             public const string BasePath = "products";
         }
+
+        public class Identity
+        {
+            public const string BasePath = "authentication";
+
+            public const string SignIn = "sign-in";
+            public const string SignUp = "sign-up";
+            public const string UserProfile = "profile";
+        }
     }
 }

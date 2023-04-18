@@ -1,3 +1,5 @@
 {
-
+  "HttpEndpointsClientSettings": {
+    "BaseAddress": "https://localhost:7180"
+  }
 }

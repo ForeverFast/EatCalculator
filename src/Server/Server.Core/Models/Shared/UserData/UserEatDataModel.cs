@@ -2,7 +2,7 @@
 {
     public record UserEatDataModel
     {
-        public required int UserId { get; init; }
+        public required int Id { get; init; }
         public DateTime? LastUpdateDate { get; init; }
     }
 }
