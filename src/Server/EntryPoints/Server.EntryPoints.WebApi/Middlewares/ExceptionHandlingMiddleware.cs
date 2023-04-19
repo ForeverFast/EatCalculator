@@ -1,5 +1,4 @@
-﻿using Common.Base.Exceptions;
-using Common.Exceptions;
+﻿using System.Net;
 using System.Text.Json;
 
 namespace Server.EntryPoints.WebApi.Middlewares
@@ -34,21 +33,10 @@ namespace Server.EntryPoints.WebApi.Middlewares
         }
 
         private static Task HandleException(HttpContext context, Exception ex)
-            => ex switch
-            {
-                NotFoundException notFoundException => HandleException(context, notFoundException),
-                BadRequestException badRequestException => HandleException(context, badRequestException),
-                ForbiddenException forbiddenException => HandleException(context, forbiddenException),
-                UnauthorizedException unauthorizedException => HandleException(context, unauthorizedException),
-                InternalServerErrorException internalServerErrorException => HandleException(context, internalServerErrorException),
-                _ => HandleException(context, new InternalServerErrorException(ex.Message)),
-            };
-
-        private static Task HandleException<T>(HttpContext context, BaseException<T> apiException) where T : BaseExceptionModel
         {
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)apiException.StatusCode;
-            var json = JsonSerializer.Serialize(apiException.ErrorModel,
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            var json = JsonSerializer.Serialize(ex.Message,
                 new JsonSerializerOptions()
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase

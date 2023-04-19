@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Common.Wrappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Core.Interfaces.Services;
 using Server.Core.Models.Api.Identity.Requests;
@@ -27,12 +28,12 @@ namespace Server.EntryPoints.WebApi.Controllers
 
         [AllowAnonymous]
         [HttpPost, Route("sing-in")]
-        public async Task<SignInResponse> SingIn(SignInRequest request, CancellationToken ctn)
-            => await _accountService.SingInAsync(request, ctn);
+        public ValueTask<IResult<SignInResponse>> SingIn(SignInRequest request, CancellationToken ctn)
+            => _accountService.SingInAsync(request, ctn);
 
         [AllowAnonymous]
         [HttpPost, Route("sing-up")]
-        public async Task<SignUpResponse> SingUp(SignUpRequest request, CancellationToken ctn)
-            => await _accountService.SingUpAsync(request, ctn);
+        public ValueTask<IResult<SignUpResponse>> SingUp(SignUpRequest request, CancellationToken ctn)
+            => _accountService.SingUpAsync(request, ctn);
     }
 }

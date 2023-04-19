@@ -26,31 +26,33 @@ namespace Server.Core.Services
 
         #endregion
 
-        public async ValueTask<SignInResponse> SingInAsync(SignInRequest request, CancellationToken ctn)
+        public async ValueTask<IResult<SignInResponse>> SingInAsync(SignInRequest request, CancellationToken ctn)
         {
             var user = await _dal.For<User>()
                 .Get
-                .FirstOrDefaultAsync(x => x.Email == request.Data.Login || x.UserName == request.Data.Login, ctn)
-                ?? throw new BadRequestException("Bad login or password");
+                .FirstOrDefaultAsync(x => x.Email == request.Data.Login || x.UserName == request.Data.Login, ctn);
+               
+            if (user == null)
+                return Result<SignInResponse>.Fail("Bad login or password");
 
             var checkResult = BCrypt.Net.BCrypt.Verify(request.Data.Password, user.PasswordHash);
             if (!checkResult)
-                throw new BadRequestException("Bad login or password");
+                return Result<SignInResponse>.Fail("Bad login or password");
 
-            return new SignInResponse
+            return Result<SignInResponse>.Success(new SignInResponse
             {
                 UserId = user.Id,
                 AccessToken = TokenHelper.GenerateAccessToken(user),
-            };
+            });
         }
 
-        public async ValueTask<SignUpResponse> SingUpAsync(SignUpRequest request, CancellationToken ctn)
+        public async ValueTask<IResult<SignUpResponse>> SingUpAsync(SignUpRequest request, CancellationToken ctn)
         {
             if (await _dal.For<User>().Get.AnyAsync(x => x.Email == request.Data.Email, ctn))
-                throw new BadRequestException("User with this email already registered");
+                return Result<SignUpResponse>.Fail("User with this email already registered");
 
             if (await _dal.For<User>().Get.AnyAsync(x => x.UserName == request.Data.UserName, ctn))
-                throw new BadRequestException("User with this username already registered");
+                return Result<SignUpResponse>.Fail("User with this username already registered");
 
             var newUser = new User
             {
@@ -67,11 +69,11 @@ namespace Server.Core.Services
 
             var createdUser = await _dal.For<User>().Insert.InsertWithObjectAsync(newUser);
 
-            return new SignUpResponse
+            return Result<SignUpResponse>.Success(new SignUpResponse
             {
                 UserId = createdUser.Id,
                 AccessToken = TokenHelper.GenerateAccessToken(createdUser),
-            };
+            });
         }
     }
 }

@@ -18,7 +18,7 @@
 
         public class Identity
         {
-            public const string BasePath = "authentication";
+            public const string BasePath = "account";
 
             public const string SignIn = "sign-in";
             public const string SignUp = "sign-up";

@@ -32,10 +32,16 @@ namespace Client.Core.Entities.Viewer.Models.Store.Effects
                 };
 
                 var response = await _injects.HttpEndpointsClient.Account.SignInAsync(request);
-                await _injects.LocalStorageService.SetItemAsync(LocalStorageKeys.AccessToken, response.AccessToken);
+                if (!response.Succeeded)
+                    dispatcher.Dispatch(new SignInFailureAction
+                    {
+                        ErrorMessage = response.Messages.FirstOrDefault() ?? string.Empty,
+                    });
+
+                await _injects.LocalStorageService.SetItemAsync(LocalStorageKeys.AccessToken, response.Data.AccessToken);
                 _injects.AuthenticationStateProvider.MarkUserAsAuthenticated(action.Login);
 
-                var claims = IdentityHelper.ParseClaimsFromJwt(response.AccessToken).ToList();
+                var claims = IdentityHelper.ParseClaimsFromJwt(response.Data.AccessToken).ToList();
 
                 var viewerModel = new ViewerModel
                 {
@@ -49,9 +55,13 @@ namespace Client.Core.Entities.Viewer.Models.Store.Effects
                     ViewerModel = viewerModel,  
                 });
             }
-            catch
+            catch(Exception ex)
             {
-
+                
+                dispatcher.Dispatch(new SignInFailureAction
+                {
+                    ErrorMessage = "",
+                });
             }
         }
     }

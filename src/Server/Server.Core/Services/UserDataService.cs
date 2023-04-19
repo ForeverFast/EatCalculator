@@ -5,6 +5,7 @@ using Server.Core.Context.Entities.Identity;
 using Server.Core.Context.Entities.UserData;
 using Server.Core.Interfaces;
 using Server.Core.Interfaces.Services;
+using Server.Core.Models.Api.Identity.Responses;
 using Server.Core.Models.Api.UserData.Requests;
 using Server.Core.Models.Api.UserData.Responses;
 
@@ -29,7 +30,7 @@ namespace Server.Core.Services
 
         #endregion
 
-        public async ValueTask<CheckUpdatesResponse> CheckUpdatesAsync(CheckUpdatesRequest request, CancellationToken ctn)
+        public async ValueTask<IResult<CheckUpdatesResponse>> CheckUpdatesAsync(CheckUpdatesRequest request, CancellationToken ctn)
         {
             var userId = request.AuthorizedUserId!.Value;
             var userData = await _dal.For<UserEatData>().Get.FirstAsync(x => x.Id == userId);
@@ -43,30 +44,30 @@ namespace Server.Core.Services
                 _ => true,
             };
 
-            return new CheckUpdatesResponse
+            return Result<CheckUpdatesResponse>.Success(new CheckUpdatesResponse
             {
                 AnyUpdates = result,
-            };
+            });
         }
 
-        public async ValueTask<LoadUserEatDataResponse> LoadUserEatDataAsync(LoadUserEatDataRequest request, CancellationToken ctn)
+        public async ValueTask<IResult<LoadUserEatDataResponse>> LoadUserEatDataAsync(LoadUserEatDataRequest request, CancellationToken ctn)
         {
             var userId = request.AuthorizedUserId!.Value;
             var userData = await _dal.For<UserEatData>().Get.FirstAsync(x => x.Id == userId, ctn);
 
             if (!userData.HasData)
-                throw new NotFoundException("No available data");
+                return Result<LoadUserEatDataResponse>.Fail("No available data");
 
             var fileData = await _fileProvider.GetFileAsync(userData.FilePath!, ctn);
 
-            return new LoadUserEatDataResponse
+            return Result<LoadUserEatDataResponse>.Success(new LoadUserEatDataResponse
             {
                 Data = fileData,
                 LastUpdateDate = userData.LastUpdateDate!.Value
-            };
+            });
         }
 
-        public async ValueTask<UploadUserEatDataResponse> UploadUserEatDataAsync(UploadUserEatDataRequest request, CancellationToken ctn)
+        public async ValueTask<IResult<UploadUserEatDataResponse>> UploadUserEatDataAsync(UploadUserEatDataRequest request, CancellationToken ctn)
         {
             var userId = request.AuthorizedUserId!.Value;
             var userData = await _dal.For<UserEatData>().Get.FirstAsync(x => x.Id == userId);
@@ -94,10 +95,10 @@ namespace Server.Core.Services
                 LastUpdateDate = updateDate,
             });
 
-            return new UploadUserEatDataResponse
+            return Result<UploadUserEatDataResponse>.Success(new UploadUserEatDataResponse
             {
                 LastUpdateDate = updateDate,
-            };
+            });
         }
     }
 }

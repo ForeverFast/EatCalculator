@@ -1,3 +1,3 @@
-﻿global using Common.Exceptions;
+﻿global using Common.Wrappers;
 global using Microsoft.AspNetCore.Mvc;
 

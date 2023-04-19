@@ -1,6 +1,7 @@
 ﻿using Client.Core.Shared.Api.HttpClient.Models;
 using Client.Core.Shared.Api.HttpClient.Requests.Identity;
 using Client.Core.Shared.Api.HttpClient.Responses.Identity;
+using Common.Wrappers;
 using RestSharp;
 
 namespace Client.Core.Shared.Api.HttpClient.Endpoints
@@ -17,22 +18,22 @@ namespace Client.Core.Shared.Api.HttpClient.Endpoints
 
         private const string _controllerRoute = "/account";
 
-        public Task<SignInResponse> SignInAsync(SignInRequest request, CancellationToken ctn = default)
+        public Task<IResult<SignInResponse>> SignInAsync(SignInRequest request, CancellationToken ctn = default)
         {
             var restRequest = new RestRequest($"{_controllerRoute}/sign-in");
 
             restRequest.AddBody(request.Body);
 
-            return _restClient.PostAsync<SignInResponse>(restRequest, ctn)!;
+            return _restClient.PostAsync<IResult<SignInResponse>>(restRequest, ctn)!;
         }
 
-        public Task<SignUpResponse> SignUpAsync(SignUpRequest request, CancellationToken ctn = default)
+        public Task<IResult<SignUpResponse>> SignUpAsync(SignUpRequest request, CancellationToken ctn = default)
         {
             var restRequest = new RestRequest($"{_controllerRoute}/sign-up", Method.Get);
 
             restRequest.AddBody(request.Body);
 
-            return _restClient.PostAsync<SignUpResponse>(restRequest, ctn)!;
+            return _restClient.PostAsync<IResult<SignUpResponse>>(restRequest, ctn)!;
         }
     }
 }

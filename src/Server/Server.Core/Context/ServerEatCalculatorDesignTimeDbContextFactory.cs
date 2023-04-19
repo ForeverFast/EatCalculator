@@ -2,9 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
-using Server.Core.Context;
 
-namespace Client.Core.Shared.Api.LocalDatabase.Context
+namespace Server.Core.Context
 {
     internal class ServerEatCalculatorDesignTimeDbContextFactory : IDesignTimeDbContextFactory<ServerEatCalculatorDbContext>
     {

@@ -4,6 +4,7 @@ using Client.Core.Shared.Api.HttpClient.Requests.UserData;
 using Client.Core.Shared.Api.HttpClient.Responses.Identity;
 using Client.Core.Shared.Api.HttpClient.Responses.UserData;
 using Common;
+using Common.Wrappers;
 using RestSharp;
 
 namespace Client.Core.Shared.Api.HttpClient.Endpoints
@@ -20,29 +21,29 @@ namespace Client.Core.Shared.Api.HttpClient.Endpoints
 
         private const string _controllerRoute = "/user-data";
 
-        public Task<CheckUpdatesResponse> CheckUpdatesAsync(CheckUpdatesRequest request, CancellationToken ctn = default)
+        public Task<IResult<CheckUpdatesResponse>> CheckUpdatesAsync(CheckUpdatesRequest request, CancellationToken ctn = default)
         {
             var restRequest = new RestRequest($"{_controllerRoute}/check-updates");
 
             restRequest.AddParameter(nameof(request.LastUpdateDate), request.LastUpdateDate?.ToString());
 
-            return _restClient.GetAsync<CheckUpdatesResponse>(restRequest, ctn)!;
+            return _restClient.GetAsync<IResult<CheckUpdatesResponse>>(restRequest, ctn)!;
         }
 
-        public Task<LoadUserEatDataResponse> LoadUserEatDataAsync(LoadUserEatDataRequest _, CancellationToken ctn = default)
+        public Task<IResult<LoadUserEatDataResponse>> LoadUserEatDataAsync(LoadUserEatDataRequest _, CancellationToken ctn = default)
         {
             var restRequest = new RestRequest($"{_controllerRoute}/load-user-eat-data");
 
-            return _restClient.GetAsync<LoadUserEatDataResponse>(restRequest, ctn)!;
+            return _restClient.GetAsync<IResult<LoadUserEatDataResponse>>(restRequest, ctn)!;
         }
 
-        public Task<UploadUserEatDataResponse> UploadUserEatDataAsync(UploadUserEatDataRequest request, CancellationToken ctn = default)
+        public Task<IResult<UploadUserEatDataResponse>> UploadUserEatDataAsync(UploadUserEatDataRequest request, CancellationToken ctn = default)
         {
             var restRequest = new RestRequest($"{_controllerRoute}/upload-user-eat-data");
 
             restRequest.AddFile("File", request.DbFileData, GlobalConstants.LocalUserDbFileName, "multipart/form-data");
 
-            return _restClient.PostAsync<UploadUserEatDataResponse>(restRequest, ctn)!;
+            return _restClient.PostAsync<IResult<UploadUserEatDataResponse>>(restRequest, ctn)!;
         }
     }
 }
