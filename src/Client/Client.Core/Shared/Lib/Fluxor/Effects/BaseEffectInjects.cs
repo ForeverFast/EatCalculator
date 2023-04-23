@@ -4,6 +4,8 @@ using Client.Core.Shared.Api.LocalDatabase.Context;
 using Client.Core.Shared.Lib.Calculator;
 using Client.Core.Shared.Lib.FrameworkAbstractions;
 using DALQueryChain.Interfaces;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Localization;
 
 namespace Client.Core.Shared.Lib.Fluxor
 {
@@ -12,7 +14,9 @@ namespace Client.Core.Shared.Lib.Fluxor
         #region Injects
 
         public HttpEndpointsClient HttpEndpointsClient { get; }    
-        public ClientAppAuthenticationStateProviderWrapper AuthenticationStateProvider { get; }    
+        public AuthenticationStateProvider AuthenticationStateProvider { get; }
+
+        public IStringLocalizer<DefaultLocalization> Localizer { get; }
 
         public ISnackbar Snackbar { get; }
         public ILocalStorageService LocalStorageService { get; }
@@ -27,9 +31,10 @@ namespace Client.Core.Shared.Lib.Fluxor
         public BaseEffectInjects(IDALQueryChain<ClientEatCalculatorDbContext> dal,
                                  ISnackbar snackbar,
                                  ICalculatorService calculatorService,
-                                 ClientAppAuthenticationStateProviderWrapper authenticationStateProvider,
+                                 AuthenticationStateProvider authenticationStateProvider,
                                  HttpEndpointsClient httpEndpointsClient,
-                                 ILocalStorageService localStorageService)
+                                 ILocalStorageService localStorageService,
+                                 IStringLocalizer<DefaultLocalization> localizer)
         {
             Dal = dal;
             Snackbar = snackbar;
@@ -37,6 +42,7 @@ namespace Client.Core.Shared.Lib.Fluxor
             AuthenticationStateProvider = authenticationStateProvider;
             HttpEndpointsClient = httpEndpointsClient;
             LocalStorageService = localStorageService;
+            Localizer = localizer;
         }
 
         #endregion

@@ -1,0 +1,74 @@
+﻿@namespace Client.Core.Features.Viewer.SignUpForm
+
+@inherits BaseFluxorComponent
+
+<div class="@GetCssName(nameof(SignUpForm)) @ClassName"
+     style="@StyleName"
+@attributes="UserAttributes">
+    <MudContainer MaxWidth="MaxWidth.ExtraSmall"
+                  Class="px-sm-0 pa-2">
+        <MudContainer Class="d-flex flex-column align-center px-0 mt-4">
+            <MudImage Src="_content/Client.Core/images/logo.png" />
+            <MudText Typo="Typo.h5"
+                     Class="mt-4">
+                Регистрация
+            </MudText>
+        </MudContainer>
+
+        <MudPaper Width="100%" Elevation="10"
+                  Class="d-flex flex-column align-center px-12 py-8 mt-4 border">
+            <MudForm @ref="_signUpForm" Model="_signUpViewModel"
+                     Validation="_signUpViewModelValidator.Validation"
+                     Class="w-100">
+                <MudText>Логин</MudText>
+                <MudTextField @bind-Value="_signUpViewModel.UserName"
+                              For="@(() => _signUpViewModel.UserName)" Immediate="true"
+                              Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+                <MudText Class="mt-4">Email</MudText>
+                <MudTextField @bind-Value="_signUpViewModel.Email"
+                              For="@(() => _signUpViewModel.Email)" Immediate="true"
+                              Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+                <MudText Class="mt-4">Пароль</MudText>
+                <MudTextField @bind-Value="_signUpViewModel.Password"
+                              For="@(() => _signUpViewModel.Password)" Immediate="true"
+                              Variant="Variant.Outlined" Margin="Margin.Dense" />
+            </MudForm>
+
+            <Condition Evaluation="_errorMessages.Count > 0">
+                <Match>
+                    <MudContainer Class="d-flex flex-column align-center px-0 mt-4">
+                        <Iterations Items="_errorMessages" Context="errorMessage">
+                            <MudText Color="@Color.Error">@errorMessage</MudText>
+                        </Iterations>
+                    </MudContainer>
+                </Match>
+            </Condition>
+
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       FullWidth="true"
+                       OnClick="OnSubmit"
+                       Class="mt-4">
+                <Condition Evaluation="_checking">
+                    <Match>
+                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                        <MudText Class="ms-2">Проверка...</MudText>
+                    </Match>
+                    <NotMatch>
+                        Подтвердить
+                    </NotMatch>
+                </Condition>
+            </MudButton>
+        </MudPaper>
+
+        <MudPaper Width="100%" Elevation="10"
+                  Class="d-flex flex-row align-center justify-center pa-4 mt-4 border">
+            <MudText>Уже есть в аккаунт?</MudText>
+            <MudLink OnClick="OnNavigateToSignInButtonClick"
+                     Class="ms-2">
+                Войти
+            </MudLink>
+        </MudPaper>
+    </MudContainer>
+</div>

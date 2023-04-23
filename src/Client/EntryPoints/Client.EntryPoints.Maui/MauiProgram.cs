@@ -45,7 +45,7 @@ namespace Client.EntryPoints.Maui
             }
 
             builder.Services.AddSingleton<IClientEatCalculatorDbContextFactory, MauiClientEatCalculatorDbContextFactory>();
-            builder.Services.AddSingleton<IClientEatCalculatorDbContextPathResolver, MauiClientEatCalculatorDbContextPathResolver>();
+            builder.Services.AddSingleton<IClientEatCalculatorDbContextPathHelper, MauiClientEatCalculatorDbContextPathHelper>();
 
             builder.ConfigureAppLayer();
 

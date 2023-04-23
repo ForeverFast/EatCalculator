@@ -1,5 +1,6 @@
 ﻿global using Client.Core.Shared.Api.Models;
 global using Client.Core.Shared.Lib.Fluxor;
+global using Client.Core.Shared.Resources.Localizations;
 global using FluentValidation;
 global using Fluxor;
 global using Microsoft.AspNetCore.Components;

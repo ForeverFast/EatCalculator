@@ -1,6 +1,6 @@
 ﻿namespace UI
 {
-    internal static class LoadingStateHelper
+    public static class LoadingStateHelper
     {
         public static bool IsNoDataState(this LoadingState loadingState)
             => loadingState switch

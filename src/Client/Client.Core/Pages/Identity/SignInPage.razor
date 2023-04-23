@@ -1,5 +1,14 @@
-﻿@inherits BasePageComponent
+﻿@using Client.Core.Features.Viewer.SignInForm
+
+@inherits BasePageComponent
 
 <div class="@GetCssName(nameof(SignInPage)) inner-main-content @ClassName">
-
+    <StateContainer State="_loadingState">
+        <Loading>
+            <MudProgressCircular Indeterminate="true" />
+        </Loading>
+        <Content>
+            <SignInForm />
+        </Content>
+    </StateContainer>
 </div>

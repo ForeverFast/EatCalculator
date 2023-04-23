@@ -1,4 +1,5 @@
 ﻿using Client.Core.Shared.Api.LocalDatabase.Context;
+using Common;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -6,39 +7,63 @@ using Microsoft.JSInterop;
 
 namespace Client.EntryPoints.Pwa.Implementations
 {
-    public class PwaClientEatCalculatorDbContextFactory : IClientEatCalculatorDbContextFactory
+    public class PwaClientEatCalculatorDbContextFileProvider : IClientEatCalculatorDbContextFileProvider
     {
         #region Injects
 
-        private readonly ClientEatCalculatorDbContextSettings _eatCalculatorDbContextSettings;
-        private readonly IDbContextFactory<ClientEatCalculatorDbContext> _eatCalculatorDbContextFactory;
+        private readonly DalQcWrapperEventManager _dalQcWrapperEventManager;
         private readonly IJSRuntime _jSRuntime;
 
         #endregion
 
         #region Ctors
 
-        public PwaClientEatCalculatorDbContextFactory(
-            IOptions<ClientEatCalculatorDbContextSettings> eatCalculatorDbContextSettings,
-            IDbContextFactory<ClientEatCalculatorDbContext> eatCalculatorDbContextFactory,
+        public PwaClientEatCalculatorDbContextFileProvider(
+            DalQcWrapperEventManager dalQcWrapperEventManager,
             IJSRuntime jSRuntime)
         {
-            _eatCalculatorDbContextSettings = eatCalculatorDbContextSettings.Value;
-            _eatCalculatorDbContextFactory = eatCalculatorDbContextFactory;
+            _dalQcWrapperEventManager = dalQcWrapperEventManager;
             _jSRuntime = jSRuntime;
 
-            _dbFilename = $"{_eatCalculatorDbContextSettings.DbName}";
+            _dalQcWrapperEventManager.DbCreated += OnDbCreated;
+            _dalQcWrapperEventManager.DbUpdated += OnDbUpdated;
+            _dalQcWrapperEventManager.DbDisposed += OnDbDisposed;
+
+            
+        }
+
+        private async Task OnDbCreated(DbCreatedEventArgs args)
+        {
+            await CheckForPendingTasksAsync();
+
+            _dbFilename = $"{args.Path}";
             _backup = $"{_dbFilename}_bak";
             _backupName = _backup;
 
+            Console.WriteLine($"Last status: {_lastStatus}");
+
             _lastTask = SynchronizeAsync();
+        }
+
+        private async Task OnDbUpdated()
+        {
+            await CheckForPendingTasksAsync();
+
+            _lastTask = SynchronizeAsync();
+        }
+
+        private async Task OnDbDisposed()
+        {
+            await CheckForPendingTasksAsync();
+
+            await _jSRuntime.InvokeAsync<int>("db.dispose", _backupName);
         }
 
         #endregion
 
         #region Fields
 
-        private string _dbFilename = "client-eat-calculator.db";
+        private string _dbFilename = GlobalConstants.LocalUserDbFileName;
         private string _backup;
         private string _backupName;
 
@@ -48,22 +73,14 @@ namespace Client.EntryPoints.Pwa.Implementations
 
         #endregion
 
-        public async Task<ClientEatCalculatorDbContext> CreateContextAsync()
+        public async Task<byte[]> GetDbFileAsync()
         {
-            await CheckForPendingTasksAsync();
-            var ctx = await _eatCalculatorDbContextFactory.CreateDbContextAsync();
-
-            if (!_init)
-            {
-                Console.WriteLine($"Last status: {_lastStatus}");
-                await ctx.Database.EnsureCreatedAsync();
-                _init = true;
-            }
-
-            ctx.SavedChanges += OnSavedChanges;
-
-            return ctx;
+            await _jSRuntime.InvokeAsync<int>("db.dispose", _backupName);
+            
         }
+
+        public string GetDbFilePath(string mainPath)
+            => mainPath;
 
         private async ValueTask CheckForPendingTasksAsync()
         {
@@ -79,9 +96,6 @@ namespace Client.EntryPoints.Pwa.Implementations
 
             Restore();
         }
-
-        private void OnSavedChanges(object? sender, SavedChangesEventArgs e)
-            => _lastTask = SynchronizeAsync();
 
         private async Task<int> SynchronizeAsync()
         {

@@ -7,6 +7,12 @@ namespace Client.Core.Shared.Lib
         public static void NavigateToIndexPage(this NavigationManager navigationManager)
             => navigationManager.NavigateTo($"{Routes.Main}");
 
+        public static void NavigateToSignInPage(this NavigationManager navigationManager)
+            => navigationManager.NavigateTo($"{Routes.Identity.BasePath}/{Routes.Identity.SignIn}");
+
+        public static void NavigateToSignUpPage(this NavigationManager navigationManager)
+            => navigationManager.NavigateTo($"{Routes.Identity.BasePath}/{Routes.Identity.SignUp}");
+
         public static void NavigateToProductsPage(this NavigationManager navigationManager)
             => navigationManager.NavigateTo($"{Routes.Products.BasePath}");
 

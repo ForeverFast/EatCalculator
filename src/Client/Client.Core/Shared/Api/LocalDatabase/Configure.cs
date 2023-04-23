@@ -1,8 +1,5 @@
 ﻿using Client.Core.Shared.Api.LocalDatabase.Context;
 using DALQueryChain.EntityFramework;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Client.Core.Shared.Api.LocalDatabase
 {
@@ -15,17 +12,16 @@ namespace Client.Core.Shared.Api.LocalDatabase
 
             services.Configure<ClientEatCalculatorDbContextSettings>(configuration.GetSection(nameof(ClientEatCalculatorDbContextSettings)));
 
-            services.AddDbContextFactory<ClientEatCalculatorDbContext>((sp, options) =>
-            {
-                var settings = sp.GetRequiredService<IOptions<ClientEatCalculatorDbContextSettings>>().Value;
-                var dbFilePathResolver = sp.GetRequiredService<IClientEatCalculatorDbContextPathResolver>();
-                var dbFilePath = dbFilePathResolver.GetDbFilePath(settings.DbName);
+            //services.AddDbContextFactory<ClientEatCalculatorDbContext>((sp, options) =>
+            //{
+            //    var dbFilePathResolver = sp.GetRequiredService<IClientEatCalculatorDbContextPathHelper>();
+            //    var dbFilePath = dbFilePathResolver.GetDbFilePath();
 
-                var connectionString = $"Data Source={dbFilePath}";
+            //    var connectionString = $"Data Source={dbFilePath}";
 
-                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-                options.UseSqlite(connectionString);
-            });
+            //    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            //    options.UseSqlite(connectionString);
+            //});
 
             services.AddQueryChain(typeof(Configure).Assembly);
 

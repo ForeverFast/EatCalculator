@@ -1,6 +1,8 @@
 ﻿using Client.Core.App.Models;
 using Client.Core.App.Models.Store;
+using Client.Core.Entities.Viewer.Models.Store;
 using Client.Core.Shared.Configs;
+using Microsoft.AspNetCore.Components.Authorization;
 using System.Reflection;
 using System.Text.Encodings.Web;
 
@@ -20,20 +22,31 @@ namespace Client.Core.App
 
         [Inject] IDispatcher _dispatcher { get; init; } = null!;
         [Inject] NavigationManager _navigationManager { get; init; } = null!;
+        [Inject] ViewerStateFacade _viewerStateFacade { get; init; } = null!;
+        [Inject] AuthenticationStateProvider _authenticationStateProvider { get; init; } = null!;
 
         #endregion
 
         #region LC Methods
 
-        protected override async Task OnParametersSetAsync()
+        protected override void OnInitialized()
         {
-            await base.OnInitializedAsync();
+            base.OnInitialized();
+
+            _authenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
 
             _dispatcher.Dispatch(new InitializeAppAction
             {
                 Platform = AppConfiguration.Platform,
             });
         }
+
+        #endregion
+
+        #region External events
+
+        private void OnAuthenticationStateChanged(Task<AuthenticationState> authenticationStateTask)
+            => _viewerStateFacade.InitializeViewer(authenticationStateTask);
 
         #endregion
 

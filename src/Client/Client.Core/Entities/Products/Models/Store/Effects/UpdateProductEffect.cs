@@ -1,4 +1,5 @@
 ﻿using Client.Core.Entities.Products.Models.Store.Actions;
+using Client.Core.Shared.Resources.Localizations;
 using Microsoft.Extensions.Logging;
 
 namespace Client.Core.Entities.Products.Models.Store.Effects
@@ -43,7 +44,10 @@ namespace Client.Core.Entities.Products.Models.Store.Effects
                 _logger.LogError(ex, "");
                 dispatcher.Dispatch(new UpdateProductFailureAction
                 {
-                    ErrorMessage = ex.Message
+                    Messages = new List<string>
+                    {
+                        _injects.Localizer[nameof(DefaultLocalization.UnhandledException)]
+                    },
                 });
             }
         }

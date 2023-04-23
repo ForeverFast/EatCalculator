@@ -2,13 +2,13 @@
 {
     internal record SignUpAction : BaseAction
     {
-        public required string Login { get; init; }
+        public required string UserName { get; init; }
         public required string Email { get; init; }
         public required string Password { get; init; }
     }
     internal record SignUpFailureAction : BaseFailureAction;
     internal record SignUpSuccessAction : BaseSuccessAction
     {
-        public required ViewerModel ViewerModel { get; init; }
+        public required ViewerModel Viewer { get; init; }
     }
 }

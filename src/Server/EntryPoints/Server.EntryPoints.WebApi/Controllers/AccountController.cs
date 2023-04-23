@@ -27,13 +27,13 @@ namespace Server.EntryPoints.WebApi.Controllers
         #endregion
 
         [AllowAnonymous]
-        [HttpPost, Route("sing-in")]
-        public ValueTask<IResult<SignInResponse>> SingIn(SignInRequest request, CancellationToken ctn)
-            => _accountService.SingInAsync(request, ctn);
+        [HttpPost, Route("sign-in")]
+        public ValueTask<IResult<SignInResponse>> SignIn(SignInRequest request, CancellationToken ctn)
+            => _accountService.SignInAsync(request, ctn);
 
         [AllowAnonymous]
-        [HttpPost, Route("sing-up")]
-        public ValueTask<IResult<SignUpResponse>> SingUp(SignUpRequest request, CancellationToken ctn)
-            => _accountService.SingUpAsync(request, ctn);
+        [HttpPost, Route("sign-up")]
+        public ValueTask<IResult<SignUpResponse>> SignUp(SignUpRequest request, CancellationToken ctn)
+            => _accountService.SignUpAsync(request, ctn);
     }
 }

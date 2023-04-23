@@ -5,7 +5,7 @@ namespace Server.Core.Interfaces.Services
 {
     public interface IAccountService
     {
-        ValueTask<IResult<SignInResponse>> SingInAsync(SignInRequest request, CancellationToken ctn);
-        ValueTask<IResult<SignUpResponse>> SingUpAsync(SignUpRequest request, CancellationToken ctn);
+        ValueTask<IResult<SignInResponse>> SignInAsync(SignInRequest request, CancellationToken ctn);
+        ValueTask<IResult<SignUpResponse>> SignUpAsync(SignUpRequest request, CancellationToken ctn);
     }
 }

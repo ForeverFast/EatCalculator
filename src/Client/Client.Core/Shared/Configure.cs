@@ -20,8 +20,7 @@ namespace Client.Core.Shared
 
             appBuilder.Services
                 .AddAuthorizationCore()
-                .AddScoped<AuthenticationStateProvider, ClientAppAuthenticationStateProvider>()
-                .AddScoped<ClientAppAuthenticationStateProviderWrapper>();
+                .AddScoped<AuthenticationStateProvider, ClientAppAuthenticationStateProvider>();
 
             // UI
 
@@ -33,6 +32,7 @@ namespace Client.Core.Shared
             // Other
 
             appBuilder.Services.AddBlazoredLocalStorage();
+            appBuilder.Services.AddLocalization();
             appBuilder.Services.AddValidators(appBuilder.FullTargetAssemblies);
 
             appBuilder.Services.AddScoped<ICalculatorService, CalculatorService>();

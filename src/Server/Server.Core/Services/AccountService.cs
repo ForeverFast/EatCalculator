@@ -26,7 +26,7 @@ namespace Server.Core.Services
 
         #endregion
 
-        public async ValueTask<IResult<SignInResponse>> SingInAsync(SignInRequest request, CancellationToken ctn)
+        public async ValueTask<IResult<SignInResponse>> SignInAsync(SignInRequest request, CancellationToken ctn)
         {
             var user = await _dal.For<User>()
                 .Get
@@ -46,7 +46,7 @@ namespace Server.Core.Services
             });
         }
 
-        public async ValueTask<IResult<SignUpResponse>> SingUpAsync(SignUpRequest request, CancellationToken ctn)
+        public async ValueTask<IResult<SignUpResponse>> SignUpAsync(SignUpRequest request, CancellationToken ctn)
         {
             if (await _dal.For<User>().Get.AnyAsync(x => x.Email == request.Data.Email, ctn))
                 return Result<SignUpResponse>.Fail("User with this email already registered");

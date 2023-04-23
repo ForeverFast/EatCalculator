@@ -8,60 +8,61 @@
 
 <div class="client-app-layout">
     <MudLayout>
-        <ClientAppLoader>
-            <Content>
-                <MudSwipeArea OnSwipe="OnSwipe"
-                              Class="overflow-hidden relative">
-                    <MudDrawerContainer Class="h-100">
-                        <MudDrawer @bind-Open="_drawerOpened"
-                                   Fixed="false" Elevation="1"
-                                   Variant="@DrawerVariant.Mini" Breakpoint="Breakpoint.Xl"
-                                   OpenMiniOnHover="true"
-                                   Class="@_drawerCssName">
-                            <MudNavMenu>
-                                <MudNavLink Match="NavLinkMatch.All" Href="/"
-                                            Icon="@Icons.Material.Filled.AllOut">
-                                    EatCalculator
-                                </MudNavLink>
-                                <MudDivider />
-                                <MudNavLink Match="NavLinkMatch.Prefix" Href="@($"{Routes.Products.BasePath}")"
-                                            Icon="@Icons.Material.Filled.FormatListBulleted"
-                                            Class="mt-2">
-                                    Продукты
-                                </MudNavLink>
-                                <MudNavLink Match="NavLinkMatch.All" Href="@($"{Routes.Days.BasePath}/{Routes.Days.Calendar}")"
-                                            Icon="@Icons.Material.Filled.Today">
-                                    Календарь
-                                </MudNavLink>
-
-                                <AuthorizeView>
-                                    <Authorized>
+        <AuthorizeView>
+            <Authorized>
+                <ClientAppLoader>
+                    <Content>
+                        <MudSwipeArea OnSwipe="OnSwipe"
+                                      Class="overflow-hidden relative">
+                            <MudDrawerContainer Class="h-100">
+                                <MudDrawer @bind-Open="_drawerOpened"
+                                           Fixed="false" Elevation="1"
+                                           Variant="@DrawerVariant.Mini" Breakpoint="Breakpoint.Xl"
+                                           OpenMiniOnHover="true"
+                                           Class="@_drawerCssName">
+                                    <MudNavMenu Class="d-flex flex-column h-100">
+                                        <MudContainer @onclick="OnNavigateToIndexPageButtonClick"
+                                                      Class="d-flex align-center pa-4 cursor-pointer">
+                                            <MudImage Src="_content/Client.Core/images/logo.png"
+                                                      Width="24" Height="24" />
+                                            <MudText Style="@(_drawerOpened ? "" : "display: none;")"
+                                                     Class="ms-4">
+                                                EatCalculator
+                                            </MudText>
+                                        </MudContainer>
+                                        <MudDivider Class="flex-grow-0" />
                                         <MudNavLink Match="NavLinkMatch.All" Href="@($"{Routes.Identity.BasePath}/{Routes.Identity.UserProfile}")"
-                                                    Icon="@Icons.Material.Filled.AccountCircle">
+                                                    Icon="@Icons.Material.Filled.AccountCircle"
+                                                    Class="mt-2">
                                             Профиль
+                                        </MudNavLink>
+                                        <MudNavLink Match="NavLinkMatch.Prefix" Href="@($"{Routes.Products.BasePath}")"
+                                                    Icon="@Icons.Material.Filled.FormatListBulleted">
+                                            Продукты
+                                        </MudNavLink>
+                                        <MudNavLink Match="NavLinkMatch.All" Href="@($"{Routes.Days.BasePath}/{Routes.Days.Calendar}")"
+                                                    Icon="@Icons.Material.Filled.Today">
+                                            Календарь
                                         </MudNavLink>
                                         <MudNavLink Match="NavLinkMatch.All"
                                                     Icon="@Icons.Material.Filled.Logout"
-                                                    >
+                                                    OnClick="OnSignOutButtonClick"
+                                                    Class="mt-auto mb-4">
                                             Выйти
                                         </MudNavLink>
-                                    </Authorized>
-                                    <NotAuthorized>
-                                        <MudNavLink Match="NavLinkMatch.All" Href="@($"{Routes.Identity.BasePath}/{Routes.Identity.SignIn}")"
-                                                    Icon="@Icons.Material.Filled.Login">
-                                            Войти
-                                        </MudNavLink>
-                                    </NotAuthorized>
-                                </AuthorizeView>
-
-                            </MudNavMenu>
-                        </MudDrawer>
-                        <MudMainContent Class="h-vh-100">
-                            @Body
-                        </MudMainContent>
-                    </MudDrawerContainer>
-                </MudSwipeArea>
-            </Content>
-        </ClientAppLoader>
+                                    </MudNavMenu>
+                                </MudDrawer>
+                                <MudMainContent Class="h-vh-100">
+                                    @Body
+                                </MudMainContent>
+                            </MudDrawerContainer>
+                        </MudSwipeArea>
+                    </Content>
+                </ClientAppLoader>
+            </Authorized>
+            <NotAuthorized>
+                @Body
+            </NotAuthorized>
+        </AuthorizeView>
     </MudLayout>
 </div>

@@ -1,4 +1,5 @@
 ﻿using Client.Core.Entities.Days.Models.Store.Actions;
+using Client.Core.Shared.Resources.Localizations;
 using DALQueryChain.EntityFramework.Extensions;
 using Microsoft.Extensions.Logging;
 
@@ -34,7 +35,10 @@ namespace Client.Core.Entities.Days.Models.Store.Effects
                 _logger.LogError(ex, "");
                 dispatcher.Dispatch(new LoadDaysFailureAction
                 {
-                    ErrorMessage = "",
+                    Messages = new List<string>
+                    {
+                        _injects.Localizer[nameof(DefaultLocalization.UnhandledException)]
+                    },
                 });
             }
         }

@@ -1,6 +1,6 @@
 ﻿namespace Client.Core.Entities.Viewer.Models
 {
-    internal record ViewerModel
+    public record ViewerModel
     {
         public required int Id { get; init; }
         public required string Email { get; init; }

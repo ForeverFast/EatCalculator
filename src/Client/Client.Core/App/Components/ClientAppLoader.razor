@@ -1,21 +1,22 @@
 ﻿@inherits BaseFluxorComponent
 
 <div class="client-app-loader w-vw-100 h-vh-100">
-     <StateContainer State="_progressState">
-         <Loading> 
+    <StateContainer State="_state">
+        <Loading>
             <MudPaper Class="d-flex flex-column align-center justify-center" Height="100%">
                 <MudProgressCircular Color="Color.Primary" Indeterminate="true"
                                      Class="mt-n16"
                                      Style="height:150px;width:150px;" />
                 <MudText Typo="Typo.h4"
-                         Class="mt-4">@_progressText</MudText>
+                         Class="mt-4">@_loadingText</MudText>
             </MudPaper>
-         </Loading>
-         <Content>
-             @Content
-         </Content>
-         <Error>
-             Bruh
-         </Error>
-     </StateContainer>
+        </Loading>
+        <Content>
+            @Content
+        </Content>
+        <Error>
+            <MudText>Что-то пошло не так...</MudText>
+            <MudText>Перезагрузите приложение!</MudText>
+        </Error>
+    </StateContainer>
 </div>

@@ -52,7 +52,7 @@ namespace Server.Core.Helpers
 
             if (jwtSecurityToken == null
                 || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                throw new BadRequestException("Invalid token");
+                throw new InvalidOperationException("Invalid token");
 
             return principal;
         }

@@ -28,36 +28,20 @@ namespace Client.Core.Shared.Lib.FrameworkAbstractions
 
         #endregion
 
-        public void MarkUserAsAuthenticated(string userName)
-        {
-            var authenticatedUser = new ClaimsPrincipal(
-                new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.Name, userName)
-                }, "apiauth"));
-
-            var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
-
-            NotifyAuthenticationStateChanged(authState);
-        }
-
-        public void MarkUserAsLoggedOut()
-        {
-            var anonymousUser = new ClaimsPrincipal(new ClaimsIdentity());
-            var authState = Task.FromResult(new AuthenticationState(anonymousUser));
-
-            NotifyAuthenticationStateChanged(authState);
-        }
-
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var savedToken = await _localStorage.GetItemAsync<string>(LocalStorageKeys.AccessToken);
             _httpEndpointsClient.SetToken(savedToken);
 
-            if (string.IsNullOrWhiteSpace(savedToken))
-                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+            var claimsPrincipal = new ClaimsPrincipal(string.IsNullOrWhiteSpace(savedToken)
+                ? new ClaimsIdentity()
+                : new ClaimsIdentity(IdentityHelper.ParseClaimsFromJwt(savedToken), "jwt"));
 
-            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(IdentityHelper.ParseClaimsFromJwt(savedToken), "jwt")));
+            var newAuthState = new AuthenticationState(claimsPrincipal);
+
+            NotifyAuthenticationStateChanged(Task.FromResult(newAuthState));
+
+            return newAuthState;
         }
     }
 }

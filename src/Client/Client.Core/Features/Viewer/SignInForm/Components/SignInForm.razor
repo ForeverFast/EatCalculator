@@ -1,0 +1,73 @@
+﻿@namespace Client.Core.Features.Viewer.SignInForm
+
+@inherits BaseFluxorComponent
+
+<div class="@GetCssName(nameof(SignInForm)) @ClassName"
+     style="@StyleName"
+@attributes="UserAttributes">
+    <MudContainer MaxWidth="MaxWidth.ExtraSmall"
+                  Class="px-sm-0 pa-2">
+        <MudContainer Class="d-flex flex-column align-center px-0 mt-4">
+            <MudImage Src="_content/Client.Core/images/logo.png" />
+            <MudText Typo="Typo.h5"
+                     Class="mt-4">
+                @_identityLocalizer[nameof(IdentityLocalization.SignInFormTitle)]
+            </MudText>
+        </MudContainer>
+
+        <MudPaper Width="100%" Elevation="10"
+                  Class="d-flex flex-column align-center px-12 py-8 mt-4 border">
+            <MudForm @ref="_signInForm" Model="_signInViewModel"
+                     Validation="_signInViewModelValidator.Validation"
+                     Class="w-100">
+
+                <MudText>@_identityLocalizer[nameof(IdentityLocalization.SignInFormLoginLabel)]</MudText>
+                <MudTextField @bind-Value="_signInViewModel.Login"
+                              For="@(() => _signInViewModel.Login)" Immediate="true"
+                              Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+                <MudText Class="mt-4">@_identityLocalizer[nameof(IdentityLocalization.SignInFormPasswordLabel)]</MudText>
+                <MudTextField @bind-Value="_signInViewModel.Password"
+                              For="@(() => _signInViewModel.Password)" Immediate="true"
+                              InputType="_passwordFieldInputType"
+                              Variant="Variant.Outlined" Margin="Margin.Dense"
+                              AdornmentIcon="@_passwordFieldIcon" Adornment="Adornment.End"
+                              OnAdornmentClick="OnPasswordFieldAdornmentIconClick" />
+            </MudForm>
+
+            <Condition Evaluation="_errorMessages.Count > 0">
+                <Match>
+                    <MudContainer Class="d-flex flex-column align-center px-0 mt-4">
+                        <Iterations Items="_errorMessages" Context="errorMessage">
+                            <MudText Color="@Color.Error">@errorMessage</MudText>
+                        </Iterations>
+                    </MudContainer>
+                </Match>
+            </Condition>
+
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       FullWidth="true"
+                       OnClick="OnSubmit"
+                       Class="mt-4">
+                <Condition Evaluation="_checking">
+                    <Match>
+                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                        <MudText Class="ms-2">Вход...</MudText>
+                    </Match>
+                    <NotMatch>
+                        Войти
+                    </NotMatch>
+                </Condition>
+            </MudButton>
+        </MudPaper>
+
+        <MudPaper Width="100%" Elevation="10"
+                  Class="d-flex flex-row align-center justify-center pa-4 mt-4 border">
+            <MudText>Впервые в EatCalculator?</MudText>
+            <MudLink OnClick="OnNavigateToSignUpButtonClick"
+                     Class="ms-2">
+                Создать аккаунт
+            </MudLink>
+        </MudPaper>
+    </MudContainer>
+</div>

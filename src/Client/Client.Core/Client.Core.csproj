@@ -22,7 +22,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="7.0.2" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-    <PackageReference Include="RestSharp" Version="108.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.2" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.4" />
   </ItemGroup>
 
@@ -33,6 +33,39 @@
   <ItemGroup>
     <Folder Include="Shared\Api\LocalDatabase\DesignTimeFiles\" />
     <Folder Include="Shared\Api\LocalDatabase\Migrations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Shared\Resources\Localizations\DefaultLocalization.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DefaultLocalization.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Shared\Resources\Localizations\IdentityErrorsLocalization.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>IdentityErrorsLocalization.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Shared\Resources\Localizations\IdentityLocalization.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>IdentityLocalization.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Shared\Resources\Localizations\DefaultLocalization.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>DefaultLocalization.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Shared\Resources\Localizations\IdentityErrorsLocalization.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>IdentityErrorsLocalization.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Shared\Resources\Localizations\IdentityLocalization.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>IdentityLocalization.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

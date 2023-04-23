@@ -1,4 +1,6 @@
-﻿using Fluxor.Blazor.Web.Components;
+﻿using Client.Core.Entities.Viewer.Models.Store;
+using Client.Core.Shared.Lib;
+using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components.Routing;
 
 namespace Client.Core.App
@@ -8,6 +10,8 @@ namespace Client.Core.App
         #region Injects
 
         [Inject] NavigationManager _navigationManager { get; init; } = null!;
+
+        [Inject] ViewerStateFacade _viewerStateFacade { get; init; } = null!;
 
         #endregion
 
@@ -72,8 +76,11 @@ namespace Client.Core.App
             StateHasChanged();
         }
 
-        private void OnNavLinkClick()
-            => _drawerOpened = false;
+        private void OnNavigateToIndexPageButtonClick()
+            => _navigationManager.NavigateToIndexPage();
+
+        private void OnSignOutButtonClick()
+            => _viewerStateFacade.SignOut();
 
         #endregion
     }

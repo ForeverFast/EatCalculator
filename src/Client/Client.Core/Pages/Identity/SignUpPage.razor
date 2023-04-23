@@ -1,5 +1,14 @@
-﻿@inherits BasePageComponent
+﻿@using Client.Core.Features.Viewer.SignUpForm
+
+@inherits BasePageComponent
 
 <div class="@GetCssName(nameof(SignUpPage)) inner-main-content @ClassName">
-
+    <StateContainer State="_loadingState">
+        <Loading>
+            <MudProgressCircular Indeterminate="true" />
+        </Loading>
+        <Content>
+            <SignUpForm />
+        </Content>
+    </StateContainer>
 </div>

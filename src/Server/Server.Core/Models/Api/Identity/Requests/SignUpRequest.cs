@@ -9,8 +9,8 @@ namespace Server.Core.Models.Api.Identity.Requests
 
     public record SignUpRequestData
     {
-        public required string Email { get; init; }
         public required string UserName { get; init; }
+        public required string Email { get; init; }
         public required string Password { get; init; }
     }
 }

@@ -8,6 +8,6 @@
     internal record SignInFailureAction : BaseFailureAction;
     internal record SignInSuccessAction : BaseSuccessAction
     {
-        public required ViewerModel ViewerModel { get; init; }
+        public required ViewerModel Viewer { get; init; }
     }
 }

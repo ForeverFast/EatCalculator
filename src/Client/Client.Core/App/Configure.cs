@@ -1,6 +1,7 @@
 ﻿using Client.Core.Entities.Days.Models.Store;
 using Client.Core.Entities.Meals.Models.Store;
 using Client.Core.Entities.Products.Models.Store;
+using Client.Core.Entities.Viewer.Models.Store;
 using Client.Core.Shared;
 
 
@@ -26,6 +27,7 @@ namespace Client.Core.App
             appBuilder.Services.AddScoped<DayStateFacade>();
             appBuilder.Services.AddScoped<MealStateFacade>();
             appBuilder.Services.AddScoped<ProductStateFacade>();
+            appBuilder.Services.AddScoped<ViewerStateFacade>();
 
             return appBuilder;
         }

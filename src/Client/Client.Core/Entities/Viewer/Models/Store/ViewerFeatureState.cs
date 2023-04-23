@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Client.Core.Entities.Viewer.Models.Store
+﻿namespace Client.Core.Entities.Viewer.Models.Store
 {
-    internal class ViewerFeatureState
+    internal class ViewerFeatureState : Feature<ViewerState>
     {
+        public override string GetName()
+           => typeof(ViewerState).FullName!;
+
+        protected override ViewerState GetInitialState()
+            => new ViewerState { };
     }
 }
