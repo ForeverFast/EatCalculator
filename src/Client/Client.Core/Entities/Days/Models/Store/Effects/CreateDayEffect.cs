@@ -36,9 +36,9 @@ namespace Client.Core.Entities.Days.Models.Store.Effects
                     CarbohydrateMealCount = mealCount,
                 };
 
-                var createdDay = await _injects.Dal.For<Day>().Insert.InsertWithObjectAsync(newDay);
+                var createdDay = await _injects.Dal.Instance.For<Day>().Insert.InsertWithObjectAsync(newDay);
 
-                await _injects.Dal.For<Meal>().Insert.BulkInsertAsync(Enumerable.Range(1, mealCount).Select(x => new Meal
+                await _injects.Dal.Instance.For<Meal>().Insert.BulkInsertAsync(Enumerable.Range(1, mealCount).Select(x => new Meal
                 {
                     Id = 0,
                     DayId = createdDay.Id,

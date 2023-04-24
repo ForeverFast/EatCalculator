@@ -3,6 +3,6 @@
     public interface IClientEatCalculatorDbContextFileProvider
     {
         string GetDbFilePath(string mainPath);
-        Task<byte[]> GetDbFileAsync();
+        ValueTask<byte[]> GetDbFileAsync(string mainPath);
     }
 }

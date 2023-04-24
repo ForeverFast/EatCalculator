@@ -1,4 +1,5 @@
-﻿using Client.Core.Entities.Viewer.Models.Store.Actions;
+﻿using Client.Core.Entities.Viewer.Models.Store;
+using Client.Core.Entities.Viewer.Models.Store.Actions;
 using Client.Core.Shared.Api.HttpClient;
 using Client.Core.Shared.Api.HttpClient.Requests.UserData;
 using DALQueryChain.EntityFramework.Builder;
@@ -9,34 +10,6 @@ using Microsoft.Extensions.Options;
 
 namespace Client.Core.Shared.Api.LocalDatabase.Context
 {
-    public class DalQcWrapperEventManager
-    {
-        private readonly IDalQcWrapper _dalQcWrapper;
-
-        public DalQcWrapperEventManager(IDalQcWrapper dalQcWrapper)
-        {
-            _dalQcWrapper = dalQcWrapper;
-        }
-
-        public event DbCreatedEventHandler? DbCreated
-        {
-            add => _dalQcWrapper.DbCreated += value;
-            remove => _dalQcWrapper.DbCreated -= value;
-        }
-
-        public event DbUpdatedEventHandler? DbUpdated
-        {
-            add => _dalQcWrapper.DbUpdated += value;
-            remove => _dalQcWrapper.DbUpdated -= value;
-        }
-
-        public event DbDisposedEventHandler? DbDisposed
-        {
-            add => _dalQcWrapper.DbDisposed += value;
-            remove => _dalQcWrapper.DbDisposed -= value;
-        }
-    }
-
     internal sealed class DalQcWrapper : IDalQcWrapper
     {
         #region Injects
@@ -44,6 +17,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
         private readonly IServiceProvider _serviceProvider;
         private readonly IActionSubscriber _actionSubscriber;
         private readonly IDispatcher _dispatcher;
+        private readonly IState<ViewerState> _viewerState;
         private readonly IClientEatCalculatorDbContextFileProvider _clientEatCalculatorDbContextDbFileProvider;
         private readonly ClientEatCalculatorDbContextSettings _clientEatCalculatorDbContextSettings;
         private readonly HttpEndpointsClient _httpEndpointsClient;
@@ -60,7 +34,8 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
             IClientEatCalculatorDbContextFileProvider clientEatCalculatorDbContextDbFileProvider,
             HttpEndpointsClient httpEndpointsClient,
             IDispatcher dispatcher,
-            IStringLocalizer<DefaultLocalization> localizer)
+            IStringLocalizer<DefaultLocalization> localizer,
+            IState<ViewerState> viewerState)
         {
             ArgumentNullException.ThrowIfNull(clientEatCalculatorDbContextSettings.Value, nameof(clientEatCalculatorDbContextSettings));
 
@@ -71,6 +46,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
             _clientEatCalculatorDbContextDbFileProvider = clientEatCalculatorDbContextDbFileProvider;
             _httpEndpointsClient = httpEndpointsClient;
             _localizer = localizer;
+            _viewerState = viewerState;
 
             _actionSubscriber.SubscribeToAction<InitializeViewerSuccessAction>(this, OnInitializeViewerSuccessAction);
         }
@@ -89,7 +65,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
         public IDALQueryChain<ClientEatCalculatorDbContext> Instance
             => _queryChain ?? throw new InvalidOperationException("No");
 
-        public event DbCreatedEventHandler? DbCreated;
+        public event DbInitializedEventHandler? DbInitialized;
         public event DbUpdatedEventHandler? DbUpdated;
         public event DbDisposedEventHandler? DbDisposed;
 
@@ -105,8 +81,8 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
                 return;
             }
 
-            var mainPath = $"{action.Viewer.Id}/{_clientEatCalculatorDbContextSettings.DbName}";
-            var connectionString = _clientEatCalculatorDbContextPathHelper.GetDbFilePath(mainPath);
+            var mainPath = GetMainPath();
+            var connectionString = _clientEatCalculatorDbContextDbFileProvider.GetDbFilePath(mainPath);
 
             var options = new DbContextOptionsBuilder()
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
@@ -120,8 +96,8 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
 
             _queryChain = new BuildQuery<ClientEatCalculatorDbContext>(dbContext, _serviceProvider);
 
-            if (DbCreated != null)
-                await DbCreated.Invoke(new DbCreatedEventArgs { Path = mainPath });
+            if (DbInitialized != null)
+                await DbInitialized.Invoke(new DbInitializedEventArgs { Path = mainPath });
         }
 
         private async void OnDbContextSavedChanges(object? sender, SavedChangesEventArgs e)
@@ -131,7 +107,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
                 if (DbUpdated != null)
                     await DbUpdated.Invoke();
 
-                var fileData = await _clientEatCalculatorDbContextDbFileProvider.GetDbFileAsync();
+                var fileData = await _clientEatCalculatorDbContextDbFileProvider.GetDbFileAsync(GetMainPath());
                 var request = new UploadUserEatDataRequest
                 {
                     DbFileData = fileData
@@ -164,6 +140,9 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
         #endregion
 
         #region Private methods
+
+        private string GetMainPath()
+            => $"{_viewerState.Value.Viewer!.Id}/{_clientEatCalculatorDbContextSettings.DbName}";
 
         private async ValueTask DisposeDbContextObjects()
         {

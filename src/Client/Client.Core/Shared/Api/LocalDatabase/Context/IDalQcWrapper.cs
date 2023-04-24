@@ -2,11 +2,11 @@
 
 namespace Client.Core.Shared.Api.LocalDatabase.Context
 {
-    public delegate Task DbCreatedEventHandler(DbCreatedEventArgs args);
+    public delegate Task DbInitializedEventHandler(DbInitializedEventArgs args);
     public delegate Task DbUpdatedEventHandler();
     public delegate Task DbDisposedEventHandler();
 
-    public record DbCreatedEventArgs
+    public record DbInitializedEventArgs
     {
         public required string Path { get; init; }
     }
@@ -15,7 +15,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
     {
         IDALQueryChain<ClientEatCalculatorDbContext> Instance { get; }
 
-        event DbCreatedEventHandler? DbCreated;
+        event DbInitializedEventHandler? DbInitialized;
         event DbUpdatedEventHandler? DbUpdated;
         event DbDisposedEventHandler? DbDisposed;
     }

@@ -18,7 +18,7 @@ namespace Client.Core.Entities.Days.Models.Store.Effects
         {
             try
             {
-                var targetDay = await _injects.Dal.For<Day>()
+                var targetDay = await _injects.Dal.Instance.For<Day>()
                     .Get
                     .FirstOrDefaultAsync(x => x.Id == action.DayId)
                     ?? throw new Exception();
@@ -30,7 +30,7 @@ namespace Client.Core.Entities.Days.Models.Store.Effects
                     Date = action.Date,
                 };
 
-                var createdDayDateBind = await _injects.Dal.For<DayDateBind>()
+                var createdDayDateBind = await _injects.Dal.Instance.For<DayDateBind>()
                     .Insert
                     .InsertWithObjectAsync(newDayDateBind);
 

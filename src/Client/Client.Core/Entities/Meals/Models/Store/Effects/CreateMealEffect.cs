@@ -26,7 +26,7 @@ namespace Client.Core.Entities.Meals.Models.Store.Effects
                     Title = action.Meal.Title,
                 };
 
-                var createdMeal = await _injects.Dal.For<Meal>().Insert.InsertWithObjectAsync(newMeal);
+                var createdMeal = await _injects.Dal.Instance.For<Meal>().Insert.InsertWithObjectAsync(newMeal);
 
                 dispatcher.Dispatch(new CreateMealSuccessAction
                 {

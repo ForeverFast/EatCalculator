@@ -19,7 +19,7 @@ namespace Client.Core.Entities.Days.Models.Store.Effects
         {
             try
             {
-                var targetDay = await _injects.Dal.For<Day>().Get
+                var targetDay = await _injects.Dal.Instance.For<Day>().Get
                     .FirstOrDefaultAsync(x => x.Id == action.Id)
                     ?? throw new Exception();
 
@@ -35,7 +35,7 @@ namespace Client.Core.Entities.Days.Models.Store.Effects
                     CarbohydrateMealCount = action.Day.CarbohydrateMealCount,
                 };
 
-                await _injects.Dal.For<Day>().Update.UpdateAsync(targetDay);
+                await _injects.Dal.Instance.For<Day>().Update.UpdateAsync(targetDay);
 
                 dispatcher.Dispatch(new UpdateDaySuccessAction
                 {

@@ -44,19 +44,29 @@ namespace Client.EntryPoints.Maui
                 defaultBuilder.Logging.AddDebug();
             }
 
-            builder.Services.AddSingleton<IClientEatCalculatorDbContextFactory, MauiClientEatCalculatorDbContextFactory>();
-            builder.Services.AddSingleton<IClientEatCalculatorDbContextPathHelper, MauiClientEatCalculatorDbContextPathHelper>();
+            builder.Services.AddSingleton<IClientEatCalculatorDbContextFileProvider, MauiClientEatCalculatorDbContextFileProvider>();
 
             builder.ConfigureAppLayer();
 
-            // TODO: переделать на неблокирующий вызов
-            builder.Services.AddScoped<ClientEatCalculatorDbContext>(sp =>
-            {
-                var eatCalculatorDbContextFactory = sp.GetRequiredService<IClientEatCalculatorDbContextFactory>();
-                return eatCalculatorDbContextFactory.CreateContextAsync().Result;
-            });
+            //// TODO: переделать на неблокирующий вызов
+            //builder.Services.AddScoped<ClientEatCalculatorDbContext>(sp =>
+            //{
+            //    var eatCalculatorDbContextFactory = sp.GetRequiredService<IClientEatCalculatorDbContextFactory>();
+            //    return eatCalculatorDbContextFactory.CreateContextAsync().Result;
+            //});
 
-            return defaultBuilder.Build();
+            try
+            {
+                return defaultBuilder.Build();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+                  
+
+            
         }
     }
 }

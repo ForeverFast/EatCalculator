@@ -20,7 +20,7 @@ namespace Client.Core.Shared.Lib.Fluxor
 
         public ISnackbar Snackbar { get; }
         public ILocalStorageService LocalStorageService { get; }
-        public IDALQueryChain<ClientEatCalculatorDbContext> Dal { get; }
+        public IDalQcWrapper Dal { get; }
 
         public ICalculatorService CalculatorService { get; }
 
@@ -28,7 +28,7 @@ namespace Client.Core.Shared.Lib.Fluxor
 
         #region Ctors
 
-        public BaseEffectInjects(IDALQueryChain<ClientEatCalculatorDbContext> dal,
+        public BaseEffectInjects(IDalQcWrapper dal,
                                  ISnackbar snackbar,
                                  ICalculatorService calculatorService,
                                  AuthenticationStateProvider authenticationStateProvider,

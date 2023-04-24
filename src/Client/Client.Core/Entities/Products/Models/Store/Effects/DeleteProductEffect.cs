@@ -19,7 +19,7 @@ namespace Client.Core.Entities.Products.Models.Store.Effects
         {
             try
             {
-                await _injects.Dal.For<Product>().Delete.DeleteAsync(x => x.Id == action.Id);
+                await _injects.Dal.Instance.For<Product>().Delete.DeleteAsync(x => x.Id == action.Id);
 
                 dispatcher.Dispatch(new DeleteProductSuccessAction
                 {

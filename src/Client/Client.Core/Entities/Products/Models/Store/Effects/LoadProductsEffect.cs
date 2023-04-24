@@ -19,7 +19,7 @@ namespace Client.Core.Entities.Products.Models.Store.Effects
         {
             try
             {
-                var products = await _injects.Dal.For<Product>().Get.ToListAsync();
+                var products = await _injects.Dal.Instance.For<Product>().Get.ToListAsync();
 
                 dispatcher.Dispatch(new LoadProductsSuccessAction
                 {

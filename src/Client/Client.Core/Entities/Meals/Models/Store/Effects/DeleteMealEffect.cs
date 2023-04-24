@@ -19,7 +19,7 @@ namespace Client.Core.Entities.Meals.Models.Store.Effects
         {
             try
             {
-                await _injects.Dal.For<Meal>().Delete.DeleteAsync(x => x.Id == action.Id);
+                await _injects.Dal.Instance.For<Meal>().Delete.DeleteAsync(x => x.Id == action.Id);
 
                 dispatcher.Dispatch(new DeleteMealSuccessAction
                 {

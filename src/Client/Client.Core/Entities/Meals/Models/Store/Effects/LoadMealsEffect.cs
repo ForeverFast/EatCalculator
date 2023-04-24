@@ -20,7 +20,7 @@ namespace Client.Core.Entities.Meals.Models.Store.Effects
         {
             try
             {
-                var meals = await _injects.Dal.For<Meal>().Get
+                var meals = await _injects.Dal.Instance.For<Meal>().Get
                     .LoadWith(x => x.Portions)
                     .Where(x => x.DayId == action.DayId)
                     .ToListAsync();

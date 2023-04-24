@@ -16,7 +16,7 @@ namespace Client.Core.Entities.Viewer.Models.Store
         #region Selectors
 
         protected override ISelector<ViewerState> SelectState
-             => ViewerStateSelectors.SelectFeatureState;
+            => ViewerStateSelectors.SelectFeatureState;
 
 
 

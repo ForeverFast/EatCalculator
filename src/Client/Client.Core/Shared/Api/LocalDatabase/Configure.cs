@@ -23,7 +23,9 @@ namespace Client.Core.Shared.Api.LocalDatabase
             //    options.UseSqlite(connectionString);
             //});
 
-            services.AddQueryChain(typeof(Configure).Assembly);
+            services.AddScoped<IDalQcWrapper, DalQcWrapper>();
+
+            //services.AddQueryChain(typeof(Configure).Assembly);
 
             return appBuilder;
         }

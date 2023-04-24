@@ -19,7 +19,7 @@ namespace Client.Core.Entities.Days.Models.Store.Effects
         {
             try
             {
-                await _injects.Dal.For<Day>().Delete.DeleteAsync(x => x.Id == action.Id);
+                await _injects.Dal.Instance.For<Day>().Delete.DeleteAsync(x => x.Id == action.Id);
 
                 dispatcher.Dispatch(new DeleteDaySuccessAction
                 {

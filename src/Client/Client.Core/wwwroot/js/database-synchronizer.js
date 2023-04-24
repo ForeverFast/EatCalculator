@@ -89,7 +89,7 @@
         let backupPath = `${filename}`;
         let cachePath = `/data/cache/${backupPath.split('.')[0]}.db`;
         let resp = await db.cache.match(cachePath);
-        let blobResult = await resp.blob();
+        return await resp.blob();
     }
 
     db.restoreJsState = function () {

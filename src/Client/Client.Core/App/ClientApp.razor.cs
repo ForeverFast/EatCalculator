@@ -29,6 +29,9 @@ namespace Client.Core.App
 
         #region LC Methods
 
+        public override Task SetParametersAsync(ParameterView parameters) 
+            => base.SetParametersAsync(parameters);
+
         protected override void OnInitialized()
         {
             base.OnInitialized();

@@ -30,7 +30,7 @@ namespace Client.Core.Entities.Products.Models.Store.Effects
                     Carbohydrate = action.Product.Carbohydrate,
                 };
 
-                var createdProduct = await _injects.Dal.For<Product>().Insert.InsertWithObjectAsync(newProduct);
+                var createdProduct = await _injects.Dal.Instance.For<Product>().Insert.InsertWithObjectAsync(newProduct);
 
                 _injects.Snackbar.Add("Продукт добавлен", MudBlazor.Severity.Normal, config => { config.HideIcon = true; });
 

@@ -19,7 +19,7 @@ namespace Client.Core.Entities.Products.Models.Store.Effects
         {
             try
             {
-                var targetProduct = await _injects.Dal.For<Product>().Get.FirstOrDefaultAsync(x => x.Id == action.Id)
+                var targetProduct = await _injects.Dal.Instance.For<Product>().Get.FirstOrDefaultAsync(x => x.Id == action.Id)
                     ?? throw new Exception();
 
                 targetProduct = targetProduct with
@@ -32,7 +32,7 @@ namespace Client.Core.Entities.Products.Models.Store.Effects
                     Carbohydrate = action.Product.Carbohydrate,
                 };
 
-                await _injects.Dal.For<Product>().Update.UpdateAsync(targetProduct);
+                await _injects.Dal.Instance.For<Product>().Update.UpdateAsync(targetProduct);
 
                 dispatcher.Dispatch(new UpdateProductSuccessAction
                 {

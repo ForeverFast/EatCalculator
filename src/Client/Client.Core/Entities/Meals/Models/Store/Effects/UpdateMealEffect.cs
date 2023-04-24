@@ -20,7 +20,7 @@ namespace Client.Core.Entities.Meals.Models.Store.Effects
         {
             try
             {
-                var targetMeal = await _injects.Dal.For<Meal>().Get
+                var targetMeal = await _injects.Dal.Instance.For<Meal>().Get
                     .LoadWith(x => x.Portions)
                     .FirstOrDefaultAsync(x => x.Id == action.Id)
                     ?? throw new Exception();
@@ -31,12 +31,12 @@ namespace Client.Core.Entities.Meals.Models.Store.Effects
                     Order = action.Meal.Order,
                 };
 
-                await _injects.Dal.For<Meal>().Update.UpdateAsync(targetMeal);
-                await _injects.Dal.For<Portion>().Delete.BulkDeleteAsync(targetMeal.Portions);
+                await _injects.Dal.Instance.For<Meal>().Update.UpdateAsync(targetMeal);
+                await _injects.Dal.Instance.For<Portion>().Delete.BulkDeleteAsync(targetMeal.Portions);
 
                 int order = 0;
                 var portions = action.Meal.Portions.Select(x => x with { Order = order++ }).ToList();
-                await _injects.Dal.For<Portion>().Insert.BulkInsertAsync(portions);
+                await _injects.Dal.Instance.For<Portion>().Insert.BulkInsertAsync(portions);
 
                 dispatcher.Dispatch(new UpdateMealSuccessAction
                 {

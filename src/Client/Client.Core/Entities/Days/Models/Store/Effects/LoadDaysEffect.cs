@@ -20,7 +20,7 @@ namespace Client.Core.Entities.Days.Models.Store.Effects
         {
             try
             {
-                var days = await _injects.Dal.For<Day>()
+                var days = await _injects.Dal.Instance.For<Day>()
                     .Get
                     .LoadWith(x => x.DayDateBinds)
                     .ToListAsync();

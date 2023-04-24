@@ -18,7 +18,7 @@ namespace Client.Core.Entities.Days.Models.Store.Effects
         {
             try
             {
-                await _injects.Dal.For<DayDateBind>()
+                await _injects.Dal.Instance.For<DayDateBind>()
                     .Delete
                     .DeleteAsync(x => x.Id == action.DayDateBindId);
 
