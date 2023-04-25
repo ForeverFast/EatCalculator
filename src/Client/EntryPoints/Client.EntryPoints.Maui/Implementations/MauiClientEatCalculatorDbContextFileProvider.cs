@@ -8,6 +8,13 @@ namespace Client.EntryPoints.Maui.Implementations
             => await File.ReadAllBytesAsync(GetDbFilePath(mainPath));
         
         public string GetDbFilePath(string mainPath)
-            => Path.Combine(FileSystem.AppDataDirectory, mainPath);
+        {
+            var resultPath = Path.Combine(FileSystem.AppDataDirectory,mainPath);
+            var dir = Path.GetDirectoryName(resultPath);
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir!);
+
+            return resultPath;
+        }
     }
 }

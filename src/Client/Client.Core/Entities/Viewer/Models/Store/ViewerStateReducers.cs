@@ -26,7 +26,7 @@ namespace Client.Core.Entities.Viewer.Models.Store
             };
 
         [ReducerMethod]
-        public static ViewerState ReduceViewerEatDataSuccessAction(ViewerState state, ViewerEatDataSuccessAction action)
+        public static ViewerState ReduceSynchronizeEatDataSuccessAction(ViewerState state, SynchronizeEatDataSuccessAction action)
         {
             if (state.Viewer == null)
                 return state;

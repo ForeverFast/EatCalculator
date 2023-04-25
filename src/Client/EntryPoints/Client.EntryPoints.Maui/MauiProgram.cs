@@ -55,18 +55,7 @@ namespace Client.EntryPoints.Maui
             //    return eatCalculatorDbContextFactory.CreateContextAsync().Result;
             //});
 
-            try
-            {
-                return defaultBuilder.Build();
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-                  
-
-            
+            return defaultBuilder.Build();
         }
     }
 }

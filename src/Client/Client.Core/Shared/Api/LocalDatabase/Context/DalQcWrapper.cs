@@ -15,7 +15,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
         #region Injects
 
         private readonly IServiceProvider _serviceProvider;
-        private readonly IActionSubscriber _actionSubscriber;
+        //private readonly IActionSubscriber _actionSubscriber;
         private readonly IDispatcher _dispatcher;
         private readonly IState<ViewerState> _viewerState;
         private readonly IClientEatCalculatorDbContextFileProvider _clientEatCalculatorDbContextDbFileProvider;
@@ -29,7 +29,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
 
         public DalQcWrapper(
             IServiceProvider serviceProvider,
-            IActionSubscriber actionSubscriber,
+            //IActionSubscriber actionSubscriber,
             IOptions<ClientEatCalculatorDbContextSettings> clientEatCalculatorDbContextSettings,
             IClientEatCalculatorDbContextFileProvider clientEatCalculatorDbContextDbFileProvider,
             HttpEndpointsClient httpEndpointsClient,
@@ -38,9 +38,9 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
             IState<ViewerState> viewerState)
         {
             ArgumentNullException.ThrowIfNull(clientEatCalculatorDbContextSettings.Value, nameof(clientEatCalculatorDbContextSettings));
-
+            
             _serviceProvider = serviceProvider;
-            _actionSubscriber = actionSubscriber;
+            //_actionSubscriber = actionSubscriber;
             _dispatcher = dispatcher;
             _clientEatCalculatorDbContextSettings = clientEatCalculatorDbContextSettings.Value;
             _clientEatCalculatorDbContextDbFileProvider = clientEatCalculatorDbContextDbFileProvider;
@@ -48,7 +48,9 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
             _localizer = localizer;
             _viewerState = viewerState;
 
-            _actionSubscriber.SubscribeToAction<InitializeViewerSuccessAction>(this, OnInitializeViewerSuccessAction);
+            _viewerState.StateChanged += OnInitializeViewerSuccessAction;
+
+            //_actionSubscriber.SubscribeToAction<InitializeViewerSuccessAction>(this, OnInitializeViewerSuccessAction);
         }
 
         #endregion
@@ -73,16 +75,16 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
 
         #region External events
 
-        private async void OnInitializeViewerSuccessAction(InitializeViewerSuccessAction action)
+        private async void OnInitializeViewerSuccessAction(object? _, EventArgs __)
         {
-            if (action.Viewer == null)
+            if (_viewerState.Value.Viewer == null)
             {
                 await DisposeDbContextObjects();
                 return;
             }
 
             var mainPath = GetMainPath();
-            var connectionString = _clientEatCalculatorDbContextDbFileProvider.GetDbFilePath(mainPath);
+            var connectionString = $@"Data Source={_clientEatCalculatorDbContextDbFileProvider.GetDbFilePath(mainPath)};";
 
             var options = new DbContextOptionsBuilder()
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
@@ -97,7 +99,10 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
             _queryChain = new BuildQuery<ClientEatCalculatorDbContext>(dbContext, _serviceProvider);
 
             if (DbInitialized != null)
-                await DbInitialized.Invoke(new DbInitializedEventArgs { Path = mainPath });
+                await DbInitialized.Invoke(new DbInitializedEventArgs
+                {
+                    Path = $"{_viewerState.Value.Viewer!.Id}/{_clientEatCalculatorDbContextSettings.DbName}"
+                });
         }
 
         private async void OnDbContextSavedChanges(object? sender, SavedChangesEventArgs e)
@@ -107,33 +112,33 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
                 if (DbUpdated != null)
                     await DbUpdated.Invoke();
 
-                var fileData = await _clientEatCalculatorDbContextDbFileProvider.GetDbFileAsync(GetMainPath());
-                var request = new UploadUserEatDataRequest
-                {
-                    DbFileData = fileData
-                };
+                //var fileData = await _clientEatCalculatorDbContextDbFileProvider.GetDbFileAsync(GetMainPath());
+                //var request = new UploadUserEatDataRequest
+                //{
+                //    DbFileData = fileData
+                //};
 
-                var response = await _httpEndpointsClient.UserEatData.UploadUserEatDataAsync(request);
-                if (!response.Succeeded)
-                {
-                    _dispatcher.Dispatch(new ViewerEatDataFailureAction
-                    {
-                        Messages = response.Messages,
-                    });
-                    return;
-                }
+                //var response = await _httpEndpointsClient.UserEatData.UploadUserEatDataAsync(request);
+                //if (!response.Succeeded)
+                //{
+                //    _dispatcher.Dispatch(new ViewerEatDataFailureAction
+                //    {
+                //        Messages = response.Messages,
+                //    });
+                //    return;
+                //}
 
-                _dispatcher.Dispatch(new ViewerEatDataSuccessAction
-                {
-                    LastDbUpdateDate = response.Data.LastUpdateDate,
-                });
+                //_dispatcher.Dispatch(new ViewerEatDataSuccessAction
+                //{
+                //    LastDbUpdateDate = response.Data.LastUpdateDate,
+                //});
             }
             catch (Exception _)
             {
-                _dispatcher.Dispatch(new ViewerEatDataFailureAction
-                {
-                    Messages = new List<string> { _localizer[nameof(DefaultLocalization.UnhandledException)] },
-                });
+                //_dispatcher.Dispatch(new ViewerEatDataFailureAction
+                //{
+                //    Messages = new List<string> { _localizer[nameof(DefaultLocalization.UnhandledException)] },
+                //});
             }
         }
 
@@ -142,7 +147,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
         #region Private methods
 
         private string GetMainPath()
-            => $"{_viewerState.Value.Viewer!.Id}/{_clientEatCalculatorDbContextSettings.DbName}";
+            => Path.Combine(_viewerState.Value.Viewer!.Id.ToString() ,_clientEatCalculatorDbContextSettings.DbName);
 
         private async ValueTask DisposeDbContextObjects()
         {
@@ -161,7 +166,8 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
 
         public async ValueTask DisposeAsync()
         {
-            _actionSubscriber.UnsubscribeFromAllActions(this);
+            _viewerState.StateChanged -= OnInitializeViewerSuccessAction;
+            //_actionSubscriber.UnsubscribeFromAllActions(this);
             await DisposeDbContextObjects();
         }
     }
