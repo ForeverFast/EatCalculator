@@ -35,24 +35,30 @@ namespace Client.EntryPoints.Pwa.Implementations
             _dbFilename = $"{args.Path}";
             _backup = $"{_dbFilename}_bak";
             _backupName = _backup;
-
+          
             Console.WriteLine($"Last status: {_lastStatus}");
 
             _lastTask = SynchronizeAsync();
         }
 
-        private async Task OnDbUpdated()
+        private Task OnDbUpdated()
         {
-            await CheckForPendingTasksAsync();
+            if (_init)
+                _lastTask = SynchronizeAsync();
 
-            _lastTask = SynchronizeAsync();
+            return Task.CompletedTask; 
         }
 
         private async Task OnDbDisposed()
         {
+            if (!_init)
+                return;
+
             await CheckForPendingTasksAsync();
 
-            await _jSRuntime.InvokeAsync<int>("db.restoreJsState");
+            await _jSRuntime.InvokeVoidAsync("db.restoreJsState");
+
+            _init = false;
         }
 
         #endregion
@@ -69,7 +75,7 @@ namespace Client.EntryPoints.Pwa.Implementations
 
         #endregion
 
-        
+
 
         private async ValueTask CheckForPendingTasksAsync()
         {
@@ -79,11 +85,6 @@ namespace Client.EntryPoints.Pwa.Implementations
             _lastStatus = await _lastTask;
             _lastTask.Dispose();
             _lastTask = null;
-
-            if (_lastStatus != 0)
-                return;
-
-            Restore();
         }
 
         private async Task<int> SynchronizeAsync()
@@ -99,6 +100,19 @@ namespace Client.EntryPoints.Pwa.Implementations
                 -1 or _ => "Failure",
             };
             Console.WriteLine($"Synchronization status: {resultText}");
+
+            if (result == -1)
+            {
+                _init = true;
+                _dalQcWrapper.TriggerDbActivatedEvent();
+            }
+
+            if (result == 0)
+            {
+                Restore();
+                _init = true;
+                _dalQcWrapper.TriggerDbActivatedEvent();
+            }
 
             return result;
         }

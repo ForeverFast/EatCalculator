@@ -24,6 +24,13 @@ namespace Client.EntryPoints.Pwa.Implementations
             => _jSRuntime.InvokeAsync<byte[]>("db.getCachedFile");
 
         public string GetDbFilePath(string mainPath)
-            => mainPath;
+        {
+            var resultPath = $"{mainPath}";
+            var dir = Path.GetDirectoryName(resultPath);
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir!);
+
+            return resultPath;
+        }
     }
 }

@@ -5,7 +5,7 @@ using UI.Lib.AppBuilder;
 
 namespace Client.EntryPoints.Pwa
 {
-    internal static class PWAConfiguration
+    internal static class PwaConfiguration
     {
         internal static readonly ClientAppConfiguration ClientAppConfiguration = new()
         {

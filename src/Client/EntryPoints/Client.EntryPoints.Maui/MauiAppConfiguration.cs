@@ -23,7 +23,7 @@ namespace Client.EntryPoints.Maui
             MainAssembly,
         };
 
-        internal static readonly IDictionary<string, object?> ClientAppParameters = new Dictionary<string, object?>
+        internal static IDictionary<string, object?> ClientAppParameters => new Dictionary<string, object?>
         {
             { nameof(ClientApp.AppConfiguration), ClientAppConfiguration },
             { nameof(ClientApp.Assemblies), TargetUIAssemblies },
