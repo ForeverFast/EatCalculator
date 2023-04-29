@@ -1,4 +1,6 @@
-﻿using Client.Core.Entities.Viewer.Models.Store;
+﻿using Client.Core.Entities.Days.Models.Store;
+using Client.Core.Entities.Viewer.Models;
+using Client.Core.Entities.Viewer.Models.Store;
 using Client.Core.Shared.Configs;
 using Client.Core.Shared.Lib;
 using Client.Core.Shared.Lib.BaseComponents;
@@ -16,7 +18,9 @@ namespace Client.Core.Pages.Identity
 
         #region Selectors
 
-        
+        private ISelectorSubscription<ViewerModel?> _viewer
+            => _viewerStateFacade.Viewer;
+
         #endregion
 
         #region UI Fields
@@ -30,12 +34,6 @@ namespace Client.Core.Pages.Identity
         protected override void OnInitialized()
         {
             base.OnInitialized();
-
-            if (_viewerStateFacade.State.Value.Viewer != null)
-            {
-                _navigationManager.NavigateToIndexPage();
-                return;
-            }
 
             _loadingState = LoadingState.Content;
         }

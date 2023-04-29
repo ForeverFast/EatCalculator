@@ -4,5 +4,8 @@
     {
         public static ISelector<ViewerState> SelectFeatureState { get; private set; }
              = SelectorFactory.CreateFeatureSelector<ViewerState>();
+
+        public static ISelector<ViewerModel?> SelectViewer { get; private set; }
+             = SelectorFactory.CreateSelector(SelectFeatureState, state => state.Viewer);
     }
 }

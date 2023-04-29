@@ -1,5 +1,21 @@
 ﻿@inherits BasePageComponent
 
 <div class="@GetCssName(nameof(UserProfilePage)) inner-main-content @ClassName">
-
+    <MudContainer MaxWidth="MaxWidth.Medium"
+                  Class="px-0">
+        <MudPaper Width="100%"
+                  Class="pa-2">
+            <MudText Typo="Typo.h3">Профиль</MudText>
+            <MudDivider Class="my-4" />
+            <Condition Evaluation="_viewer.Value != null">
+                <Match>
+                    <MudText>Имя пользователя - @_viewer.Value!.UserName</MudText>
+                    <MudText>Почта - @_viewer.Value!.Email</MudText>
+                    <MudText>
+                        Поcледнее обновление - @(_viewer.Value!.LastDbUpdateDate?.ToString() ?? "?")
+                    </MudText>
+                </Match>
+            </Condition>
+        </MudPaper>
+    </MudContainer>
 </div>

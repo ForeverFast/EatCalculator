@@ -9,6 +9,7 @@ namespace Client.Core.Entities.Viewer.Models.Store
 
         public ViewerStateFacade(IStore store, IDispatcher dispatcher) : base(store, dispatcher)
         {
+            Viewer = _store.SubscribeSelector(ViewerStateSelectors.SelectViewer);
         }
 
         #endregion
@@ -18,14 +19,13 @@ namespace Client.Core.Entities.Viewer.Models.Store
         protected override ISelector<ViewerState> SelectState
             => ViewerStateSelectors.SelectFeatureState;
 
-
+        public ISelectorSubscription<ViewerModel?> Viewer { get; }
 
         #endregion
 
         public void InitializeViewer(Task<AuthenticationState> authenticationStateTask)
             => _dispatcher.Dispatch(new InitializeViewerAction
             {
-
                 AuthenticationStateTask = authenticationStateTask,
             });
 
@@ -46,5 +46,11 @@ namespace Client.Core.Entities.Viewer.Models.Store
 
         public void SignOut()
             => _dispatcher.Dispatch(new SignOutAction { });
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            Viewer.Dispose();
+        }
     }
 }
