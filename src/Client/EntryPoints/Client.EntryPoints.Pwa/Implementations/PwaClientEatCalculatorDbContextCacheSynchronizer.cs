@@ -2,10 +2,11 @@
 using Common;
 using Microsoft.Data.Sqlite;
 using Microsoft.JSInterop;
+using System.Threading.Channels;
 
 namespace Client.EntryPoints.Pwa.Implementations
 {
-    public class PwaClientEatCalculatorDbContextCacheSynchronizer
+    public class PwaClientEatCalculatorDbContextCacheSynchronizer : IDisposable
     {
         #region Injects
 
@@ -27,26 +28,27 @@ namespace Client.EntryPoints.Pwa.Implementations
             _dalQcWrapper.DbUpdated += OnDbUpdated;
             _dalQcWrapper.DbDisposed += OnDbDisposed;
         }
-
+        
         private async Task OnDbInitialized(DbInitializedEventArgs args)
         {
-            await CheckForPendingTasksAsync();
-
+            await _semaphore.WaitAsync();
+ 
             _dbFilename = $"{args.Path}";
             _backup = $"{_dbFilename}_bak";
             _backupName = _backup;
-          
+
             Console.WriteLine($"Last status: {_lastStatus}");
 
-            _lastTask = SynchronizeAsync();
+            await SynchronizeAsync().ConfigureAwait(false);
         }
 
-        private Task OnDbUpdated()
+        private async Task OnDbUpdated()
         {
-            if (_init)
-                _lastTask = SynchronizeAsync();
+            if (!_init)
+                return;
 
-            return Task.CompletedTask; 
+            await _semaphore.WaitAsync();
+            await SynchronizeAsync();
         }
 
         private async Task OnDbDisposed()
@@ -54,11 +56,13 @@ namespace Client.EntryPoints.Pwa.Implementations
             if (!_init)
                 return;
 
-            await CheckForPendingTasksAsync();
+            await _semaphore.WaitAsync();
 
             await _jSRuntime.InvokeVoidAsync("db.restoreJsState");
 
             _init = false;
+
+            _semaphore.Release();
         }
 
         #endregion
@@ -69,52 +73,47 @@ namespace Client.EntryPoints.Pwa.Implementations
         private string _backup;
         private string _backupName;
 
-        private Task<int>? _lastTask = null;
         private int _lastStatus = -2;
         private bool _init = false;
+        private SemaphoreSlim _semaphore = new(1, 1);
 
         #endregion
 
-
-
-        private async ValueTask CheckForPendingTasksAsync()
-        {
-            if (_lastTask == null)
-                return;
-
-            _lastStatus = await _lastTask;
-            _lastTask.Dispose();
-            _lastTask = null;
-        }
-
         private async Task<int> SynchronizeAsync()
         {
-            if (_init)
-                Backup();
-
-            var result = await _jSRuntime.InvokeAsync<int>("db.synchronizeDbWithCache", _backupName);
-            var resultText = result switch
+            try
             {
-                1 => "Cached",
-                0 => "Restored",
-                -1 or _ => "Failure",
-            };
-            Console.WriteLine($"Synchronization status: {resultText}");
+                if (_init)
+                    Backup();
 
-            if (result == -1)
-            {
-                _init = true;
-                _dalQcWrapper.TriggerDbActivatedEvent();
+                var result = await _jSRuntime.InvokeAsync<int>("db.synchronizeDbWithCache", _backupName);
+                var resultText = result switch
+                {
+                    1 => "Cached",
+                    0 => "Restored",
+                    -1 or _ => "Failure",
+                };
+                Console.WriteLine($"Synchronization status: {resultText}");
+
+                if (result == -1)
+                {
+                    _init = true;
+                    _dalQcWrapper.TriggerDbActivatedEvent();
+                }
+
+                if (result == 0)
+                {
+                    Restore();
+                    _init = true;
+                    _dalQcWrapper.TriggerDbActivatedEvent();
+                }
+
+                return result;
             }
-
-            if (result == 0)
+            finally
             {
-                Restore();
-                _init = true;
-                _dalQcWrapper.TriggerDbActivatedEvent();
+                _semaphore.Release();
             }
-
-            return result;
         }
 
         private void Backup()
@@ -145,5 +144,12 @@ namespace Client.EntryPoints.Pwa.Implementations
 
             Console.WriteLine($"End {dir}.");
         }
+
+        public void Dispose()
+        {
+            _semaphore.Dispose();
+        }
+
+        public record Command;
     }
 }

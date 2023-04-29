@@ -61,6 +61,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
 
         #region Fileds
 
+        private int _counter = 0;   
         private ClientEatCalculatorDbContext? _dbContext;
         private IDALQueryChain<ClientEatCalculatorDbContext>? _queryChain;
 
@@ -122,6 +123,11 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
             {
                 if (DbUpdated != null)
                     await DbUpdated.Invoke();
+
+                if (++_counter != 10)
+                    return;
+
+                _counter = 0;
 
                 var fileData = await _clientEatCalculatorDbContextDbFileProvider.GetDbFileAsync(GetMainPath());
                 var request = new UploadUserEatDataRequest
