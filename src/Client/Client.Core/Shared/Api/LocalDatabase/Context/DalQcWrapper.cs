@@ -123,26 +123,26 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
                 if (DbUpdated != null)
                     await DbUpdated.Invoke();
 
-                //var fileData = await _clientEatCalculatorDbContextDbFileProvider.GetDbFileAsync(GetMainPath());
-                //var request = new UploadUserEatDataRequest
-                //{
-                //    DbFileData = fileData
-                //};
+                var fileData = await _clientEatCalculatorDbContextDbFileProvider.GetDbFileAsync(GetMainPath());
+                var request = new UploadUserEatDataRequest
+                {
+                    DbFileData = fileData
+                };
 
-                //var response = await _httpEndpointsClient.UserEatData.UploadUserEatDataAsync(request);
-                //if (!response.Succeeded)
-                //{
-                //    _dispatcher.Dispatch(new SynchronizeEatDataFailureAction
-                //    {
-                //        Messages = response.Messages,
-                //    });
-                //    return;
-                //}
+                var response = await _httpEndpointsClient.UserEatData.UploadUserEatDataAsync(request);
+                if (!response.Succeeded)
+                {
+                    _dispatcher.Dispatch(new SynchronizeEatDataFailureAction
+                    {
+                        Messages = response.Messages,
+                    });
+                    return;
+                }
 
-                //_dispatcher.Dispatch(new SynchronizeEatDataSuccessAction
-                //{
-                //    LastDbUpdateDate = response.Data.LastUpdateDate,
-                //});
+                _dispatcher.Dispatch(new SynchronizeEatDataSuccessAction
+                {
+                    LastDbUpdateDate = response.Data.LastUpdateDate,
+                });
             }
             catch (Exception _)
             {

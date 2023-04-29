@@ -20,8 +20,8 @@ namespace Client.EntryPoints.Pwa.Implementations
 
         #endregion
 
-        public ValueTask<byte[]> GetDbFileAsync(string _)
-            => _jSRuntime.InvokeAsync<byte[]>("db.getCachedFile");
+        public ValueTask<byte[]> GetDbFileAsync(string mainPath)
+            => _jSRuntime.InvokeAsync<byte[]>("db.getCachedFile", GetDbFilePath(mainPath));
 
         public string GetDbFilePath(string mainPath)
         {

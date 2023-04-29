@@ -85,11 +85,14 @@
         return -1;
     };
 
-    db.getCachedFile = async function () {
+    db.getCachedFile = async function (filename) {
         let backupPath = `${filename}`;
         let cachePath = `/data/cache/${backupPath.split('.')[0]}.db`;
         let resp = await db.cache.match(cachePath);
-        return await resp.blob();
+        let blob = await resp.blob();
+        let array = await blob.arrayBuffer();
+        let uint8array = new Uint8Array(array);
+        return uint8array;
     }
 
     db.restoreJsState = function () {
