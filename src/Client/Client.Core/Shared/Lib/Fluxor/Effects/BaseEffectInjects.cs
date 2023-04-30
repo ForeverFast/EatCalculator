@@ -4,6 +4,7 @@ using Client.Core.Shared.Api.LocalDatabase.Context;
 using Client.Core.Shared.Lib.Calculator;
 using Client.Core.Shared.Lib.FrameworkAbstractions;
 using DALQueryChain.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Localization;
 
@@ -18,6 +19,7 @@ namespace Client.Core.Shared.Lib.Fluxor
 
         public IStringLocalizer<DefaultLocalization> Localizer { get; }
 
+        public IMediator Mediator { get; }
         public ISnackbar Snackbar { get; }
         public ILocalStorageService LocalStorageService { get; }
         public IDalQcWrapper Dal { get; }
@@ -34,7 +36,8 @@ namespace Client.Core.Shared.Lib.Fluxor
                                  AuthenticationStateProvider authenticationStateProvider,
                                  HttpEndpointsClient httpEndpointsClient,
                                  ILocalStorageService localStorageService,
-                                 IStringLocalizer<DefaultLocalization> localizer)
+                                 IStringLocalizer<DefaultLocalization> localizer,
+                                 IMediator mediator)
         {
             Dal = dal;
             Snackbar = snackbar;
@@ -43,6 +46,7 @@ namespace Client.Core.Shared.Lib.Fluxor
             HttpEndpointsClient = httpEndpointsClient;
             LocalStorageService = localStorageService;
             Localizer = localizer;
+            Mediator = mediator;
         }
 
         #endregion

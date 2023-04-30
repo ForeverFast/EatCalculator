@@ -40,10 +40,13 @@ namespace Client.Core.Entities.Viewer.Models.Store.Effects
                     UserName = claims.First(x => x.Type == ClaimTypes.Name).Value,
                 };
 
-                dispatcher.Dispatch(new InitializeViewerSuccessAction
+                var notification = new InitializeViewerSuccessAction
                 {
                     Viewer = viewer,
-                });
+                };
+
+                dispatcher.Dispatch(notification);
+                await _injects.Mediator.Publish(notification);
             }
             catch (Exception ex)
             {

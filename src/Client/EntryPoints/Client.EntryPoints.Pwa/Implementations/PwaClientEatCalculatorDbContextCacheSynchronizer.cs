@@ -2,7 +2,6 @@
 using Common;
 using Microsoft.Data.Sqlite;
 using Microsoft.JSInterop;
-using System.Threading.Channels;
 
 namespace Client.EntryPoints.Pwa.Implementations
 {
@@ -11,58 +10,15 @@ namespace Client.EntryPoints.Pwa.Implementations
         #region Injects
 
         private readonly IJSRuntime _jSRuntime;
-        private readonly IDalQcWrapper _dalQcWrapper;
 
         #endregion
 
         #region Ctors
 
         public PwaClientEatCalculatorDbContextCacheSynchronizer(
-            IJSRuntime jSRuntime,
-            IDalQcWrapper dalQcWrapper)
+            IJSRuntime jSRuntime)
         {
             _jSRuntime = jSRuntime;
-            _dalQcWrapper = dalQcWrapper;
-
-            _dalQcWrapper.DbInitialized += OnDbInitialized;
-            _dalQcWrapper.DbUpdated += OnDbUpdated;
-            _dalQcWrapper.DbDisposed += OnDbDisposed;
-        }
-        
-        private async Task OnDbInitialized(DbInitializedEventArgs args)
-        {
-            await _semaphore.WaitAsync();
- 
-            _dbFilename = $"{args.Path}";
-            _backup = $"{_dbFilename}_bak";
-            _backupName = _backup;
-
-            Console.WriteLine($"Last status: {_lastStatus}");
-
-            await SynchronizeAsync().ConfigureAwait(false);
-        }
-
-        private async Task OnDbUpdated()
-        {
-            if (!_init)
-                return;
-
-            await _semaphore.WaitAsync();
-            await SynchronizeAsync();
-        }
-
-        private async Task OnDbDisposed()
-        {
-            if (!_init)
-                return;
-
-            await _semaphore.WaitAsync();
-
-            await _jSRuntime.InvokeVoidAsync("db.restoreJsState");
-
-            _init = false;
-
-            _semaphore.Release();
         }
 
         #endregion
@@ -79,12 +35,61 @@ namespace Client.EntryPoints.Pwa.Implementations
 
         #endregion
 
-        private async Task<int> SynchronizeAsync()
+        public async Task Handle(DbInitializedNotification notification, CancellationToken _)
+        {
+            await _semaphore.WaitAsync();
+
+            _dbFilename = $"{notification.PathToFile}";
+            _backup = $"{_dbFilename}_bak";
+            _backupName = _backup;
+
+            Console.WriteLine($"Last status: {_lastStatus}");
+
+            await SynchronizeAsync();
+        }
+
+        public async Task Handle(DbUpdatedNotification _, CancellationToken ctn)
+        {
+            if (!_init)
+                return;
+
+            await _semaphore.WaitAsync(ctn);
+            await SynchronizeAsync();
+        }
+
+        public async Task Handle(DbDisposedNotification _, CancellationToken ctn)
+        {
+            if (!_init)
+                return;
+
+            await _semaphore.WaitAsync(ctn);
+
+            await _jSRuntime.InvokeVoidAsync("db.restoreJsState", ctn);
+
+            _init = false;
+
+            _semaphore.Release();
+        }
+
+        public async Task Handle(ChangeDbFileDataRequest request, CancellationToken ctn)
+        {
+            if (!_init)
+                return;
+
+            await _semaphore.WaitAsync(ctn);
+
+            var tmpFilePath = "tmp-eat-calc.db";
+            await File.WriteAllBytesAsync(tmpFilePath, request.FileData);
+            await BackupDatabaseAsync(tmpFilePath, _dbFilename);
+            await SynchronizeAsync();
+        }
+
+        private async Task SynchronizeAsync()
         {
             try
             {
                 if (_init)
-                    Backup();
+                    await Backup();
 
                 var result = await _jSRuntime.InvokeAsync<int>("db.synchronizeDbWithCache", _backupName);
                 var resultText = result switch
@@ -98,17 +103,13 @@ namespace Client.EntryPoints.Pwa.Implementations
                 if (result == -1)
                 {
                     _init = true;
-                    _dalQcWrapper.TriggerDbActivatedEvent();
                 }
 
                 if (result == 0)
                 {
-                    Restore();
+                     await Restore();
                     _init = true;
-                    _dalQcWrapper.TriggerDbActivatedEvent();
                 }
-
-                return result;
             }
             finally
             {
@@ -116,13 +117,56 @@ namespace Client.EntryPoints.Pwa.Implementations
             }
         }
 
-        private void Backup()
-            => DoSwap(false);
+        private async Task Backup()
+        {
+            _backupName = $"{_backup}-{Guid.NewGuid().ToString().Split('-')[0]}";
 
-        private void Restore()
-            => DoSwap(true);
+            Console.WriteLine("Backup start...");
+            await BackupDatabaseAsync(_dbFilename, _backupName);
+            Console.WriteLine("Backup end");
+        }
 
-        private void DoSwap(bool restore)
+        private async Task Restore()
+        {
+            Console.WriteLine("Restore start...");
+            await BackupDatabaseAsync(_backupName, _dbFilename);
+            Console.WriteLine("Restore end");
+        }
+
+        public async Task BackupDatabaseAsync(string sourceDbFilePath, string targetDbFilePath)
+        {
+            var source = $"Data Source={sourceDbFilePath}";
+            var target = $"Data Source={targetDbFilePath}";
+            var src = new SqliteConnection(source);
+            var tgt = new SqliteConnection(target);
+
+            await src.OpenAsync();
+            await tgt.OpenAsync();
+
+            src.BackupDatabase(tgt);
+
+            await src.CloseAsync();
+            await tgt.CloseAsync();
+
+            await src.DisposeAsync();
+            await tgt.DisposeAsync();
+
+            SqliteConnection.ClearPool(tgt);
+            SqliteConnection.ClearPool(src);
+        }
+
+        public void Dispose()
+        {
+            _semaphore.Dispose();
+        }
+
+       
+    }
+}
+
+
+/*
+ private void DoSwap(bool restore)
         {
             _backupName = restore ? _backup : $"{_backup}-{Guid.NewGuid().ToString().Split('-')[0]}";
             var dir = restore ? nameof(restore) : "backup";
@@ -144,12 +188,4 @@ namespace Client.EntryPoints.Pwa.Implementations
 
             Console.WriteLine($"End {dir}.");
         }
-
-        public void Dispose()
-        {
-            _semaphore.Dispose();
-        }
-
-        public record Command;
-    }
-}
+ */

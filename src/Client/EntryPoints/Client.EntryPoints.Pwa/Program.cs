@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using UI.Lib.AppBuilder;
 
-//ClientEatCalculatorDbContext? GlobalEatCalculatorDbContext = null!;
-
 var defaultBuilder = WebAssemblyHostBuilder.CreateDefault(args);
 defaultBuilder.RootComponents.Add((typeof(ClientApp)), "#app", ParameterView.FromDictionary(PwaConfiguration.ClientAppParameters));
 defaultBuilder.RootComponents.Add<HeadOutlet>("head::after");
@@ -25,16 +23,7 @@ var builder = defaultBuilder.ToClientAppBuilder(clientAppBuilderSettings);
 
 builder.Services.AddScoped<PwaClientEatCalculatorDbContextCacheSynchronizer>();
 builder.Services.AddScoped<IClientEatCalculatorDbContextFileProvider, PwaClientEatCalculatorDbContextFileProvider>();
-//builder.Services.AddSingleton<IClientEatCalculatorDbContextPathHelper, PwaClientEatCalculatorDbContextFileProvider>();
-//builder.Services.AddSingleton<ClientEatCalculatorDbContext>((sp) => GlobalEatCalculatorDbContext);
 
 builder.ConfigureAppLayer();
 
-var app = defaultBuilder.Build();
-
-app.Services.GetService<PwaClientEatCalculatorDbContextCacheSynchronizer>();
-
-//var eatCalculatorDbContextFactory = app.Services.GetRequiredService<IClientEatCalculatorDbContextFactory>();
-//GlobalEatCalculatorDbContext = await eatCalculatorDbContextFactory.CreateContextAsync();
-
-await app.RunAsync();
+await defaultBuilder.Build().RunAsync();

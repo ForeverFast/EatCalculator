@@ -24,7 +24,7 @@ namespace Client.Core.Shared.Api.LocalDatabase
             //});
 
             services.AddScoped<IDalQcWrapper, DalQcWrapper>();
-
+            //services.AddScoped<DalQcWrapperEventPublisher>();
             //services.AddQueryChain(typeof(Configure).Assembly);
 
             return appBuilder;

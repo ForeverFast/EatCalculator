@@ -1,16 +1,14 @@
 ﻿using DALQueryChain.Interfaces;
+using MediatR;
 
 namespace Client.Core.Shared.Api.LocalDatabase.Context
 {
-    public delegate Task DbInitializedEventHandler(DbInitializedEventArgs args);
+    public delegate Task DbInitializedEventHandler(string path);
     public delegate Task DbUpdatedEventHandler();
     public delegate Task DbDisposedEventHandler();
     public delegate void DbActivatedEventHandler();
 
-    public record DbInitializedEventArgs
-    {
-        public required string Path { get; init; }
-    }
+    public delegate Task CallToReplace(byte[] fileData);
 
     public enum DalQcState
     {
@@ -20,17 +18,22 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
         Disposing
     }
 
+    public record DbInitializedNotification : INotification
+    {
+        public required string PathToFile { get; init; }
+    }
+    public record DbActivatedNotification : INotification;
+    public record DbUpdatedNotification : INotification;
+    public record DbDisposedNotification : INotification;
+    public record ChangeDbFileDataRequest : IRequest
+    {
+        public required byte[] FileData { get; init; }
+    }
+
     public interface IDalQcWrapper : IAsyncDisposable
     {
         IDALQueryChain<ClientEatCalculatorDbContext> Instance { get; }
 
-        public DalQcState State { get; }
-
-        event DbInitializedEventHandler? DbInitialized;
-        event DbUpdatedEventHandler? DbUpdated;
-        event DbDisposedEventHandler? DbDisposed;
-        event DbActivatedEventHandler? DbActivated;
-
-        void TriggerDbActivatedEvent();
+        DalQcState State { get; }
     }
 }

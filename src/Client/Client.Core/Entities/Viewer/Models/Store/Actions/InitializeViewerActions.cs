@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Client.Core.Entities.Viewer.Models.Store.Actions
 {
@@ -7,7 +8,7 @@ namespace Client.Core.Entities.Viewer.Models.Store.Actions
         public required Task<AuthenticationState> AuthenticationStateTask { get; init; }
     }
     internal record InitializeViewerFailureAction : BaseFailureAction;
-    internal record InitializeViewerSuccessAction : BaseSuccessAction
+    internal record InitializeViewerSuccessAction : BaseSuccessAction, INotification
     {
         public required ViewerModel? Viewer { get; set; }
     }

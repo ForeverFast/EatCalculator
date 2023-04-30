@@ -3,8 +3,9 @@ using Client.Core.Shared.Api.HttpClient;
 using Client.Core.Shared.Api.LocalDatabase;
 using Client.Core.Shared.Lib.Calculator;
 using Client.Core.Shared.Lib.FrameworkAbstractions;
+using MediatR.Courier;
+using MediatR.NotificationPublishers;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
 
 namespace Client.Core.Shared
@@ -30,6 +31,14 @@ namespace Client.Core.Shared
             });
 
             // Other
+
+            appBuilder.Services
+                .AddMediatR(opts =>
+                {
+                    opts.RegisterServicesFromAssemblies(appBuilder.FullTargetAssemblies);
+                    opts.NotificationPublisher = new TaskWhenAllPublisher();
+                })
+                .AddCourier(appBuilder.FullTargetAssemblies);
 
             appBuilder.Services.AddBlazoredLocalStorage();
             appBuilder.Services.AddLocalization();

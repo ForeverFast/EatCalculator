@@ -9,7 +9,7 @@ namespace Server.Core.Initializers
         #region Injects
 
         private readonly ServerEatCalculatorDbContext _dbContext;
-
+            
         #endregion
 
         #region Ctors

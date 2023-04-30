@@ -1,10 +1,12 @@
-﻿using Client.Core.App.Models.Store;
+﻿using Client.Core.Entities.Viewer.Models;
 using Client.Core.Entities.Viewer.Models.Store;
 using Client.Core.Entities.Viewer.Models.Store.Actions;
 using Client.Core.Shared.Api.HttpClient;
 using Client.Core.Shared.Api.HttpClient.Requests.UserData;
 using DALQueryChain.EntityFramework.Builder;
 using DALQueryChain.Interfaces;
+using MediatR;
+using MediatR.Courier;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
@@ -16,10 +18,12 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
         #region Injects
 
         private readonly IServiceProvider _serviceProvider;
+        private readonly IMediator _mediator;
+        private readonly ICourier _courier;
         //private readonly IActionSubscriber _actionSubscriber;
         private readonly IDispatcher _dispatcher;
-        private readonly IState<ViewerState> _viewerState;
-        private readonly IState<AppState> _appState; // TODO: переделать
+        //private readonly ViewerStateFacade _viewerStateFacade;
+        //private readonly IState<AppState> _appState; // TODO: переделать
         private readonly IClientEatCalculatorDbContextFileProvider _clientEatCalculatorDbContextDbFileProvider;
         private readonly ClientEatCalculatorDbContextSettings _clientEatCalculatorDbContextSettings;
         private readonly HttpEndpointsClient _httpEndpointsClient;
@@ -37,8 +41,10 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
             HttpEndpointsClient httpEndpointsClient,
             IDispatcher dispatcher,
             IStringLocalizer<DefaultLocalization> localizer,
-            IState<ViewerState> viewerState,
-            IState<AppState> appState)
+            IMediator mediator,
+            ICourier courier)
+        //ViewerStateFacade viewerStateFacade,
+        //IState<AppState> appState)
         {
             ArgumentNullException.ThrowIfNull(clientEatCalculatorDbContextSettings.Value, nameof(clientEatCalculatorDbContextSettings));
 
@@ -49,10 +55,15 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
             _clientEatCalculatorDbContextDbFileProvider = clientEatCalculatorDbContextDbFileProvider;
             _httpEndpointsClient = httpEndpointsClient;
             _localizer = localizer;
-            _viewerState = viewerState;
+            _mediator = mediator;
+            _courier = courier;
 
-            _viewerState.StateChanged += OnInitializeViewerSuccessAction;
-            _appState = appState;
+            _courier.Subscribe<InitializeViewerSuccessAction>(OnInitializeViewerSuccessAction);
+
+            //_viewerStateFacade = viewerStateFacade;
+            //_appState = appState;
+
+            //_viewerStateFacade.Viewer.StateChanged += OnInitializeViewerSuccessAction;
 
             //_actionSubscriber.SubscribeToAction<InitializeViewerSuccessAction>(this, OnInitializeViewerSuccessAction);
         }
@@ -61,7 +72,8 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
 
         #region Fileds
 
-        private int _counter = 0;   
+        private int _counter = 0;
+        private ViewerModel? _currentViewer;
         private ClientEatCalculatorDbContext? _dbContext;
         private IDALQueryChain<ClientEatCalculatorDbContext>? _queryChain;
 
@@ -74,22 +86,22 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
 
         public DalQcState State { get; private set; }
 
-        public event DbInitializedEventHandler? DbInitialized;
-        public event DbUpdatedEventHandler? DbUpdated;
-        public event DbDisposedEventHandler? DbDisposed;
-        public event DbActivatedEventHandler? DbActivated;
+
 
         #endregion
 
         #region External events
 
-        private async void OnInitializeViewerSuccessAction(object? _, EventArgs __)
+        public async Task OnInitializeViewerSuccessAction(InitializeViewerSuccessAction notification, CancellationToken cancellationToken)
         {
-            if (_viewerState.Value.Viewer == null)
+            if (notification.Viewer == null)
             {
+                await _mediator.Publish(new DbDisposedNotification { });
                 await DisposeDbContextObjects();
                 return;
             }
+
+            _currentViewer = notification.Viewer;   
 
             var mainPath = GetMainPath();
             var connectionString = $"Data Source=\"{_clientEatCalculatorDbContextDbFileProvider.GetDbFilePath(mainPath)}\";";
@@ -100,29 +112,30 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
 
             var dbContext = new ClientEatCalculatorDbContext(options.Options);
 
-            await dbContext.Database.EnsureCreatedAsync();
+            await dbContext.Database.MigrateAsync();//EnsureCreatedAsync();
 
             dbContext.SavedChanges += OnDbContextSavedChanges;
 
             _queryChain = new BuildQuery<ClientEatCalculatorDbContext>(dbContext, _serviceProvider);
 
             State = DalQcState.Initialized;
-            if (DbInitialized != null)
-                await DbInitialized.Invoke(new DbInitializedEventArgs
-                {
-                    Path = $"{_viewerState.Value.Viewer!.Id}/{_clientEatCalculatorDbContextSettings.DbName}"
-                });
-            
-            if (!_appState.Value.IsWeb)
-                TriggerDbActivatedEvent();
+            await _mediator.Publish(new DbInitializedNotification
+            {
+                PathToFile = $"{_currentViewer.Id}/{_clientEatCalculatorDbContextSettings.DbName}",
+            });
+
+            //await CheckUpdatesAsync();
+
+            State = DalQcState.Active;
+            await _mediator.Publish(new DbActivatedNotification { }); 
         }
 
         private async void OnDbContextSavedChanges(object? sender, SavedChangesEventArgs e)
         {
             try
             {
-                if (DbUpdated != null)
-                    await DbUpdated.Invoke();
+
+                await _mediator.Publish(new DbUpdatedNotification { });
 
                 if (++_counter != 10)
                     return;
@@ -159,14 +172,40 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
             }
         }
 
-        #endregion
-
-        #region Public methods
-
-        public void TriggerDbActivatedEvent()
+        private async ValueTask CheckUpdatesAsync()
         {
-            State = DalQcState.Active;
-            DbActivated?.Invoke();
+            if (_currentViewer == null)
+                return;
+
+            try
+            {
+                var checkRequest = new CheckUpdatesRequest
+                {
+                    LastUpdateDate = _currentViewer.LastDbUpdateDate,
+                };
+
+                var checkResponse = await _httpEndpointsClient.UserEatData.CheckUpdatesAsync(checkRequest);
+                if (!checkResponse.Succeeded)
+                {
+                    return;
+                }
+
+                if (!checkResponse.Data.AnyUpdates)
+                    return;
+
+                var loadRequest = new LoadUserEatDataRequest { };
+
+                var loadResponse = await _httpEndpointsClient.UserEatData.LoadUserEatDataAsync(loadRequest);
+
+                await _mediator.Send(new ChangeDbFileDataRequest
+                {
+                    FileData = loadResponse.Data.Data
+                });
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         #endregion
@@ -174,14 +213,12 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
         #region Private methods
 
         private string GetMainPath()
-            => Path.Combine(_viewerState.Value.Viewer!.Id.ToString(), _clientEatCalculatorDbContextSettings.DbName);
+            => Path.Combine(_currentViewer!.Id.ToString(), _clientEatCalculatorDbContextSettings.DbName);
 
         private async ValueTask DisposeDbContextObjects()
         {
             State = DalQcState.Disposing;
 
-            if (DbDisposed != null)
-                await DbDisposed.Invoke();
             if (_dbContext != null)
                 _dbContext.SavedChanges -= OnDbContextSavedChanges;
             if (_queryChain != null)
@@ -197,8 +234,10 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
 
         public async ValueTask DisposeAsync()
         {
-            _viewerState.StateChanged -= OnInitializeViewerSuccessAction;
+            //_viewerStateFacade.Viewer.StateChanged -= OnInitializeViewerSuccessAction;
             //_actionSubscriber.UnsubscribeFromAllActions(this);
+            _courier.UnSubscribe<InitializeViewerSuccessAction>(OnInitializeViewerSuccessAction);
+
             await DisposeDbContextObjects();
         }
     }
