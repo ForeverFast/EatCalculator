@@ -78,6 +78,15 @@
                                              Margin="Margin.Dense" Variant="Variant.Outlined"
                                              Class="numeric-input mx-1" />
                         </MudContainer>
+                        <MudContainer Class="d-flex flex-row align-center mt-2 px-0">
+                            <MudText>Каллорий</MudText>
+                            <MudNumericField T="double"
+                                             Value="_kilocalories"
+                                             ValueChanged="newValue => OnChangeDayInfo(() => _kilocalories = newValue)"
+                                             Min="0" HideSpinButtons="true"
+                                             Margin="Margin.Dense" Variant="Variant.Outlined"
+                                             Class="kilocalories-input ms-auto me-1" />
+                        </MudContainer>
                     </MudContainer>
                     <MudDivider Class="flex-grow-0 mt-2" />
                 </AdditionalToolbarContent>

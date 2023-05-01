@@ -1,11 +1,11 @@
-﻿using Client.Core.Shared.Api.LocalDatabase.Context;
+﻿using Client.Core.Shared.Api.LocalDatabase.DalQc;
 using Common;
 using Microsoft.Data.Sqlite;
 using Microsoft.JSInterop;
 
 namespace Client.EntryPoints.Pwa.Implementations
 {
-    public class PwaClientEatCalculatorDbContextCacheSynchronizer : IDisposable
+    public class PwaDalQcWarapperStateProvider : IDisposable
     {
         #region Injects
 
@@ -15,7 +15,7 @@ namespace Client.EntryPoints.Pwa.Implementations
 
         #region Ctors
 
-        public PwaClientEatCalculatorDbContextCacheSynchronizer(
+        public PwaDalQcWarapperStateProvider(
             IJSRuntime jSRuntime)
         {
             _jSRuntime = jSRuntime;
@@ -35,11 +35,11 @@ namespace Client.EntryPoints.Pwa.Implementations
 
         #endregion
 
-        public async Task Handle(DbInitializedNotification notification, CancellationToken _)
+        public async Task Handle(DbInitializedNotification notification, CancellationToken ctn)
         {
-            await _semaphore.WaitAsync();
+            await _semaphore.WaitAsync(ctn);
 
-            _dbFilename = $"{notification.PathToFile}";
+            _dbFilename = Path.Combine(notification.UserId.ToString(), notification.DbFileName);
             _backup = $"{_dbFilename}_bak";
             _backupName = _backup;
 

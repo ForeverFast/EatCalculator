@@ -1,5 +1,4 @@
 ﻿using Client.Core.Entities.Products.Models.Store.Actions;
-using Client.Core.Shared.Resources.Localizations;
 using Microsoft.Extensions.Logging;
 
 namespace Client.Core.Entities.Products.Models.Store.Effects

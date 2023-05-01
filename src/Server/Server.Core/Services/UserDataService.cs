@@ -1,10 +1,14 @@
 ﻿using DALQueryChain.Interfaces;
+using Org.BouncyCastle.Asn1.Ocsp;
 using Server.Core.Context;
+using Server.Core.Context.Entities.Identity;
 using Server.Core.Context.Entities.UserData;
 using Server.Core.Interfaces;
 using Server.Core.Interfaces.Services;
 using Server.Core.Models.Api.UserData.Requests;
 using Server.Core.Models.Api.UserData.Responses;
+using System;
+using System.Collections.Concurrent;
 
 namespace Server.Core.Services
 {
@@ -27,75 +31,98 @@ namespace Server.Core.Services
 
         #endregion
 
-        public async ValueTask<IResult<CheckUpdatesResponse>> CheckUpdatesAsync(CheckUpdatesRequest request, CancellationToken ctn)
+        private readonly static ConcurrentDictionary<int, SemaphoreSlim> _locker = new();
+
+        private async ValueTask<IResult<T>> Execute<T>(Func<ValueTask<IResult<T>>> func, int userId)
         {
-            var userId = request.AuthorizedUserId!.Value;
-            var userData = await _dal.For<UserEatData>().Get.FirstAsync(x => x.Id == userId);
+            var locker = _locker.GetOrAdd(userId, new SemaphoreSlim(1, 1));
 
-            var result = true switch
+            try
             {
-                { } when !userData.LastUpdateDate.HasValue
-                    => false,
-                { } when userData.LastUpdateDate.Value.Equals(request.LastUpdateDate)
-                    => false,
-                _ => true,
-            };
+                await locker.WaitAsync();
 
-            return Result<CheckUpdatesResponse>.Success(new CheckUpdatesResponse
+                return await func();
+            }
+            finally
             {
-                AnyUpdates = result,
-            });
+                locker.Release();
+            }
         }
 
-        public async ValueTask<IResult<LoadUserEatDataResponse>> LoadUserEatDataAsync(LoadUserEatDataRequest request, CancellationToken ctn)
-        {
-            var userId = request.AuthorizedUserId!.Value;
-            var userData = await _dal.For<UserEatData>().Get.FirstAsync(x => x.Id == userId, ctn);
-
-            if (!userData.HasData)
-                return Result<LoadUserEatDataResponse>.Fail("No available data");
-
-            var fileData = await _fileProvider.GetFileAsync(userData.FilePath!, ctn);
-
-            return Result<LoadUserEatDataResponse>.Success(new LoadUserEatDataResponse
+        public ValueTask<IResult<CheckUpdatesResponse>> CheckUpdatesAsync(CheckUpdatesRequest request, CancellationToken ctn)
+            => Execute<CheckUpdatesResponse>(async () =>
             {
-                Data = fileData,
-                LastUpdateDate = userData.LastUpdateDate!.Value
-            });
-        }
 
-        public async ValueTask<IResult<UploadUserEatDataResponse>> UploadUserEatDataAsync(UploadUserEatDataRequest request, CancellationToken ctn)
-        {
-            var userId = request.AuthorizedUserId!.Value;
-            var userData = await _dal.For<UserEatData>().Get.FirstAsync(x => x.Id == userId);
+                var userId = request.AuthorizedUserId!.Value;
+                var userData = await _dal.For<UserEatData>().Get.FirstAsync(x => x.Id == userId);
 
-            MemoryStream memStream = new();
-            await request.File.CopyToAsync(memStream, ctn);
-            var fileData = memStream.ToArray();
-            var updateDate = DateTime.UtcNow;
-
-            if (!userData.HasData)
-            {
-                var filePath = await _fileProvider.CreateFileAsync(fileData, userId, ctn: ctn);
-                userData = userData with
+                var result = true switch
                 {
-                    FilePath = filePath,
+                    { } when !userData.LastUpdateDate.HasValue
+                        => ServerDataState.NotFound,
+                    { } when request.LastUpdateDate.HasValue && userData.LastUpdateDate.Value <= request.LastUpdateDate.Value
+                        => ServerDataState.NoUpdates,
+                    _ => ServerDataState.NeedUpdate,
                 };
-            }
-            else
-            {
-                await _fileProvider.UpdateFile(fileData, userData.FilePath!, ctn);
-            }
 
-            await _dal.For<UserEatData>().Update.UpdateAsync(userData with
-            {
-                LastUpdateDate = updateDate,
-            });
+                return Result<CheckUpdatesResponse>.Success(new CheckUpdatesResponse
+                {
+                    ServerDataState = result,
+                });
 
-            return Result<UploadUserEatDataResponse>.Success(new UploadUserEatDataResponse
+            }, request.AuthorizedUserId!.Value);
+
+        public ValueTask<IResult<LoadUserEatDataResponse>> LoadUserEatDataAsync(LoadUserEatDataRequest request, CancellationToken ctn)
+            => Execute<LoadUserEatDataResponse>(async () =>
             {
-                LastUpdateDate = updateDate,
-            });
-        }
+                var userId = request.AuthorizedUserId!.Value;
+                var userData = await _dal.For<UserEatData>().Get.FirstAsync(x => x.Id == userId, ctn);
+
+                if (!userData.HasData)
+                    return Result<LoadUserEatDataResponse>.Fail("No available data");
+
+                var fileData = await _fileProvider.GetFileAsync(userData.FilePath!, ctn);
+
+                return Result<LoadUserEatDataResponse>.Success(new LoadUserEatDataResponse
+                {
+                    Data = fileData,
+                    LastUpdateDate = userData.LastUpdateDate!.Value
+                });
+            }, request.AuthorizedUserId!.Value);
+
+        public ValueTask<IResult<UploadUserEatDataResponse>> UploadUserEatDataAsync(UploadUserEatDataRequest request, CancellationToken ctn)
+            => Execute<UploadUserEatDataResponse>(async () =>
+            {
+                var userId = request.AuthorizedUserId!.Value;
+                var userData = await _dal.For<UserEatData>().Get.FirstAsync(x => x.Id == userId);
+
+                MemoryStream memStream = new();
+                await request.File.CopyToAsync(memStream, ctn);
+                var fileData = memStream.ToArray();
+                var updateDate = DateTime.Parse(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"));
+
+                if (!userData.HasData)
+                {
+                    var filePath = await _fileProvider.CreateFileAsync(fileData, userId, ctn: ctn);
+                    userData = userData with
+                    {
+                        FilePath = filePath,
+                    };
+                }
+                else
+                {
+                    await _fileProvider.UpdateFile(fileData, userData.FilePath!, ctn);
+                }
+
+                await _dal.For<UserEatData>().Update.UpdateAsync(userData with
+                {
+                    LastUpdateDate = updateDate,
+                });
+
+                return Result<UploadUserEatDataResponse>.Success(new UploadUserEatDataResponse
+                {
+                    LastUpdateDate = updateDate,
+                });
+            }, request.AuthorizedUserId!.Value);
     }
 }

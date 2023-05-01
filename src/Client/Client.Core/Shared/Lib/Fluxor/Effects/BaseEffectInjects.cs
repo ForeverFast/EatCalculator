@@ -1,6 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Client.Core.Shared.Api.HttpClient;
-using Client.Core.Shared.Api.LocalDatabase.Context;
+using Client.Core.Shared.Api.LocalDatabase.DalQc;
 using Client.Core.Shared.Lib.Calculator;
 using Client.Core.Shared.Lib.FrameworkAbstractions;
 using DALQueryChain.Interfaces;

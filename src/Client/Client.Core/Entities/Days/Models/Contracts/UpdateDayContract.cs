@@ -5,6 +5,7 @@
         public required string Title { get; init; }
         public string? Description { get; set; }
 
+        public required double Kilocalories { get; init; }
         public required double ProteinPercentages { get; init; }
         public required double FatPercentages { get; init; }
         public required double CarbohydratePercentages { get; init; }

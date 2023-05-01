@@ -1,4 +1,5 @@
 ﻿using Client.Core.Shared.Api.LocalDatabase.Context;
+using Client.Core.Shared.Api.LocalDatabase.DalQc;
 using DALQueryChain.EntityFramework;
 
 namespace Client.Core.Shared.Api.LocalDatabase

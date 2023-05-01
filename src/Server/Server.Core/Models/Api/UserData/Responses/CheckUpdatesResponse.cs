@@ -2,6 +2,13 @@
 {
     public record CheckUpdatesResponse
     {
-        public required bool AnyUpdates { get; init; }  
+        public required ServerDataState ServerDataState { get; init; }
+    }
+
+    public enum ServerDataState
+    {
+        NeedUpdate,
+        NoUpdates,
+        NotFound,
     }
 }

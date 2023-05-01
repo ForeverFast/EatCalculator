@@ -6,6 +6,7 @@ global using Fluxor;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Web;
 global using Microsoft.Extensions.DependencyInjection;
+global using MediatR;
 global using MudBlazor;
 global using MudBlazor.Utilities;
 global using UI;

@@ -31,6 +31,7 @@ namespace Client.Core.Pages.Days
         private string _title = string.Empty;
         private TitleValidator _titleValidator = null!;
 
+        private double _kilocalories;
         private double _proteinPercentages;
         private double _fatPercentages;
         private double _carbohydratePercentages;
@@ -119,6 +120,7 @@ namespace Client.Core.Pages.Days
             {
                 Title = _title,
                 Description = _currentDay.Value.Description,
+                Kilocalories = _kilocalories,
                 ProteinPercentages = _proteinPercentages,
                 FatPercentages = _fatPercentages,
                 CarbohydratePercentages = _carbohydratePercentages,
@@ -142,6 +144,7 @@ namespace Client.Core.Pages.Days
 
             _title = _currentDay.Value.Title;
 
+            _kilocalories = _currentDay.Value.Kilocalories;
             _proteinPercentages = _currentDay.Value.ProteinPercentages;
             _fatPercentages = _currentDay.Value.FatPercentages;
             _carbohydratePercentages = _currentDay.Value.CarbohydratePercentages;

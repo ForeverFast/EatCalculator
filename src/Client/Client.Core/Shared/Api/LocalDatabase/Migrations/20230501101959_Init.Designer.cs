@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Client.Core.Shared.Api.LocalDatabase.Migrations
 {
     [DbContext(typeof(ClientEatCalculatorDbContext))]
-    [Migration("20230409100600_Init")]
+    [Migration("20230501101959_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -39,6 +39,9 @@ namespace Client.Core.Shared.Api.LocalDatabase.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<double>("FatPercentages")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Kilocalories")
                         .HasColumnType("REAL");
 
                     b.Property<int>("Order")

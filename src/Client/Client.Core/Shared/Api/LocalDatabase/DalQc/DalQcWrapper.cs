@@ -1,8 +1,12 @@
-﻿using Client.Core.Entities.Viewer.Models;
+﻿using Blazored.LocalStorage;
+using Client.Core.Entities.Viewer.Models;
 using Client.Core.Entities.Viewer.Models.Store;
 using Client.Core.Entities.Viewer.Models.Store.Actions;
 using Client.Core.Shared.Api.HttpClient;
 using Client.Core.Shared.Api.HttpClient.Requests.UserData;
+using Client.Core.Shared.Api.HttpClient.Responses.UserData;
+using Client.Core.Shared.Api.LocalDatabase.Context;
+using Client.Core.Shared.Configs;
 using DALQueryChain.EntityFramework.Builder;
 using DALQueryChain.Interfaces;
 using MediatR;
@@ -11,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
-namespace Client.Core.Shared.Api.LocalDatabase.Context
+namespace Client.Core.Shared.Api.LocalDatabase.DalQc
 {
     internal sealed class DalQcWrapper : IDalQcWrapper
     {
@@ -20,6 +24,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
         private readonly IServiceProvider _serviceProvider;
         private readonly IMediator _mediator;
         private readonly ICourier _courier;
+        private readonly ILocalStorageService _localStorageService;
         //private readonly IActionSubscriber _actionSubscriber;
         private readonly IDispatcher _dispatcher;
         //private readonly ViewerStateFacade _viewerStateFacade;
@@ -42,7 +47,8 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
             IDispatcher dispatcher,
             IStringLocalizer<DefaultLocalization> localizer,
             IMediator mediator,
-            ICourier courier)
+            ICourier courier,
+            ILocalStorageService localStorageService)
         //ViewerStateFacade viewerStateFacade,
         //IState<AppState> appState)
         {
@@ -57,6 +63,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
             _localizer = localizer;
             _mediator = mediator;
             _courier = courier;
+            _localStorageService = localStorageService;
 
             _courier.Subscribe<InitializeViewerSuccessAction>(OnInitializeViewerSuccessAction);
 
@@ -72,7 +79,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
 
         #region Fileds
 
-        private int _counter = 0;
+        //private int _counter = 0;
         private ViewerModel? _currentViewer;
         private ClientEatCalculatorDbContext? _dbContext;
         private IDALQueryChain<ClientEatCalculatorDbContext>? _queryChain;
@@ -101,7 +108,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
                 return;
             }
 
-            _currentViewer = notification.Viewer;   
+            _currentViewer = notification.Viewer;
 
             var mainPath = GetMainPath();
             var connectionString = $"Data Source=\"{_clientEatCalculatorDbContextDbFileProvider.GetDbFilePath(mainPath)}\";";
@@ -121,26 +128,26 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
             State = DalQcState.Initialized;
             await _mediator.Publish(new DbInitializedNotification
             {
-                PathToFile = $"{_currentViewer.Id}/{_clientEatCalculatorDbContextSettings.DbName}",
+                UserId = _currentViewer.Id,
+                DbFileName = _clientEatCalculatorDbContextSettings.DbName,
             });
 
-            //await CheckUpdatesAsync();
+            await CheckUpdatesAsync();
 
             State = DalQcState.Active;
-            await _mediator.Publish(new DbActivatedNotification { }); 
+            await _mediator.Publish(new DbActivatedNotification { });
         }
 
         private async void OnDbContextSavedChanges(object? sender, SavedChangesEventArgs e)
         {
             try
             {
-
                 await _mediator.Publish(new DbUpdatedNotification { });
 
-                if (++_counter != 10)
-                    return;
+                //if (++_counter != 10)
+                //    return;
 
-                _counter = 0;
+                //_counter = 0;
 
                 var fileData = await _clientEatCalculatorDbContextDbFileProvider.GetDbFileAsync(GetMainPath());
                 var request = new UploadUserEatDataRequest
@@ -158,6 +165,8 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
                     return;
                 }
 
+                await _localStorageService.SetItemAsync(LocalStorageKeys.LastUpdateDate, response.Data.LastUpdateDate.Ticks);
+
                 _dispatcher.Dispatch(new SynchronizeEatDataSuccessAction
                 {
                     LastDbUpdateDate = response.Data.LastUpdateDate,
@@ -172,6 +181,10 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
             }
         }
 
+        #endregion
+
+        #region Private methods
+
         private async ValueTask CheckUpdatesAsync()
         {
             if (_currentViewer == null)
@@ -179,27 +192,34 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
 
             try
             {
+                var localLastDbUpdateDate = await _localStorageService.GetItemAsync<long>(LocalStorageKeys.LastUpdateDate);
+                
                 var checkRequest = new CheckUpdatesRequest
                 {
-                    LastUpdateDate = _currentViewer.LastDbUpdateDate,
+                    LastUpdateDate = new DateTime(localLastDbUpdateDate),
                 };
 
                 var checkResponse = await _httpEndpointsClient.UserEatData.CheckUpdatesAsync(checkRequest);
                 if (!checkResponse.Succeeded)
-                {
                     return;
-                }
 
-                if (!checkResponse.Data.AnyUpdates)
+                if (checkResponse.Data.ServerDataState is not ServerDataState.NeedUpdate)
                     return;
 
                 var loadRequest = new LoadUserEatDataRequest { };
 
                 var loadResponse = await _httpEndpointsClient.UserEatData.LoadUserEatDataAsync(loadRequest);
+                if (!loadResponse.Succeeded)
+                {
+                    return;
+                }
+
+                await _localStorageService.SetItemAsync(LocalStorageKeys.LastUpdateDate, loadResponse.Data.LastUpdateDate.Ticks);
 
                 await _mediator.Send(new ChangeDbFileDataRequest
                 {
-                    FileData = loadResponse.Data.Data
+                    FileData = loadResponse.Data.Data,
+                    TargetFilePath = GetMainPath(),
                 });
             }
             catch (Exception ex)
@@ -207,10 +227,6 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
 
             }
         }
-
-        #endregion
-
-        #region Private methods
 
         private string GetMainPath()
             => Path.Combine(_currentViewer!.Id.ToString(), _clientEatCalculatorDbContextSettings.DbName);

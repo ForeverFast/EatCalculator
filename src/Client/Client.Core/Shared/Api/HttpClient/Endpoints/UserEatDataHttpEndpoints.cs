@@ -24,7 +24,7 @@ namespace Client.Core.Shared.Api.HttpClient.Endpoints
         {
             var restRequest = new RestRequest($"{_controllerRoute}/check-updates", Method.Get);
 
-            restRequest.AddParameter(nameof(request.LastUpdateDate), request.LastUpdateDate?.ToString());
+            restRequest.AddQueryParameter(nameof(request.LastUpdateDate), request.LastUpdateDate?.ToString("yyyy-MM-ddTHH:mm:ss"));
 
             return _restClient.ExecuteWithResultAsync<CheckUpdatesResponse>(restRequest, ctn)!;
         }

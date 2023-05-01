@@ -12,6 +12,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <EnableDefaultCssItems>false</EnableDefaultCssItems>
     <Nullable>enable</Nullable>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
 
     <!-- Display name -->
     <ApplicationTitle>EatClalculator</ApplicationTitle>
@@ -63,5 +65,7 @@
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionClientEntryPointsMauiHideInfoBar="True" /></VisualStudio></ProjectExtensions>
 
 </Project>

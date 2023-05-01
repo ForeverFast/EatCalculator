@@ -1,5 +1,6 @@
 ﻿using Common;
 using Server.Core.Interfaces;
+using System.Text;
 
 namespace Server.EntryPoints.WebApi.Implementations
 {
@@ -16,7 +17,11 @@ namespace Server.EntryPoints.WebApi.Implementations
             if (!File.Exists(path))
                 return Array.Empty<byte>();
 
-            return await File.ReadAllBytesAsync(path, ctn);
+            using var memStream = new MemoryStream();
+            using var fstream = File.OpenRead(path);
+            await fstream.CopyToAsync(memStream);
+
+            return memStream.ToArray();
         }
 
         public async ValueTask<string> CreateFileAsync(byte[] fileByteArray,

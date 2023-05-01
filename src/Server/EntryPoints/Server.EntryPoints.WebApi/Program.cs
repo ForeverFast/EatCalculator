@@ -81,7 +81,7 @@ builder.Services
         };
     });
 builder.Services.AddAuthorization();
-
+builder.Services.AddHealthChecks();
 
 builder.Services.AddServerCore(builder.Configuration);
 builder.Services.AddApiServices();
@@ -104,6 +104,7 @@ app.UseAuthorization();
 app.UseMiddleware<RequestCheckMiddleware>();
 
 app.MapControllers();
+app.MapHealthChecks("/health-check");
 
 app.UseServerCore();
 

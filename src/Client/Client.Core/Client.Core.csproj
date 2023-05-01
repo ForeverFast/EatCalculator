@@ -58,14 +58,17 @@
     <EmbeddedResource Update="Shared\Resources\Localizations\DefaultLocalization.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>DefaultLocalization.Designer.cs</LastGenOutput>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Update="Shared\Resources\Localizations\IdentityErrorsLocalization.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>IdentityErrorsLocalization.Designer.cs</LastGenOutput>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Update="Shared\Resources\Localizations\IdentityLocalization.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>IdentityLocalization.Designer.cs</LastGenOutput>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 

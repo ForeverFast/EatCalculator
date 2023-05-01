@@ -21,7 +21,7 @@ var clientAppBuilderSettings = new ClientAppBuilderSettings
 
 var builder = defaultBuilder.ToClientAppBuilder(clientAppBuilderSettings);
 
-builder.Services.AddScoped<PwaClientEatCalculatorDbContextCacheSynchronizer>();
+builder.Services.AddScoped<PwaDalQcWarapperStateProvider>();
 builder.Services.AddScoped<IClientEatCalculatorDbContextFileProvider, PwaClientEatCalculatorDbContextFileProvider>();
 
 builder.ConfigureAppLayer();

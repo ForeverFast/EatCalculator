@@ -27,6 +27,8 @@ namespace Client.Core.Entities.Days.Models.Store.Effects
                     Title = action.Day.Title,
                     Description = action.Day.Description,
 
+                    Kilocalories = 2500.0,
+
                     ProteinPercentages = _injects.CalculatorService.DefaultProteinPercentagesForDay,
                     FatPercentages = _injects.CalculatorService.DefaultFatPercentagesForDay,
                     CarbohydratePercentages = _injects.CalculatorService.DefaultCarbohydratePercentagesForDay,

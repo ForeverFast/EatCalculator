@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -14,11 +15,13 @@ namespace Client.Core.Shared.Api.LocalDatabase.Migrations
         {
             migrationBuilder.CreateTable(
                 name: "Days",
-                columns: table => new {
+                columns: table => new
+                {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: true),
+                    Kilocalories = table.Column<double>(type: "REAL", nullable: false),
                     ProteinPercentages = table.Column<double>(type: "REAL", nullable: false),
                     FatPercentages = table.Column<double>(type: "REAL", nullable: false),
                     CarbohydratePercentages = table.Column<double>(type: "REAL", nullable: false),
@@ -34,7 +37,8 @@ namespace Client.Core.Shared.Api.LocalDatabase.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Products",
-                columns: table => new {
+                columns: table => new
+                {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
@@ -52,7 +56,8 @@ namespace Client.Core.Shared.Api.LocalDatabase.Migrations
 
             migrationBuilder.CreateTable(
                 name: "DayDateBinds",
-                columns: table => new {
+                columns: table => new
+                {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     DayId = table.Column<int>(type: "INTEGER", nullable: false),
@@ -71,7 +76,8 @@ namespace Client.Core.Shared.Api.LocalDatabase.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Meals",
-                columns: table => new {
+                columns: table => new
+                {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     DayId = table.Column<int>(type: "INTEGER", nullable: false),
@@ -91,7 +97,8 @@ namespace Client.Core.Shared.Api.LocalDatabase.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Portions",
-                columns: table => new {
+                columns: table => new
+                {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     MealId = table.Column<int>(type: "INTEGER", nullable: false),

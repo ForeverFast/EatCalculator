@@ -11,9 +11,6 @@
                 <Match>
                     <MudText>Имя пользователя - @_viewer.Value!.UserName</MudText>
                     <MudText>Почта - @_viewer.Value!.Email</MudText>
-                    <MudText>
-                        Поcледнее обновление - @(_viewer.Value!.LastDbUpdateDate?.ToString() ?? "?")
-                    </MudText>
                 </Match>
             </Condition>
         </MudPaper>

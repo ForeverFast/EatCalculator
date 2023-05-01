@@ -27,6 +27,7 @@ namespace Client.Core.Entities.Days.Models.Store.Effects
                 {
                     Title = action.Day.Title,
                     Description = action.Day.Description,
+                    Kilocalories = action.Day.Kilocalories,
                     ProteinPercentages = action.Day.ProteinPercentages,
                     FatPercentages = action.Day.FatPercentages,
                     CarbohydratePercentages = action.Day.CarbohydratePercentages,

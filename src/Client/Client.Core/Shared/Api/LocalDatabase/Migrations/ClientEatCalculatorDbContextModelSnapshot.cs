@@ -38,6 +38,9 @@ namespace Client.Core.Shared.Api.LocalDatabase.Migrations
                     b.Property<double>("FatPercentages")
                         .HasColumnType("REAL");
 
+                    b.Property<double>("Kilocalories")
+                        .HasColumnType("REAL");
+
                     b.Property<int>("Order")
                         .HasColumnType("INTEGER");
 

@@ -1,9 +1,9 @@
-﻿using Client.Core.Shared.Api.LocalDatabase.Context;
+﻿using Client.Core.Shared.Api.LocalDatabase.DalQc;
 using MediatR;
 
 namespace Client.EntryPoints.Pwa.Implementations
 {
-    public class PwaClientEatCalculatorDbContextCacheSynchronizerMediatorActionWrapper
+    public class PwaDalQcWarapperStateProviderWrapper
         : INotificationHandler<DbInitializedNotification>
         , INotificationHandler<DbUpdatedNotification>
         , INotificationHandler<DbDisposedNotification>
@@ -12,14 +12,14 @@ namespace Client.EntryPoints.Pwa.Implementations
 
         #region Injects 
 
-        private readonly PwaClientEatCalculatorDbContextCacheSynchronizer _pwaClientEatCalculatorDbContextCacheSynchronizer;
+        private readonly PwaDalQcWarapperStateProvider _pwaClientEatCalculatorDbContextCacheSynchronizer;
 
         #endregion
 
         #region Ctors
 
-        public PwaClientEatCalculatorDbContextCacheSynchronizerMediatorActionWrapper(
-            PwaClientEatCalculatorDbContextCacheSynchronizer pwaClientEatCalculatorDbContextCacheSynchronizer)
+        public PwaDalQcWarapperStateProviderWrapper(
+            PwaDalQcWarapperStateProvider pwaClientEatCalculatorDbContextCacheSynchronizer)
         {
             _pwaClientEatCalculatorDbContextCacheSynchronizer = pwaClientEatCalculatorDbContextCacheSynchronizer;
         }

@@ -15,8 +15,6 @@ namespace Client.Core.Shared.Lib.Calculator
 
         public const double DefaultPerGramsValue = 100.0;
 
-        // TODO вынести в юзера
-        public double KkalForDay => 2500.0;
         public double ProteinKkalDivider => 4.0;
         public double FatKkalDivider => 9.0;
         public double CarbohydrateKkalDivider => 4.0;
@@ -60,9 +58,9 @@ namespace Client.Core.Shared.Lib.Calculator
 
         public PortionGramsResult GetPortionGrams(Day day, Portion portion, Product product)
         {
-            var proteinGramsInMeal = GetMacronutrientGramsForMeal(KkalForDay, day.ProteinPercentages, ProteinKkalDivider, day.ProteinMealCount);
-            var fatGramsInMeal = GetMacronutrientGramsForMeal(KkalForDay, day.FatPercentages, FatKkalDivider, day.FatMealCount);
-            var carbohydrateGramsInMeal = GetMacronutrientGramsForMeal(KkalForDay, day.CarbohydratePercentages, CarbohydrateKkalDivider, day.CarbohydrateMealCount);
+            var proteinGramsInMeal = GetMacronutrientGramsForMeal(day.Kilocalories, day.ProteinPercentages, ProteinKkalDivider, day.ProteinMealCount);
+            var fatGramsInMeal = GetMacronutrientGramsForMeal(day.Kilocalories, day.FatPercentages, FatKkalDivider, day.FatMealCount);
+            var carbohydrateGramsInMeal = GetMacronutrientGramsForMeal(day.Kilocalories, day.CarbohydratePercentages, CarbohydrateKkalDivider, day.CarbohydrateMealCount);
 
             return new PortionGramsResult
             {
@@ -84,9 +82,9 @@ namespace Client.Core.Shared.Lib.Calculator
 
         public MealPortionsGramsResult GetMealPortionsGrams(Day day, List<PortionWithProductInfo> portionsWithProductInfo)
         {
-            var proteinGramsInMeal = GetMacronutrientGramsForMeal(KkalForDay, day.ProteinPercentages, ProteinKkalDivider, day.ProteinMealCount);
-            var fatGramsInMeal = GetMacronutrientGramsForMeal(KkalForDay, day.FatPercentages, FatKkalDivider, day.FatMealCount);
-            var carbohydrateGramsInMeal = GetMacronutrientGramsForMeal(KkalForDay, day.CarbohydratePercentages, CarbohydrateKkalDivider, day.CarbohydrateMealCount);
+            var proteinGramsInMeal = GetMacronutrientGramsForMeal(day.Kilocalories, day.ProteinPercentages, ProteinKkalDivider, day.ProteinMealCount);
+            var fatGramsInMeal = GetMacronutrientGramsForMeal(day.Kilocalories, day.FatPercentages, FatKkalDivider, day.FatMealCount);
+            var carbohydrateGramsInMeal = GetMacronutrientGramsForMeal(day.Kilocalories, day.CarbohydratePercentages, CarbohydrateKkalDivider, day.CarbohydrateMealCount);
 
             return new MealPortionsGramsResult
             {

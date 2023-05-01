@@ -32,7 +32,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.Context
                 "Api",
                 "LocalDatabase",
                 "DesignTimeFiles",
-                $"{settings.DbName}.db");
+                $"{settings.DbName}");
 
             optionsBuilder.UseSqlite($@"Data Source={dbFilePath};");
 

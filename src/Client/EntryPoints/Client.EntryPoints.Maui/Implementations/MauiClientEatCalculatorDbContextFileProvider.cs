@@ -13,10 +13,12 @@ namespace Client.EntryPoints.Maui.Implementations
 
             await Backup(filePath, tmpFile);
 
+            //var current = Connectivity.Current.NetworkAccess;
+
             return await File.ReadAllBytesAsync(tmpFile);
         }
 
-        async Task Backup(string srcFile, string tgtFile)
+        public async Task Backup(string srcFile, string tgtFile)
         {
             var source = $"Data Source={srcFile}";
             var target = $"Data Source={tgtFile}";

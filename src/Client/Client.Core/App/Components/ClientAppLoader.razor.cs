@@ -2,7 +2,7 @@
 using Client.Core.Entities.Days.Models.Store.Actions;
 using Client.Core.Entities.Products.Models.Store;
 using Client.Core.Entities.Products.Models.Store.Actions;
-using Client.Core.Shared.Api.LocalDatabase.Context;
+using Client.Core.Shared.Api.LocalDatabase.DalQc;
 using Client.Core.Shared.Lib.BaseComponents;
 using MediatR.Courier;
 

@@ -4,8 +4,6 @@ namespace Client.Core.Shared.Lib.Calculator
 {
     public interface ICalculatorService
     {
-        double KkalForDay { get; }
-
         double ProteinKkalDivider { get; }
         double FatKkalDivider { get; }
         double CarbohydrateKkalDivider { get; }
