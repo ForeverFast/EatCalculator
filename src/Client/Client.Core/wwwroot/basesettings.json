@@ -1,5 +1,5 @@
 {
-  "HttpEndpointsClientSettings": {
-    "BaseAddress": "https://localhost:7180/api"
+  "ClientEatCalculatorDbContextSettings": {
+    "DbName": "client-eat-calculator.db"
   }
 }

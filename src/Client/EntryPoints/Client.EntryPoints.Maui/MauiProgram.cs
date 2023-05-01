@@ -8,7 +8,14 @@ namespace Client.EntryPoints.Maui
 {
     public static class MauiProgram
     {
+#if DEVELOPMENT
         private const ClientAppEnvironment _environment = ClientAppEnvironment.Development;
+#elif STAGING
+        private const ClientAppEnvironment _environment = ClientAppEnvironment.Staging;
+#elif PRODUCTION
+        private const ClientAppEnvironment _environment = ClientAppEnvironment.Production;
+#endif
+
         private const string _baseWebViewAddress = "https://0.0.0.0/";
         private static readonly ClientAppBuilderSettings _clientAppBuilderSettings = new()
         {
