@@ -24,7 +24,7 @@
   </Target>
 
   <Target Name="PreBuild" AfterTargets="ToolRestore">
-    <Exec Command="dotnet webcompiler -r ..\. -c .\webcompilerconfiguration.json" StandardOutputImportance="high" />
+    <Exec Command="dotnet webcompiler -r ../. -c ./webcompilerconfiguration.json" StandardOutputImportance="high" />
   </Target>
 
   <ItemGroup>

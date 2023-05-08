@@ -5,10 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
-
-    <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>..\..\..\..</DockerfileContext>
+    <WasmBuildNative>true</WasmBuildNative>
 
     <Configurations>Debug;Release;DebugStaging;ReleaseStaging</Configurations>
   </PropertyGroup>

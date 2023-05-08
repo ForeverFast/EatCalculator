@@ -1,5 +1,5 @@
 {
   "HttpEndpointsClientSettings": {
-    "BaseAddress": "http://91.203.177.77:15100/api"
+    "BaseAddress": "https://eat-calculator-api.ivan-hub.ru/api"
   }
 }

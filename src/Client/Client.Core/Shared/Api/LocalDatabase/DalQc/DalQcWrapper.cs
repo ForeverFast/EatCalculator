@@ -13,6 +13,7 @@ using MediatR;
 using MediatR.Courier;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Client.Core.Shared.Api.LocalDatabase.DalQc
@@ -33,6 +34,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.DalQc
         private readonly ClientEatCalculatorDbContextSettings _clientEatCalculatorDbContextSettings;
         private readonly HttpEndpointsClient _httpEndpointsClient;
         private readonly IStringLocalizer<DefaultLocalization> _localizer;
+        private readonly ILogger<DalQcWrapper> _logger;
 
         #endregion
 
@@ -48,7 +50,8 @@ namespace Client.Core.Shared.Api.LocalDatabase.DalQc
             IStringLocalizer<DefaultLocalization> localizer,
             IMediator mediator,
             ICourier courier,
-            ILocalStorageService localStorageService)
+            ILocalStorageService localStorageService,
+            ILogger<DalQcWrapper> logger)
         //ViewerStateFacade viewerStateFacade,
         //IState<AppState> appState)
         {
@@ -66,6 +69,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.DalQc
             _localStorageService = localStorageService;
 
             _courier.Subscribe<InitializeViewerSuccessAction>(OnInitializeViewerSuccessAction);
+            _logger = logger;
 
             //_viewerStateFacade = viewerStateFacade;
             //_appState = appState;
@@ -101,41 +105,64 @@ namespace Client.Core.Shared.Api.LocalDatabase.DalQc
 
         public async Task OnInitializeViewerSuccessAction(InitializeViewerSuccessAction notification, CancellationToken cancellationToken)
         {
-            if (notification.Viewer == null)
+            try
             {
-                await _mediator.Publish(new DbDisposedNotification { });
-                await DisposeDbContextObjects();
-                return;
+
+                _logger.LogInformation("Start OnInitializeViewerSuccessAction");
+
+                if (notification.Viewer == null)
+                {
+                    await _mediator.Publish(new DbDisposedNotification { });
+                    await DisposeDbContextObjects();
+                    return;
+                }
+
+                _currentViewer = notification.Viewer;
+
+                var mainPath = GetMainPath();
+                var connectionString = $"Data Source=\"{_clientEatCalculatorDbContextDbFileProvider.GetDbFilePath(mainPath)}\";";
+
+                var options = new DbContextOptionsBuilder()
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                    .UseSqlite(connectionString);
+
+                var dbContext = new ClientEatCalculatorDbContext(options.Options);
+
+                _logger.LogInformation("Start MigrateAsync...");
+
+                await dbContext.Database.MigrateAsync();//EnsureCreatedAsync();
+
+                _logger.LogInformation("End MigrateAsync");
+
+                dbContext.SavedChanges += OnDbContextSavedChanges;
+
+                _queryChain = new BuildQuery<ClientEatCalculatorDbContext>(dbContext, _serviceProvider);
+
+                _logger.LogInformation("Push DbInitializedNotification event");
+
+                State = DalQcState.Initialized;
+                await _mediator.Publish(new DbInitializedNotification
+                {
+                    UserId = _currentViewer.Id,
+                    DbFileName = _clientEatCalculatorDbContextSettings.DbName,
+                });
+
+                _logger.LogInformation("Check updates...");
+
+                await CheckUpdatesAsync();
+
+                _logger.LogInformation("Push DbActivatedNotification event");
+
+                State = DalQcState.Active;
+                await _mediator.Publish(new DbActivatedNotification { });
+
+                _logger.LogInformation("End OnInitializeViewerSuccessAction");
             }
-
-            _currentViewer = notification.Viewer;
-
-            var mainPath = GetMainPath();
-            var connectionString = $"Data Source=\"{_clientEatCalculatorDbContextDbFileProvider.GetDbFilePath(mainPath)}\";";
-
-            var options = new DbContextOptionsBuilder()
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                .UseSqlite(connectionString);
-
-            var dbContext = new ClientEatCalculatorDbContext(options.Options);
-
-            await dbContext.Database.MigrateAsync();//EnsureCreatedAsync();
-
-            dbContext.SavedChanges += OnDbContextSavedChanges;
-
-            _queryChain = new BuildQuery<ClientEatCalculatorDbContext>(dbContext, _serviceProvider);
-
-            State = DalQcState.Initialized;
-            await _mediator.Publish(new DbInitializedNotification
+            catch (Exception ex)
             {
-                UserId = _currentViewer.Id,
-                DbFileName = _clientEatCalculatorDbContextSettings.DbName,
-            });
-
-            await CheckUpdatesAsync();
-
-            State = DalQcState.Active;
-            await _mediator.Publish(new DbActivatedNotification { });
+                _logger.LogError(ex, "fuck u");
+                throw;
+            }
         }
 
         private async void OnDbContextSavedChanges(object? sender, SavedChangesEventArgs e)
@@ -193,7 +220,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.DalQc
             try
             {
                 var localLastDbUpdateDate = await _localStorageService.GetItemAsync<long>(LocalStorageKeys.LastUpdateDate);
-                
+
                 var checkRequest = new CheckUpdatesRequest
                 {
                     LastUpdateDate = new DateTime(localLastDbUpdateDate),

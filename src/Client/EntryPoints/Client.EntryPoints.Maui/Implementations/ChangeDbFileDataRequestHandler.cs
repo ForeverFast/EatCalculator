@@ -19,7 +19,8 @@ namespace Client.EntryPoints.Maui.Implementations
             await File.WriteAllBytesAsync(tmpFilePath, request.FileData);
 
             var provider = (MauiClientEatCalculatorDbContextFileProvider)_clientEatCalculatorDbContextFileProvider;
-            await provider.Backup(tmpFilePath, request.TargetFilePath!);
+            var fullTargetPath = _clientEatCalculatorDbContextFileProvider.GetDbFilePath(request.TargetFilePath!);
+            await provider.Backup(tmpFilePath, fullTargetPath);
         }
     }
 }

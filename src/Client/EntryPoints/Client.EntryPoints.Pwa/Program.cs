@@ -23,6 +23,7 @@ var builder = defaultBuilder.ToClientAppBuilder(clientAppBuilderSettings);
 
 builder.Services.AddScoped<PwaDalQcWarapperStateProvider>();
 builder.Services.AddScoped<IClientEatCalculatorDbContextFileProvider, PwaClientEatCalculatorDbContextFileProvider>();
+builder.Services.AddLogging(l => l.SetMinimumLevel(LogLevel.Debug));
 
 builder.ConfigureAppLayer();
 
