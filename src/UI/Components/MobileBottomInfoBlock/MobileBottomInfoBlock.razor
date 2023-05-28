@@ -25,10 +25,6 @@
     </MudContainer>
 </div>
 
-<MudOverlay @bind-Visible="IsVisible"
+<MudOverlay Visible="IsVisible" VisibleChanged="value => FireIsVisibleChange(value)"
             AutoClose="true" DarkBackground="true"
             Absolute="true" ZIndex="2000" />
-
-@*<MudHidden Breakpoint="Breakpoint.Xs">
-
-</MudHidden>*@

@@ -36,7 +36,7 @@ namespace Client.Core.Features.Meals.UpdateMealDialog
             => _products.Where(x => !_portions.Any(y => y.Portion.ProductId == x.Id)).ToList();
 
         private List<string> _portionsValidation = new();
-        private bool _IsPortionsValidationInfoVisible = false;
+        private bool _isPortionsValidationInfoVisible = false;
 
         #endregion
 
@@ -108,7 +108,7 @@ namespace Client.Core.Features.Meals.UpdateMealDialog
         {
             if (!ValidateAndCalculatePortionsInfo())
             {
-                _IsPortionsValidationInfoVisible = true;
+                _isPortionsValidationInfoVisible = true;
                 return;
             }
 
