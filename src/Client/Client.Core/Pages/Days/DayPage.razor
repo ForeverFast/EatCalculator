@@ -91,10 +91,13 @@
                                     <MealCard @key="meal" Meal="meal">
                                         <OptionalContent>
                                             <MudContainer Class="d-flex flex-row align-center px-0">
+                                                <MudIconButton Icon="@Icons.Material.Filled.ControlPointDuplicate"
+                                                               Size="Size.Small"
+                                                               OnClick="_ => OnDuplicateMealButtonClick(meal)"
+                                                               Class="ms-auto" />
                                                 <MudIconButton Icon="@Icons.Material.Filled.Edit"
                                                                Size="Size.Small"
-                                                               OnClick="_ => OnEditMealButtonClick(meal)"
-                                                               Class="ms-auto" />
+                                                               OnClick="_ => OnEditMealButtonClick(meal)" />
                                                 <DeleteMealButton Meal="meal" />
                                             </MudContainer>
                                         </OptionalContent>

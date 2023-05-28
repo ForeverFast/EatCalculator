@@ -28,6 +28,21 @@ namespace Client.Core.Entities.Meals.Models.Store.Effects
 
                 var createdMeal = await _injects.Dal.Instance.For<Meal>().Insert.InsertWithObjectAsync(newMeal);
 
+                if (action.Meal.Portions.Count > 0)
+                {
+                    var newPortions = action.Meal.Portions
+                        .Select(portion => portion with
+                        {
+                            Id = 0,
+                            MealId = createdMeal.Id,
+                        })
+                        .ToList();
+
+                    await _injects.Dal.Instance.For<Portion>().Insert.BulkInsertAsync(newPortions);
+
+                    createdMeal.Portions.AddRange(newPortions);
+                }
+
                 dispatcher.Dispatch(new CreateMealSuccessAction
                 {
                     Meal = createdMeal,

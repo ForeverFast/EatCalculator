@@ -1,5 +1,6 @@
 ﻿using Client.Core.Entities.Days.Models.Contracts;
 using Client.Core.Entities.Days.Models.Store;
+using Client.Core.Entities.Meals.Models.Contracts;
 using Client.Core.Entities.Meals.Models.Store;
 using Client.Core.Features.Meals.UpdateMealDialog;
 using Client.Core.Shared.Configs;
@@ -106,11 +107,6 @@ namespace Client.Core.Pages.Days
         private void OnCreateMealButtonClick()
             => _mealStateFacade.CreateEmptyMeal(DayId);
 
-        private void OnDeleteDayButtonClick()
-        {
-
-        }
-
         private void OnChangeDayInfo(Action action)
         {
             if (_currentDay.Value == null)
@@ -130,6 +126,18 @@ namespace Client.Core.Pages.Days
                 FatMealCount = _fatMealCount,
                 CarbohydrateMealCount = _carbohydrateMealCount,
             });
+        }
+
+        private void OnDuplicateMealButtonClick(Meal meal)
+        {
+            var createMealContract = new CreateMealContract
+            {
+                DayId = meal.DayId,
+                Title = meal.Title,
+                Portions = meal.Portions,
+            };
+
+            _mealStateFacade.CreateMeal(createMealContract);
         }
 
         private void OnEditMealButtonClick(Meal meal)
