@@ -1,9 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Client.Core.Shared.Api.Models;
 
-namespace Client.Core.Shared.Api.LocalDatabase.EntityConfigurations
+namespace Client.Core.Tests.Data
 {
-    internal sealed class ProductSeed : IEntityTypeConfiguration<Product>
+    internal static class ProductData
     {
         public static readonly List<Product> Products = new()
         {
@@ -138,9 +137,5 @@ namespace Client.Core.Shared.Api.LocalDatabase.EntityConfigurations
                 Carbohydrate = 68.0,
             },
         };
-
-        public void Configure(EntityTypeBuilder<Product> builder)
-            => builder.HasData(Products);
-
     }
 }

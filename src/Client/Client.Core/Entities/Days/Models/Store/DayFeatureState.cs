@@ -6,6 +6,6 @@
             => typeof(DayState).FullName!;
 
         protected override DayState GetInitialState()
-            => (DayState)DayState.GetAdapter().GetInitialState();
+            => new();
     }
 }

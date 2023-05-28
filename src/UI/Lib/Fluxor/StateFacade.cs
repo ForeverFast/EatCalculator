@@ -1,4 +1,6 @@
-﻿namespace UI.Lib.Fluxor
+﻿
+
+namespace UI.Lib.Fluxor
 {
     public abstract class StateFacade<T> : IDisposable
         where T : class

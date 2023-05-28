@@ -2,7 +2,7 @@
 
 namespace Client.Core.Shared.Api.Models
 {
-    public record Meal : AdapterEntity, IDbModelBase
+    public record Meal : IDbModelBase
     {
         public required int Id { get; init; }
         public required int DayId { get; init; }

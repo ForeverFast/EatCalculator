@@ -33,6 +33,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Client.Core.Tests" />
+  </ItemGroup>
+    
+  <ItemGroup>
     <Folder Include="Shared\Api\LocalDatabase\DesignTimeFiles\" />
     <Folder Include="Shared\Api\LocalDatabase\Migrations\" />
   </ItemGroup>

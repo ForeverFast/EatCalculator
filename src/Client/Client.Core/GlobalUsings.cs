@@ -3,6 +3,7 @@ global using Client.Core.Shared.Lib.Fluxor;
 global using Client.Core.Shared.Resources.Localizations;
 global using FluentValidation;
 global using Fluxor;
+global using Fluxor.Extensions;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Web;
 global using Microsoft.Extensions.DependencyInjection;

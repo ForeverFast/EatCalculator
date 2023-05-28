@@ -6,6 +6,6 @@
             => typeof(MealState).FullName!;
 
         protected override MealState GetInitialState()
-            => (MealState)MealState.GetAdapter().GetInitialState();
+            => new();
     }
 }

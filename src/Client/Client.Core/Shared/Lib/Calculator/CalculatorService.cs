@@ -44,10 +44,10 @@ namespace Client.Core.Shared.Lib.Calculator
             return true switch
             {
                 { } when macronutrientPercentageInPortion == 0 => 0,
-                _ => macronutrientGramsInMeal * DefaultPerGramsValue / macronutrientGramsInProduct * (macronutrientPercentageInPortion / 100),
+                _ => (macronutrientGramsInMeal * DefaultPerGramsValue / macronutrientGramsInProduct) * macronutrientPercentageInPortion / 100,
             };
         }
-
+            
         public double GetMacronutrientGramsInProductPerDefaultGrams(double macronutrientGrams, double per)
             => true switch
             {

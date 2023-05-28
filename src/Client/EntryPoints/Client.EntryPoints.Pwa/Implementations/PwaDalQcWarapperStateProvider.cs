@@ -163,29 +163,3 @@ namespace Client.EntryPoints.Pwa.Implementations
        
     }
 }
-
-
-/*
- private void DoSwap(bool restore)
-        {
-            _backupName = restore ? _backup : $"{_backup}-{Guid.NewGuid().ToString().Split('-')[0]}";
-            var dir = restore ? nameof(restore) : "backup";
-
-            Console.WriteLine($"Begin {dir}.");
-
-            var source = $"Data Source={(restore ? _backupName : _dbFilename)}";
-            var target = $"Data Source={(restore ? _dbFilename : _backupName)}";
-            using var src = new SqliteConnection(source);
-            using var tgt = new SqliteConnection(target);
-
-            src.Open();
-            tgt.Open();
-
-            src.BackupDatabase(tgt);
-
-            tgt.Close();
-            src.Close();
-
-            Console.WriteLine($"End {dir}.");
-        }
- */

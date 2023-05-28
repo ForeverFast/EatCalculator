@@ -1,6 +1,5 @@
 ﻿using Blazored.LocalStorage;
 using Client.Core.Entities.Viewer.Models;
-using Client.Core.Entities.Viewer.Models.Store;
 using Client.Core.Entities.Viewer.Models.Store.Actions;
 using Client.Core.Shared.Api.HttpClient;
 using Client.Core.Shared.Api.HttpClient.Requests.UserData;
@@ -9,7 +8,6 @@ using Client.Core.Shared.Api.LocalDatabase.Context;
 using Client.Core.Shared.Configs;
 using DALQueryChain.EntityFramework.Builder;
 using DALQueryChain.Interfaces;
-using MediatR;
 using MediatR.Courier;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -26,10 +24,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.DalQc
         private readonly IMediator _mediator;
         private readonly ICourier _courier;
         private readonly ILocalStorageService _localStorageService;
-        //private readonly IActionSubscriber _actionSubscriber;
         private readonly IDispatcher _dispatcher;
-        //private readonly ViewerStateFacade _viewerStateFacade;
-        //private readonly IState<AppState> _appState; // TODO: переделать
         private readonly IClientEatCalculatorDbContextFileProvider _clientEatCalculatorDbContextDbFileProvider;
         private readonly ClientEatCalculatorDbContextSettings _clientEatCalculatorDbContextSettings;
         private readonly HttpEndpointsClient _httpEndpointsClient;
@@ -42,7 +37,6 @@ namespace Client.Core.Shared.Api.LocalDatabase.DalQc
 
         public DalQcWrapper(
             IServiceProvider serviceProvider,
-            //IActionSubscriber actionSubscriber,
             IOptions<ClientEatCalculatorDbContextSettings> clientEatCalculatorDbContextSettings,
             IClientEatCalculatorDbContextFileProvider clientEatCalculatorDbContextDbFileProvider,
             HttpEndpointsClient httpEndpointsClient,
@@ -52,13 +46,10 @@ namespace Client.Core.Shared.Api.LocalDatabase.DalQc
             ICourier courier,
             ILocalStorageService localStorageService,
             ILogger<DalQcWrapper> logger)
-        //ViewerStateFacade viewerStateFacade,
-        //IState<AppState> appState)
         {
             ArgumentNullException.ThrowIfNull(clientEatCalculatorDbContextSettings.Value, nameof(clientEatCalculatorDbContextSettings));
 
             _serviceProvider = serviceProvider;
-            //_actionSubscriber = actionSubscriber;
             _dispatcher = dispatcher;
             _clientEatCalculatorDbContextSettings = clientEatCalculatorDbContextSettings.Value;
             _clientEatCalculatorDbContextDbFileProvider = clientEatCalculatorDbContextDbFileProvider;
@@ -67,16 +58,9 @@ namespace Client.Core.Shared.Api.LocalDatabase.DalQc
             _mediator = mediator;
             _courier = courier;
             _localStorageService = localStorageService;
-
-            _courier.Subscribe<InitializeViewerSuccessAction>(OnInitializeViewerSuccessAction);
             _logger = logger;
 
-            //_viewerStateFacade = viewerStateFacade;
-            //_appState = appState;
-
-            //_viewerStateFacade.Viewer.StateChanged += OnInitializeViewerSuccessAction;
-
-            //_actionSubscriber.SubscribeToAction<InitializeViewerSuccessAction>(this, OnInitializeViewerSuccessAction);
+            _courier.Subscribe<InitializeViewerSuccessAction>(OnInitializeViewerSuccessAction);
         }
 
         #endregion
@@ -107,13 +91,12 @@ namespace Client.Core.Shared.Api.LocalDatabase.DalQc
         {
             try
             {
-
                 _logger.LogInformation("Start OnInitializeViewerSuccessAction");
 
                 if (notification.Viewer == null)
                 {
                     await _mediator.Publish(new DbDisposedNotification { });
-                    await DisposeDbContextObjects();
+                    DisposeDbContextObjects();
                     return;
                 }
 
@@ -171,11 +154,6 @@ namespace Client.Core.Shared.Api.LocalDatabase.DalQc
             {
                 await _mediator.Publish(new DbUpdatedNotification { });
 
-                //if (++_counter != 10)
-                //    return;
-
-                //_counter = 0;
-
                 var fileData = await _clientEatCalculatorDbContextDbFileProvider.GetDbFileAsync(GetMainPath());
                 var request = new UploadUserEatDataRequest
                 {
@@ -199,8 +177,9 @@ namespace Client.Core.Shared.Api.LocalDatabase.DalQc
                     LastDbUpdateDate = response.Data.LastUpdateDate,
                 });
             }
-            catch (Exception _)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "fuck u (2)");
                 _dispatcher.Dispatch(new SynchronizeEatDataFailureAction
                 {
                     Messages = new List<string> { _localizer[nameof(DefaultLocalization.UnhandledException)] },
@@ -251,14 +230,14 @@ namespace Client.Core.Shared.Api.LocalDatabase.DalQc
             }
             catch (Exception ex)
             {
-
+                _logger.LogError(ex, "fuck u (3)");
             }
         }
 
         private string GetMainPath()
             => Path.Combine(_currentViewer!.Id.ToString(), _clientEatCalculatorDbContextSettings.DbName);
 
-        private async ValueTask DisposeDbContextObjects()
+        private void DisposeDbContextObjects()
         {
             State = DalQcState.Disposing;
 
@@ -275,13 +254,11 @@ namespace Client.Core.Shared.Api.LocalDatabase.DalQc
 
         #endregion
 
-        public async ValueTask DisposeAsync()
+        public void Dispose()
         {
-            //_viewerStateFacade.Viewer.StateChanged -= OnInitializeViewerSuccessAction;
-            //_actionSubscriber.UnsubscribeFromAllActions(this);
             _courier.UnSubscribe<InitializeViewerSuccessAction>(OnInitializeViewerSuccessAction);
 
-            await DisposeDbContextObjects();
+            DisposeDbContextObjects();
         }
     }
 }

@@ -4,30 +4,26 @@ namespace Client.Core.Entities.Products.Models.Store
 {
     internal static class ProductStateReducers
     {
-        private static ProductStateEntityAdapter s_adapter => (ProductStateEntityAdapter)ProductState.GetAdapter();
-
-
+        private static readonly EntityAdapter<int, Product> s_adapter = new(product => product.Id);
 
         [ReducerMethod]
         public static ProductState ReduceLoadProductsAction(ProductState state, LoadProductsSuccessAction _)
-            => s_adapter.RemoveAll<ProductState>(state);
+            => s_adapter.RemoveAll(state);
 
         [ReducerMethod]
         public static ProductState ReduceLoadProductsSuccessAction(ProductState state, LoadProductsSuccessAction action)
-            => s_adapter.SetAll<ProductState>(action.Products, state);
-
-
+            => s_adapter.SetAll(state, action.Products);
 
         [ReducerMethod]
         public static ProductState ReduceCreateProductSuccessAction(ProductState state, CreateProductSuccessAction action)
-            => s_adapter.Add<ProductState>(action.Product, state);
+            => s_adapter.Add(state, action.Product);
 
         [ReducerMethod]
         public static ProductState ReduceUpdateProductSuccessAction(ProductState state, UpdateProductSuccessAction action)
-            => s_adapter.Update<ProductState>(action.Product, state);
+            => s_adapter.Update(state, action.Product);
 
         [ReducerMethod]
         public static ProductState ReduceDeleteProductSuccessAction(ProductState state, DeleteProductSuccessAction action)
-            => s_adapter.Remove<ProductState>(action.Id, state);
+            => s_adapter.Remove(state, action.Id);
     }
 }

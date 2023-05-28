@@ -15,7 +15,6 @@ namespace Client.Core.App
 
             // Flux
 
-            Adapters.Scan(appBuilder.FullTargetAssemblies);
             appBuilder.Services.AddScoped<BaseEffectInjects>();
             appBuilder.Services.AddFluxor(options =>
             {

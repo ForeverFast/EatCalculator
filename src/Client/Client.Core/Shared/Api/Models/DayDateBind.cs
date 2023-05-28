@@ -2,7 +2,7 @@
 
 namespace Client.Core.Shared.Api.Models
 {
-    public record DayDateBind : AdapterEntity, IDbModelBase
+    public record DayDateBind : IDbModelBase
     {
         public required int Id { get; init; }
         public required int DayId { get; init; }

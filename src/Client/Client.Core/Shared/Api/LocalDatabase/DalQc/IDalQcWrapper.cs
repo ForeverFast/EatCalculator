@@ -11,7 +11,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.DalQc
         Disposing
     }
 
-    public interface IDalQcWrapper : IAsyncDisposable
+    public interface IDalQcWrapper : IDisposable
     {
         IDALQueryChain<ClientEatCalculatorDbContext> Instance { get; }
 

@@ -2,7 +2,7 @@
 
 namespace Client.Core.Shared.Api.Models
 {
-    public record Product : AdapterEntity, IDbModelBase
+    public record Product : IDbModelBase
     {
         public required int Id { get; init; }
         public required string Title { get; init; }

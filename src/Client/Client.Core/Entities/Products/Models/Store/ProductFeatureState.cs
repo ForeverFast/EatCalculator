@@ -6,6 +6,6 @@
             => typeof(ProductState).FullName!;
 
         protected override ProductState GetInitialState()
-            => (ProductState)ProductState.GetAdapter().GetInitialState();
+            => new();
     }
 }

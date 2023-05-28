@@ -113,8 +113,10 @@ namespace Client.Core.Pages.Days
 
         private void OnChangeDayInfo(Action action)
         {
-            if (_currentDay.Value == null || !ValidateAndCalculateDay(action))
+            if (_currentDay.Value == null)
                 return;
+
+            ValidateAndCalculateDay(action);
 
             _dayStateFacade.UpdateDay(DayId, new UpdateDayContract
             {

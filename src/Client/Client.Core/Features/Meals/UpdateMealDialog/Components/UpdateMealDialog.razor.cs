@@ -142,20 +142,20 @@ namespace Client.Core.Features.Meals.UpdateMealDialog
                 return true;
 
             var proteinTotal = _portions.Sum(x => x.Portion.ProteinPercentages);
-            if (proteinTotal < 100.0)
-                _portionsValidation.Add("Протеина меньше 100%");
+            //if (proteinTotal < 100.0)
+            //    _portionsValidation.Add("Протеина меньше 100%");
             if (proteinTotal > 100.0)
                 _portionsValidation.Add("Протеина больше 100%");
 
             var fatTotal = _portions.Sum(x => x.Portion.FatPercentages);
-            if (fatTotal < 100.0)
-                _portionsValidation.Add("Жиров меньше 100%");
+            //if (fatTotal < 100.0)
+            //    _portionsValidation.Add("Жиров меньше 100%");
             if (fatTotal > 100.0)
                 _portionsValidation.Add("Жиров больше 100%");
 
             var carbohydrateTotal = _portions.Sum(x => x.Portion.CarbohydratePercentages);
-            if (carbohydrateTotal < 100.0)
-                _portionsValidation.Add("Углеводов меньше 100%");
+                //if (carbohydrateTotal < 100.0)
+                //    _portionsValidation.Add("Углеводов меньше 100%");
             if (carbohydrateTotal > 100.0)
                 _portionsValidation.Add("Углеводов больше 100%");
 

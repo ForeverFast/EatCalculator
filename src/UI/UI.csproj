@@ -47,6 +47,7 @@
     <PackageReference Include="FluentValidation" Version="11.5.1" />
     <PackageReference Include="Fluxor.Blazor.Web" Version="5.7.0" />
     <PackageReference Include="Fluxor.Blazor.Web.ReduxDevTools" Version="5.7.0" />
+    <PackageReference Include="ForeverFast.Fluxor.Extensions" Version="0.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.2" />
     <PackageReference Include="MudBlazor" Version="6.1.9" />
   </ItemGroup>
