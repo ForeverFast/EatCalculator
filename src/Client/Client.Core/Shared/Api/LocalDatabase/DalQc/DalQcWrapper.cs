@@ -143,7 +143,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.DalQc
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "fuck u");
+                _logger.LogError(ex, "OnInitializeViewerSuccessAction failed");
                 throw;
             }
         }
@@ -179,7 +179,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.DalQc
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "fuck u (2)");
+                _logger.LogError(ex, "OnDbContextSavedChanges failed");
                 _dispatcher.Dispatch(new SynchronizeEatDataFailureAction
                 {
                     Messages = new List<string> { _localizer[nameof(DefaultLocalization.UnhandledException)] },
@@ -230,7 +230,7 @@ namespace Client.Core.Shared.Api.LocalDatabase.DalQc
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "fuck u (3)");
+                _logger.LogError(ex, "CheckUpdatesAsync failed");
             }
         }
 
